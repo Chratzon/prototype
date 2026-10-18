@@ -1,0 +1,1031 @@
+<!doctype html>
+<html lang="de" class="pwa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--HEAD-PWA-START-->
+<meta name="theme-color" content="#0E6E5C">
+<meta name="description" content="doorku: Türliste, Grundrisse mit Pins und lückenlose Historie für Türelemente.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="doorku">
+<!--HEAD-PWA-END-->
+<title>doorku Türendokumentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: App-Shell mit Kopfleiste. Handy: ein Bereich + Bottom-Nav. Tablet (ab 820px): Türliste links, rechts Detail/Plan/Tabelle. */
+:root{
+  --petrol:#0E6E5C; --petrol-dark:#0A4F42; --petrol-soft:#E4F3EF; --petrol-text:#0E6E5C;
+  --coral:#FF7A50; --coral-soft:#FFE7DE; --coral-text:#B8471F;
+  --amber-soft:#FBEFD5; --amber-text:#83560A;
+  --ink:#1E2422; --muted:#6B7570; --line:#D8DDD9; --paper:#F7F6F2; --surface:#FFFFFF; --surface-2:#EFEEE9;
+  --plan-bg:#E6E5DF; --scrim:rgba(20,26,24,.42);
+  --shadow:0 1px 2px rgba(30,36,34,.06),0 10px 28px rgba(30,36,34,.10);
+  --f-head:'Plus Jakarta Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-ui:'Inter',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --petrol-soft:#173A33; --petrol-text:#6CCBB2; --coral-soft:#3B241B; --coral-text:#FF9F80;
+    --amber-soft:#382D13; --amber-text:#E9C46F;
+    --ink:#E7ECEA; --muted:#9BA6A1; --line:#2D3633; --paper:#111614; --surface:#1A201E; --surface-2:#232B28;
+    --plan-bg:#0B0F0E; --scrim:rgba(0,0,0,.6); --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --petrol-soft:#173A33; --petrol-text:#6CCBB2; --coral-soft:#3B241B; --coral-text:#FF9F80;
+  --amber-soft:#382D13; --amber-text:#E9C46F;
+  --ink:#E7ECEA; --muted:#9BA6A1; --line:#2D3633; --paper:#111614; --surface:#1A201E; --surface-2:#232B28;
+  --plan-bg:#0B0F0E; --scrim:rgba(0,0,0,.6); --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-head);margin:0;text-wrap:balance}
+.num{font-variant-numeric:tabular-nums}
+
+.app{height:100%;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden}
+
+/* Kopfleiste */
+.topbar{display:flex;align-items:center;gap:10px;background:var(--surface);border-bottom:1px solid var(--line);padding:10px max(14px,env(safe-area-inset-left,0px)) 10px max(14px,env(safe-area-inset-right,0px));min-width:0}
+.pwa .topbar{padding-top:max(10px,env(safe-area-inset-top,0px))}
+.logo{width:34px;height:34px;flex:0 0 auto;display:block}
+.projbtn{display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:4px 8px;border-radius:10px;text-align:left}
+.projbtn:hover{background:var(--surface-2)}
+.projbtn .pn{font-family:var(--f-head);font-weight:700;font-size:15px;display:flex;align-items:center;gap:4px;max-width:100%}
+.projbtn .pn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.projbtn .ps{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.spacer{flex:1}
+.offline{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--amber-text);background:var(--amber-soft);padding:3px 8px;border-radius:20px}
+.userpill{display:flex;align-items:center;gap:8px;padding:3px 10px 3px 3px;border:1px solid var(--line);border-radius:30px;background:var(--surface)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--petrol);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:600;letter-spacing:.02em;flex:0 0 auto}
+.userpill .un{font-size:13px;font-weight:500;white-space:nowrap}
+@media (max-width:480px){.userpill{padding:3px}.userpill .un{display:none}}
+
+/* Bottom-Nav (Handy) */
+.bottomnav{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border-top:1px solid var(--line);padding:4px max(8px,env(safe-area-inset-left,0px)) 4px max(8px,env(safe-area-inset-right,0px))}
+.pwa .bottomnav{padding-bottom:max(4px,env(safe-area-inset-bottom,0px))}
+.navbtn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 4px;font-size:11.5px;font-weight:500;color:var(--muted);border-radius:10px}
+.navbtn svg{width:24px;height:24px}
+.navbtn[aria-current="page"]{color:var(--petrol-text)}
+.navbtn[aria-current="page"] .ni{background:var(--petrol-soft)}
+.ni{padding:2px 16px;border-radius:20px;display:grid;place-items:center}
+
+main{min-height:0;position:relative;overflow:hidden}
+.view{height:100%;overflow:auto;-webkit-overflow-scrolling:touch}
+
+/* Split-Layout (Tablet) */
+.split{display:grid;grid-template-columns:minmax(300px,380px) 1fr;height:100%}
+.split > aside{border-right:1px solid var(--line);min-width:0;min-height:0;background:var(--paper)}
+.split > section{min-width:0;min-height:0;display:grid;grid-template-rows:auto 1fr;background:var(--paper)}
+.segbar{display:flex;gap:6px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px}
+.seg button{padding:6px 16px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.pane{min-height:0;position:relative;overflow:hidden}
+
+/* Werkzeugleiste, Suche, Chips */
+.toolbar{position:sticky;top:0;z-index:2;background:var(--paper);padding:12px 16px 10px;display:grid;gap:10px;border-bottom:1px solid transparent}
+.search{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 12px;height:42px}
+.search svg{width:18px;height:18px;color:var(--muted);flex:0 0 auto}
+.search input{border:0;outline:0;background:none;flex:1;min-width:0;height:100%;font-size:15px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap}
+.chip .cnt{color:var(--muted);font-size:12px}
+.chip[aria-pressed="true"]{background:var(--petrol);border-color:var(--petrol);color:#fff}
+.chip[aria-pressed="true"] .cnt{color:rgba(255,255,255,.75)}
+.chip.add{border-style:dashed;color:var(--petrol-text);border-color:var(--petrol-text)}
+
+/* Türkarten */
+.cards{display:grid;gap:8px;padding:4px 16px 96px}
+.card{display:grid;gap:3px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;width:100%}
+.card:hover{border-color:var(--muted)}
+.card[aria-current="true"]{border-color:var(--petrol);box-shadow:0 0 0 1px var(--petrol)}
+.card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nr{font-family:var(--f-head);font-weight:700;font-size:12.5px;letter-spacing:.03em;color:var(--petrol-text);font-variant-numeric:tabular-nums}
+.card-title{font-weight:600;font-size:15px}
+.card-meta{font-size:13px;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.badge{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--surface-2);color:var(--ink)}
+.badge.fire{background:var(--ink);color:var(--surface)}
+.badge.due{background:var(--coral-soft);color:var(--coral-text)}
+.badge.soon{background:var(--amber-soft);color:var(--amber-text)}
+.badge.nopin{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+
+/* Status-Tags */
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.tag::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.s-geplant{background:var(--surface-2);color:var(--muted)}
+.s-pruefung{background:var(--amber-soft);color:var(--amber-text)}
+.s-offen{background:var(--coral-soft);color:var(--coral-text)}
+.s-erledigt{background:var(--petrol-soft);color:var(--petrol-text)}
+
+.empty{padding:40px 24px;text-align:center;color:var(--muted)}
+.empty h3{color:var(--ink);font-size:17px;margin-bottom:6px}
+
+/* FAB */
+.fab{position:absolute;right:max(18px,env(safe-area-inset-right,0px));bottom:18px;z-index:5;height:54px;min-width:54px;padding:0 18px;border-radius:28px;background:var(--coral);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;box-shadow:0 6px 18px rgba(255,122,80,.38)}
+.fab svg{width:22px;height:22px}
+.fab:active{transform:scale(.97)}
+
+/* Detail */
+.detail{padding:0 0 60px;max-width:860px}
+.dhead{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:16px 16px 12px;background:var(--surface);border-bottom:1px solid var(--line)}
+.dhead h2{font-size:22px;line-height:1.2;margin-top:2px}
+.dhead .meta{color:var(--muted);font-size:13.5px;margin-top:3px}
+.iconbtn{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:var(--ink)}
+.iconbtn:hover{background:var(--surface-2)}
+.iconbtn svg{width:22px;height:22px}
+.tagbtn{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.tagbtn .hint{font-size:11px;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn svg{width:17px;height:17px}
+.btn.primary{background:var(--petrol);border-color:var(--petrol);color:#fff}
+.btn.primary:hover{background:var(--petrol-dark)}
+.btn.accent{background:var(--coral);border-color:var(--coral);color:#fff}
+.btn.ghost{border-color:transparent}
+.btn.danger{color:var(--coral-text)}
+.block{padding:18px 16px 4px}
+.block h3{font-size:13px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--petrol-text);margin-bottom:10px;font-family:var(--f-ui)}
+.params{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin:0}
+.param{background:var(--surface);padding:10px 12px;min-width:0;box-shadow:1px 0 0 var(--line),0 1px 0 var(--line)}
+.param dt{font-size:12px;color:var(--muted);margin-bottom:2px}
+.param dd{margin:0;font-weight:500;overflow-wrap:anywhere}
+.param dd.empty-val{color:var(--muted);font-weight:400}
+
+/* Formulare */
+.form{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.field{display:grid;gap:4px;min-width:0}
+.field label{font-size:12.5px;font-weight:500;color:var(--muted)}
+.field input,.field select,.field textarea{height:42px;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:0 11px;width:100%;min-width:0;font-size:15px}
+.field textarea{height:auto;min-height:74px;padding:10px 11px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--petrol);box-shadow:0 0 0 3px var(--petrol-soft)}
+.field.changed input,.field.changed select{border-color:var(--coral)}
+.formbar{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;flex-wrap:wrap}
+.editing-note{font-size:13px;color:var(--muted);margin:-4px 0 12px}
+
+/* Historie */
+.composer{display:flex;gap:8px;margin-bottom:14px}
+.composer input{flex:1;min-width:0;height:42px;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:0 12px}
+.timeline{list-style:none;margin:0;padding:0 0 0 4px;display:grid;gap:0}
+.tl{display:grid;grid-template-columns:18px 1fr;gap:10px;position:relative;padding-bottom:14px}
+.tl::before{content:"";position:absolute;left:5px;top:14px;bottom:0;width:2px;background:var(--line)}
+.tl:last-child::before{display:none}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--petrol);margin-top:4px;box-shadow:0 0 0 3px var(--paper)}
+.dot.change{background:var(--coral)}
+.dot.status{background:var(--amber-text)}
+.dot.note{background:var(--surface);border:2px solid var(--petrol)}
+.dot.service{background:var(--petrol-dark)}
+.tl .tt{font-size:14.5px;overflow-wrap:anywhere}
+.tl .tm{font-size:12px;color:var(--muted);margin-top:1px}
+.tl .kind{font-weight:600}
+
+/* Plan */
+.planview{height:100%;display:grid;grid-template-rows:auto 1fr;min-height:0}
+.planbar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line);min-width:0}
+.planbar .chips{flex:1;min-width:0}
+.stage{position:relative;min-height:0;background:var(--plan-bg);overflow:hidden}
+.vp{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
+.canvas{position:relative;margin:16px;background:#fff;box-shadow:var(--shadow);border-radius:4px;transform-origin:0 0}
+.canvas img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none;border-radius:4px}
+.canvas.placing{cursor:crosshair;outline:3px dashed var(--coral);outline-offset:3px}
+.pin{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;z-index:2}
+.pin svg{width:26px;height:33px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.28));transition:transform .12s}
+.pin .pl{font-family:var(--f-head);font-size:10px;font-weight:700;color:#1E2422;background:rgba(255,255,255,.92);padding:0 5px;border-radius:5px;margin-top:-2px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pin[aria-current="true"] svg{transform:scale(1.25)}
+.pin[aria-current="true"] .pl{background:#1E2422;color:#fff}
+.pin.ghost{pointer-events:none;opacity:.85}
+.zoom{position:absolute;left:max(14px,env(safe-area-inset-left,0px));bottom:16px;z-index:4;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.zoom button{width:42px;height:40px;display:grid;place-items:center;font-size:20px;font-weight:500}
+.zoom button+button{border-top:1px solid var(--line)}
+.zoom svg{width:18px;height:18px}
+.banner{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:6;background:var(--ink);color:var(--surface);padding:8px 8px 8px 14px;border-radius:30px;display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:500;box-shadow:var(--shadow);max-width:calc(100% - 24px)}
+.banner button{background:var(--surface);color:var(--ink);padding:5px 12px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap}
+.ticket{position:absolute;left:12px;right:12px;bottom:12px;z-index:7;max-width:420px;margin-left:auto;background:var(--surface);border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--line);overflow:hidden}
+.ticket .th{display:flex;align-items:flex-start;gap:12px;padding:14px 14px 8px}
+.ticket .th > div{flex:1;min-width:0}
+.ticket h3{font-size:17px;margin-top:1px}
+.ticket .rows{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;padding:4px 14px 12px;font-size:13.5px}
+.ticket .rows dt{color:var(--muted)}
+.ticket .rows dd{margin:0;font-weight:500;min-width:0;overflow-wrap:anywhere}
+.ticket .tb{display:flex;gap:8px;padding:10px 14px 14px;border-top:1px solid var(--line)}
+.ticket .tb .btn{flex:1;justify-content:center}
+.planempty{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--muted)}
+.planempty h3{color:var(--ink);margin-bottom:6px}
+.planempty .btn{margin-top:14px}
+
+/* Tabelle */
+.tablewrap{padding:0 16px 40px}
+.tfilters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tfilters select{height:36px;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:0 10px;font-size:13.5px}
+.tfilters .count{margin-left:auto;font-size:13px;color:var(--muted)}
+.tscroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:780px;font-size:13.5px}
+th{text-align:left;font-weight:600;font-size:12px;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--surface);position:sticky;top:0}
+th button{display:inline-flex;align-items:center;gap:4px;font-weight:600}
+th button[data-dir]::after{content:attr(data-dir);color:var(--petrol-text)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+td.wrap{white-space:normal;min-width:160px}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--surface-2)}
+tbody tr:last-child td{border-bottom:0}
+
+/* Sheets */
+#overlay{position:fixed;inset:0;z-index:50;display:none}
+#overlay.open{display:block}
+.scrim{position:absolute;inset:0;background:var(--scrim);animation:fade .15s}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:8px max(18px,env(safe-area-inset-right,0px)) max(22px,env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));animation:up .2s ease-out}
+.sheet .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:4px auto 12px}
+.sheet h2{font-size:19px;margin-bottom:4px}
+.sheet .sub{color:var(--muted);font-size:13.5px;margin-bottom:14px}
+.sheet h3{font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--petrol-text);margin:20px 0 8px;font-family:var(--f-ui)}
+@media (min-width:820px){
+  .sheet{left:50%;top:50%;bottom:auto;right:auto;transform:translate(-50%,-50%);width:min(520px,92vw);max-height:84vh;border-radius:18px;padding:18px 22px 22px;animation:pop .18s ease-out}
+  .sheet .grab{display:none}
+}
+.rowlist{display:grid;gap:6px}
+.row{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;text-align:left;width:100%;background:var(--surface)}
+.row:hover{border-color:var(--muted)}
+.row[aria-checked="true"]{border-color:var(--petrol);background:var(--petrol-soft)}
+.row .rt{flex:1;min-width:0}
+.row .r1{font-weight:600}
+.row .r2{font-size:13px;color:var(--muted)}
+.row .check{width:20px;height:20px;color:var(--petrol-text)}
+.projicon{width:36px;height:36px;border-radius:10px;background:var(--petrol-soft);color:var(--petrol-text);display:grid;place-items:center;font-family:var(--f-head);font-weight:800;font-size:14px}
+.note{font-size:13px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:10px 12px}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px}
+
+#toast{position:fixed;left:50%;top:calc(76px + env(safe-area-inset-top,0px));transform:translateX(-50%) translateY(-12px);z-index:60;background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:12px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.installbar{display:flex;align-items:center;gap:10px;padding:10px max(14px,env(safe-area-inset-left,0px)) 10px max(14px,env(safe-area-inset-right,0px));background:var(--petrol-soft);border-top:1px solid var(--line);font-size:13.5px}
+.installbar .it{flex:1;min-width:0}
+.installbar b{font-family:var(--f-head)}
+
+@keyframes fade{from{opacity:0}}
+@keyframes up{from{transform:translateY(30px);opacity:.4}}
+@keyframes pop{from{transform:translate(-50%,-46%);opacity:0}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="topbar">
+    <svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><rect x="4" y="4" width="92" height="92" rx="22" fill="#0E6E5C"/><g transform="rotate(-7 34 50)"><rect x="30" y="17" width="36" height="66" rx="5" fill="#fff"/><circle cx="59" cy="50" r="3.6" fill="#0E6E5C"/></g></svg>
+    <button class="projbtn" id="projBtn" data-act="sheetProjects" aria-label="Projekt wechseln"></button>
+    <div class="spacer"></div>
+    <span class="offline" id="offline" hidden>Offline</span>
+    <button class="userpill" id="userBtn" data-act="sheetUsers" aria-label="Nutzer wechseln"></button>
+  </header>
+  <main id="main"></main>
+  <div id="bottom"></div>
+</div>
+<div id="overlay"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="planFile" accept="application/pdf,image/*" multiple hidden>
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+
+<script>
+'use strict';
+/* ---------- Konstanten ---------- */
+const STATUS={geplant:'Geplant',pruefung:'In Prüfung',offen:'Offen',erledigt:'Erledigt'};
+const STATUS_ORDER=['geplant','pruefung','offen','erledigt'];
+const TYPES=['Drehflügeltür 1-flg.','Drehflügeltür 2-flg.','Rohrrahmentür','Schiebetür','Pendeltür','Tor'];
+const FIRE=['ohne','T30','T30-RS','T60','T90','RS'];
+const FIELDS=[
+  {k:'nr',l:'Tür-Nr.'},
+  {k:'name',l:'Bezeichnung'},
+  {k:'floor',l:'Geschoss'},
+  {k:'room',l:'Raum / Standort'},
+  {k:'type',l:'Türtyp',opts:TYPES},
+  {k:'fire',l:'Brandschutzklasse',opts:FIRE},
+  {k:'maker',l:'Hersteller'},
+  {k:'width',l:'Breite (mm)',t:'number'},
+  {k:'height',l:'Höhe (mm)',t:'number'},
+  {k:'year',l:'Baujahr',t:'number'},
+  {k:'hardware',l:'Beschlag / Schließung'},
+  {k:'interval',l:'Wartungsintervall (Monate)',t:'number'},
+  {k:'lastService',l:'Letzte Wartung',t:'date'},
+];
+const ICON={
+  list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>',
+  plan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 4h18v16H3z"/><path d="M3 11h7m4 0h7M12 4v4m0 4v8"/></svg>',
+  table:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14.5h18M9 9v11"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>',
+  wrench:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M14.5 6.5a4 4 0 0 0 5 5L11 20a2.1 2.1 0 0 1-3-3l8.5-8.5"/><path d="M14.5 6.5 17 4l3 3-2.5 2.5"/></svg>',
+  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  chev:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+  check:'<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>',
+  fit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
+  dots:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>',
+  upload:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 20h16"/></svg>',
+};
+const PIN_COLORS={geplant:'#6B7570',pruefung:'#C98A12',offen:'#FF7A50',erledigt:'#0E6E5C'};
+
+/* ---------- Hilfsfunktionen ---------- */
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const daysAgo=d=>new Date(Date.now()-d*864e5).toISOString();
+const dateOnly=iso=>iso?iso.slice(0,10):'';
+const fmtDate=s=>{if(!s)return '';const d=new Date(s.length===10?s+'T12:00:00':s);return isNaN(d)?s:d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});};
+const fmtDateTime=s=>{const d=new Date(s);return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})+', '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';};
+const initials=n=>n.split(/\s+/).map(p=>p[0]).join('').slice(0,2).toUpperCase();
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+
+function nextService(d){
+  if(!d.lastService||!d.interval)return null;
+  const t=new Date(d.lastService+'T12:00:00');t.setMonth(t.getMonth()+Number(d.interval));return t;
+}
+function serviceState(d){
+  const n=nextService(d);if(!n)return null;
+  const diff=(n-Date.now())/864e5;
+  return diff<0?'due':diff<=30?'soon':'ok';
+}
+
+/* ---------- Demo-Grundriss (SVG) ---------- */
+// Maßstab: 1 px = 2 cm (M 1:100 auf dem Plan). Räume oben/unten am Flur, Türen in der Flurwand.
+function demoPlan(title,top,bottom){
+  const W=1200,H=800,x0=60,x1=1140,yT=60,yC1=360,yC2=440,yB=740;
+  let s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#fff"/>`;
+  s+=`<defs><pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#eef0ee" stroke-width="1"/></pattern></defs><rect x="${x0}" y="${yT}" width="${x1-x0}" height="${yB-yT}" fill="url(#g)"/>`;
+  s+=`<rect x="${x0}" y="${yC1}" width="${x1-x0}" height="${yC2-yC1}" fill="#f4f6f5"/>`;
+  const doors=[];
+  const row=(names,yA,yZ,wallY,dir)=>{
+    const w=(x1-x0)/names.length;
+    names.forEach((n,i)=>{
+      const a=x0+i*w,cx=a+w/2;
+      if(i>0)s+=`<line x1="${a}" y1="${yA}" x2="${a}" y2="${yZ}" stroke="#1E2422" stroke-width="6"/>`;
+      const area=((w*0.02)*((yZ-yA)*0.02)).toFixed(1).replace('.',',');
+      s+=`<text x="${cx}" y="${(yA+yZ)/2-4}" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="19" font-weight="700" fill="#1E2422">${esc(n)}</text>`;
+      s+=`<text x="${cx}" y="${(yA+yZ)/2+20}" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="15" fill="#6B7570">${area} m²</text>`;
+      doors.push({x:cx/W*100,y:wallY/H*100,room:n});
+    });
+  };
+  row(top,yT,yC1,yC1,-1);row(bottom,yC2,yB,yC2,1);
+  s+=`<line x1="${x0}" y1="${yC1}" x2="${x1}" y2="${yC1}" stroke="#1E2422" stroke-width="6"/><line x1="${x0}" y1="${yC2}" x2="${x1}" y2="${yC2}" stroke="#1E2422" stroke-width="6"/>`;
+  s+=`<rect x="${x0}" y="${yT}" width="${x1-x0}" height="${yB-yT}" fill="none" stroke="#1E2422" stroke-width="12"/>`;
+  // Türöffnungen mit Aufschlag
+  const gap=(cx,wy,dir)=>{
+    s+=`<rect x="${cx-26}" y="${wy-8}" width="52" height="16" fill="#fff"/>`;
+    const ly=wy+dir*50;
+    s+=`<line x1="${cx-25}" y1="${wy}" x2="${cx-25}" y2="${ly}" stroke="#1E2422" stroke-width="3"/>`;
+    s+=`<path d="M${cx+25} ${wy} A50 50 0 0 ${dir<0?0:1} ${cx-25} ${ly}" fill="none" stroke="#1E2422" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  };
+  top.forEach((n,i)=>{const w=(x1-x0)/top.length;gap(x0+i*w+w/2,yC1,-1)});
+  bottom.forEach((n,i)=>{const w=(x1-x0)/bottom.length;gap(x0+i*w+w/2,yC2,1)});
+  // Eingang links am Flurende
+  s+=`<rect x="${x0-8}" y="${(yC1+yC2)/2-30}" width="16" height="60" fill="#fff"/><line x1="${x0}" y1="${(yC1+yC2)/2-30}" x2="${x0+56}" y2="${(yC1+yC2)/2-30}" stroke="#1E2422" stroke-width="3"/><line x1="${x0}" y1="${(yC1+yC2)/2+30}" x2="${x0+56}" y2="${(yC1+yC2)/2+30}" stroke="#1E2422" stroke-width="3"/>`;
+  doors.unshift({x:x0/W*100,y:(yC1+yC2)/2/H*100,room:'Flur / Eingang'});
+  s+=`<text x="${(x0+x1)/2}" y="${(yC1+yC2)/2+6}" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="16" letter-spacing="3" fill="#9aa39f">FLUR</text>`;
+  // Plankopf
+  s+=`<rect x="${x1-300}" y="${yB+12}" width="300" height="40" fill="#fff" stroke="#1E2422" stroke-width="1.5"/><text x="${x1-288}" y="${yB+38}" font-family="Arial,Helvetica,sans-serif" font-size="15" font-weight="700" fill="#1E2422">${esc(title)}</text><text x="${x1-12}" y="${yB+38}" text-anchor="end" font-family="Arial,Helvetica,sans-serif" font-size="14" fill="#6B7570">M 1:100</text>`;
+  s+=`<g transform="translate(${x0+20},${yB+32})"><path d="M0 0l10-24 10 24-10-6z" fill="#1E2422"/><text x="10" y="18" text-anchor="middle" font-family="Arial" font-size="12" fill="#1E2422">N</text></g>`;
+  s+='</svg>';
+  return {src:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s),w:W,h:H,doors};
+}
+
+/* ---------- Demo-Daten ---------- */
+function seed(){
+  const users=[{id:'u1',name:'Thomas Huber',role:'Projektleitung'},{id:'u2',name:'Mara Nowak',role:'Technikerin'},{id:'u3',name:'Anna Vogel',role:'Planerin'}];
+  const p1={id:'p1',name:'Sägewerk Köll',place:'Bürogebäude · Grafing'};
+  const p2={id:'p2',name:'Wohnanlage Rosenweg',place:'Haus A · Rosenheim'};
+  const eg=demoPlan('Grundriss EG',['Büro 0.01','Büro 0.02','Besprechung 0.03','Teeküche 0.04'],['Treppenhaus TH1','Technik 0.05','Archiv 0.06','WC 0.07','Lager 0.08']);
+  const og=demoPlan('Grundriss 1. OG',['Büro 1.01','Büro 1.02','Büro 1.03'],['Treppenhaus TH1','Server 1.04','Kopierraum 1.05','WC 1.06']);
+  const kg=demoPlan('Haus A · Kellergeschoss',['Keller 1','Keller 2','Keller 3','Keller 4'],['Treppenhaus','Heizung','Fahrradraum']);
+  const plans=[
+    {id:'pl1',projectId:'p1',name:'EG',src:eg.src,w:eg.w,h:eg.h,created:daysAgo(40)},
+    {id:'pl2',projectId:'p1',name:'1. OG',src:og.src,w:og.w,h:og.h,created:daysAgo(40)},
+    {id:'pl3',projectId:'p2',name:'KG Haus A',src:kg.src,w:kg.w,h:kg.h,created:daysAgo(20)},
+  ];
+  const H=(d,user,kind,text)=>({ts:daysAgo(d),user,kind,text});
+  const base=(o)=>Object.assign({id:uid(),maker:'',width:'',height:'',year:'',hardware:'',interval:12,lastService:'',status:'geplant',planId:null,x:null,y:null},o);
+  const at=(plan,pos)=>({planId:plan,x:pos.x,y:pos.y});
+  const doors=[
+    base({projectId:'p1',nr:'T-EG-00',name:'Haupteingang',floor:'EG',room:'Flur / Eingang',type:'Drehflügeltür 2-flg.',fire:'ohne',maker:'Hörmann',width:1800,height:2250,year:2019,hardware:'Panikschloss, E-Öffner',interval:12,lastService:dateOnly(daysAgo(120)),status:'erledigt',...at('pl1',eg.doors[0]),history:[H(40,'Anna Vogel','create','Tür angelegt über Plan „EG“'),H(120,'Mara Nowak','service','Wartung durchgeführt')]}),
+    base({projectId:'p1',nr:'T-EG-01',name:'Bürotür',floor:'EG',room:'Büro 0.01',type:'Drehflügeltür 1-flg.',fire:'ohne',maker:'Schörghuber',width:1010,height:2135,year:2019,hardware:'Buntbart, Drückergarnitur',interval:24,lastService:dateOnly(daysAgo(300)),status:'erledigt',...at('pl1',eg.doors[1]),history:[H(40,'Anna Vogel','create','Tür angelegt über Plan „EG“')]}),
+    base({projectId:'p1',nr:'T-EG-02',name:'Bürotür',floor:'EG',room:'Büro 0.02',type:'Drehflügeltür 1-flg.',fire:'ohne',maker:'Schörghuber',width:1010,height:2135,year:2019,interval:24,status:'geplant',...at('pl1',eg.doors[2]),history:[H(40,'Anna Vogel','create','Tür angelegt über Plan „EG“')]}),
+    base({projectId:'p1',nr:'T-EG-03',name:'Besprechungsraum',floor:'EG',room:'Besprechung 0.03',type:'Drehflügeltür 1-flg.',fire:'T30',maker:'Hörmann',width:1135,height:2135,year:2019,hardware:'Obentürschließer TS 4000',interval:12,lastService:dateOnly(daysAgo(390)),status:'pruefung',...at('pl1',eg.doors[3]),history:[H(40,'Anna Vogel','create','Tür angelegt über Plan „EG“'),H(6,'Thomas Huber','status','Status geändert: „Geplant“ → „In Prüfung“')]}),
+    base({projectId:'p1',nr:'T-EG-04',name:'Teeküche',floor:'EG',room:'Teeküche 0.04',type:'Schiebetür',fire:'ohne',width:1000,height:2100,year:2021,interval:24,status:'erledigt',...at('pl1',eg.doors[4]),history:[H(40,'Anna Vogel','create','Tür angelegt über Plan „EG“')]}),
+    base({projectId:'p1',nr:'T-EG-05',name:'Treppenhaustür',floor:'EG',room:'Treppenhaus TH1',type:'Rohrrahmentür',fire:'T30-RS',maker:'Hörmann',width:1250,height:2250,year:2019,hardware:'Obentürschließer, Feststellanlage',interval:12,lastService:dateOnly(daysAgo(200)),status:'offen',...at('pl1',eg.doors[5]),history:[H(40,'Anna Vogel','create','Tür angelegt über Plan „EG“'),H(12,'Thomas Huber','change','Brandschutzklasse geändert: „T30“ → „T30-RS“'),H(3,'Mara Nowak','note','Obentürschließer schließt nicht selbstständig. Feststellanlage prüfen lassen.'),H(3,'Mara Nowak','status','Status geändert: „In Prüfung“ → „Offen“')]}),
+    base({projectId:'p1',nr:'T-EG-06',name:'Technikraum',floor:'EG',room:'Technik 0.05',type:'Drehflügeltür 1-flg.',fire:'T90',maker:'Teckentrup',width:1010,height:2135,year:2019,hardware:'Profilzylinder, Obentürschließer',interval:12,lastService:dateOnly(daysAgo(345)),status:'pruefung',...at('pl1',eg.doors[6]),history:[H(40,'Anna Vogel','create','Tür angelegt über Plan „EG“')]}),
+    base({projectId:'p1',nr:'T-EG-07',name:'Archiv',floor:'EG',room:'Archiv 0.06',type:'Drehflügeltür 1-flg.',fire:'T30',maker:'Teckentrup',width:1010,height:2135,year:2019,interval:12,lastService:dateOnly(daysAgo(60)),status:'erledigt',...at('pl1',eg.doors[7]),history:[H(40,'Anna Vogel','create','Tür angelegt über Plan „EG“'),H(60,'Mara Nowak','service','Wartung durchgeführt')]}),
+    base({projectId:'p1',nr:'T-EG-08',name:'WC',floor:'EG',room:'WC 0.07',type:'Drehflügeltür 1-flg.',fire:'ohne',width:885,height:2135,year:2019,interval:24,status:'erledigt',...at('pl1',eg.doors[8]),history:[H(40,'Anna Vogel','create','Tür angelegt über Plan „EG“')]}),
+    base({projectId:'p1',nr:'T-EG-09',name:'Lager',floor:'EG',room:'Lager 0.08',type:'Drehflügeltür 1-flg.',fire:'T30',width:1010,height:2135,interval:12,status:'geplant',history:[H(2,'Anna Vogel','create','Tür angelegt aus Türliste')]}),
+    base({projectId:'p1',nr:'T-OG-01',name:'Bürotür',floor:'1. OG',room:'Büro 1.01',type:'Drehflügeltür 1-flg.',fire:'ohne',width:1010,height:2135,year:2019,interval:24,status:'erledigt',...at('pl2',og.doors[1]),history:[H(30,'Anna Vogel','create','Tür angelegt über Plan „1. OG“')]}),
+    base({projectId:'p1',nr:'T-OG-04',name:'Treppenhaustür',floor:'1. OG',room:'Treppenhaus TH1',type:'Rohrrahmentür',fire:'T30-RS',maker:'Hörmann',width:1250,height:2250,year:2019,interval:12,lastService:dateOnly(daysAgo(380)),status:'pruefung',...at('pl2',og.doors[4]),history:[H(30,'Anna Vogel','create','Tür angelegt über Plan „1. OG“')]}),
+    base({projectId:'p1',nr:'T-OG-05',name:'Serverraum',floor:'1. OG',room:'Server 1.04',type:'Drehflügeltür 1-flg.',fire:'T90',maker:'Teckentrup',width:1010,height:2135,year:2019,hardware:'Zutrittskontrolle',interval:6,lastService:dateOnly(daysAgo(165)),status:'erledigt',...at('pl2',og.doors[5]),history:[H(30,'Anna Vogel','create','Tür angelegt über Plan „1. OG“')]}),
+    base({projectId:'p2',nr:'T-KG-01',name:'Kellerabteil 1',floor:'KG',room:'Keller 1',type:'Drehflügeltür 1-flg.',fire:'ohne',interval:24,status:'geplant',...at('pl3',kg.doors[1]),history:[H(20,'Thomas Huber','create','Tür angelegt über Plan „KG Haus A“')]}),
+    base({projectId:'p2',nr:'T-KG-05',name:'Treppenhaus KG',floor:'KG',room:'Treppenhaus',type:'Rohrrahmentür',fire:'T30-RS',interval:12,status:'offen',...at('pl3',kg.doors[5]),history:[H(20,'Thomas Huber','create','Tür angelegt über Plan „KG Haus A“'),H(5,'Mara Nowak','note','Dichtung unten beschädigt, Rauchschutz nicht gewährleistet.')]}),
+    base({projectId:'p2',nr:'T-KG-06',name:'Heizraum',floor:'KG',room:'Heizung',type:'Drehflügeltür 1-flg.',fire:'T90',maker:'Hörmann',interval:12,lastService:dateOnly(daysAgo(100)),status:'erledigt',...at('pl3',kg.doors[6]),history:[H(20,'Thomas Huber','create','Tür angelegt über Plan „KG Haus A“')]}),
+  ];
+  doors.forEach(d=>d.history.sort((a,b)=>a.ts<b.ts?1:-1));
+  return {v:1,users,projects:[p1,p2],plans,doors,currentProjectId:'p1',currentUserId:'u1'};
+}
+
+/* ---------- Speicher (IndexedDB, Fallback: nur im Arbeitsspeicher) ---------- */
+const store={
+  db:null,
+  async open(){
+    if(!('indexedDB' in window))return null;
+    return new Promise(res=>{
+      try{
+        const r=indexedDB.open('doorku',1);
+        r.onupgradeneeded=()=>r.result.createObjectStore('kv');
+        r.onsuccess=()=>{this.db=r.result;res(this.db)};
+        r.onerror=()=>res(null);r.onblocked=()=>res(null);
+      }catch(e){res(null)}
+    });
+  },
+  async get(k){
+    if(!this.db)return null;
+    return new Promise(res=>{try{const r=this.db.transaction('kv').objectStore('kv').get(k);r.onsuccess=()=>res(r.result??null);r.onerror=()=>res(null)}catch(e){res(null)}});
+  },
+  async set(k,v){
+    if(!this.db)return false;
+    return new Promise(res=>{try{const t=this.db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>res(true);t.onerror=()=>res(false)}catch(e){res(false)}});
+  }
+};
+let S=null;
+let saveTimer=null;
+function save(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>store.set('state',S),250)}
+
+/* ---------- UI-Zustand ---------- */
+const ui={
+  tab:lsGet('dk.tab')||'list',     // list | plan | table  (Handy)
+  pane:lsGet('dk.pane')||'detail', // detail | plan | table (Tablet, rechts)
+  doorId:null, phoneDetail:false, editing:false,
+  q:'', status:'alle',
+  planId:null, zoom:1, ticketId:null, placing:null, pendingPos:null,
+  t:{q:'',status:'',floor:'',fire:'',sort:'nr',dir:1},
+  confirm:null,
+};
+const wideMQ=matchMedia('(min-width: 820px)');
+const isWide=()=>wideMQ.matches;
+
+const proj=()=>S.projects.find(p=>p.id===S.currentProjectId)||S.projects[0];
+const me=()=>S.users.find(u=>u.id===S.currentUserId)||S.users[0];
+const doorsOf=()=>S.doors.filter(d=>d.projectId===proj().id);
+const plansOf=()=>S.plans.filter(p=>p.projectId===proj().id);
+const door=id=>S.doors.find(d=>d.id===id);
+const plan=id=>S.plans.find(p=>p.id===id);
+function log(d,kind,text){d.history.unshift({ts:new Date().toISOString(),user:me().name,kind,text});}
+function byNr(a,b){return String(a.nr).localeCompare(String(b.nr),'de',{numeric:true})}
+
+/* ---------- Rendering ---------- */
+function render(){
+  renderHeader();
+  const main=$('#main');
+  if(isWide()){
+    main.innerHTML=`<div class="split"><aside>${listView()}</aside><section><div class="segbar"><div class="seg" role="group" aria-label="Ansicht">${['detail','plan','table'].map(k=>`<button data-act="pane" data-k="${k}" aria-pressed="${ui.pane===k}">${{detail:'Türdetail',plan:'Plan',table:'Tabelle'}[k]}</button>`).join('')}</div></div><div class="pane" id="pane">${ui.pane==='detail'?`<div class="view">${detailView()}</div>`:ui.pane==='plan'?planView():`<div class="view">${tableView()}</div>`}</div></section></div>`;
+  }else{
+    let inner;
+    if(ui.phoneDetail&&door(ui.doorId))inner=`<div class="view">${detailView()}</div>`;
+    else if(ui.tab==='plan')inner=planView();
+    else if(ui.tab==='table')inner=`<div class="view">${tableView()}</div>`;
+    else inner=listView();
+    main.innerHTML=inner;
+  }
+  renderBottom();
+  afterRender();
+}
+function renderHeader(){
+  const p=proj();
+  $('#projBtn').innerHTML=`<span class="pn"><span>${esc(p.name)}</span>${ICON.chev}</span><span class="ps">${esc(p.place||'')}</span>`;
+  const u=me();
+  $('#userBtn').innerHTML=`<span class="avatar">${esc(initials(u.name))}</span><span class="un">${esc(u.name)}</span>`;
+}
+function renderBottom(){
+  let h='';
+  if(installHint())h+=installHint();
+  if(!isWide()){
+    h+=`<nav class="bottomnav" aria-label="Hauptnavigation">${[['list','Türliste'],['plan','Plan'],['table','Tabelle']].map(([k,l])=>`<button class="navbtn" data-act="tab" data-k="${k}" ${ui.tab===k&&!ui.phoneDetail?'aria-current="page"':''}><span class="ni">${ICON[k]}</span>${l}</button>`).join('')}</nav>`;
+  }
+  $('#bottom').innerHTML=h;
+}
+
+/* Türliste */
+function filteredDoors(){
+  const q=ui.q.trim().toLowerCase();
+  return doorsOf().filter(d=>(ui.status==='alle'||d.status===ui.status)&&(!q||[d.nr,d.name,d.room,d.floor,d.type,d.fire,d.maker].join(' ').toLowerCase().includes(q))).sort(byNr);
+}
+function listView(){
+  return `<div class="view" id="listScroll"><div class="toolbar">
+    <label class="search">${ICON.search}<input id="q" type="search" placeholder="Tür-Nr., Raum, Typ, Brandschutz …" value="${esc(ui.q)}" autocomplete="off" aria-label="Türen durchsuchen"></label>
+    <div class="chips" id="statusChips">${statusChips()}</div>
+  </div><div class="cards" id="cards">${cardsHtml()}</div></div>
+  <button class="fab" data-act="newDoorList" aria-label="Neue Tür anlegen">${ICON.plus}<span>Tür</span></button>`;
+}
+function statusChips(){
+  const all=doorsOf();
+  return ['alle',...STATUS_ORDER].map(k=>{
+    const n=k==='alle'?all.length:all.filter(d=>d.status===k).length;
+    return `<button class="chip" data-act="status" data-k="${k}" aria-pressed="${ui.status===k}">${k==='alle'?'Alle':STATUS[k]} <span class="cnt num">${n}</span></button>`;
+  }).join('');
+}
+function badgesHtml(d){
+  const b=[];
+  if(d.fire&&d.fire!=='ohne')b.push(`<span class="badge fire">${esc(d.fire)}</span>`);
+  const s=serviceState(d);
+  if(s==='due')b.push('<span class="badge due">Wartung fällig</span>');
+  else if(s==='soon')b.push('<span class="badge soon">Wartung bald fällig</span>');
+  if(!d.planId)b.push('<span class="badge nopin">nicht im Plan</span>');
+  return b.length?`<div class="badges">${b.join('')}</div>`:'';
+}
+function cardsHtml(){
+  const list=filteredDoors();
+  if(!list.length){
+    return doorsOf().length?`<div class="empty"><h3>Keine Treffer</h3>Passe Suche oder Statusfilter an.</div>`
+      :`<div class="empty"><h3>Noch keine Türen im Projekt</h3>Lege eine Tür über „+ Tür“ an oder platziere sie direkt im Plan.</div>`;
+  }
+  return list.map(d=>`<button class="card" data-act="open" data-id="${d.id}" ${isWide()&&ui.doorId===d.id?'aria-current="true"':''}>
+    <div class="card-top"><span class="nr">${esc(d.nr)}</span><span class="tag s-${d.status}">${STATUS[d.status]}</span></div>
+    <div class="card-title">${esc(d.name||'Ohne Bezeichnung')}</div>
+    <div class="card-meta">${esc([d.floor,d.room,d.type].filter(Boolean).join(' · '))}</div>
+    ${badgesHtml(d)}</button>`).join('');
+}
+function refreshList(){const c=$('#cards');if(c)c.innerHTML=cardsHtml();const sc=$('#statusChips');if(sc)sc.innerHTML=statusChips();}
+
+/* Türdetail */
+function detailView(){
+  const d=door(ui.doorId);
+  if(!d||d.projectId!==proj().id){
+    return `<div class="empty" style="padding-top:80px"><h3>Keine Tür ausgewählt</h3>Wähle links eine Tür aus der Liste oder tippe im Plan auf einen Pin.</div>`;
+  }
+  const p=plan(d.planId);
+  const head=`<div class="dhead">
+    ${isWide()?'<span></span>':`<button class="iconbtn" data-act="back" aria-label="Zurück">${ICON.back}</button>`}
+    <div style="min-width:0"><div class="nr">${esc(d.nr)}</div><h2>${esc(d.name||'Ohne Bezeichnung')}</h2><div class="meta">${esc([d.floor,d.room].filter(Boolean).join(' · '))}${p?` · Plan „${esc(p.name)}“`:''}</div></div>
+    <button class="tagbtn" data-act="cycle" title="Status weiterschalten"><span class="tag s-${d.status}">${STATUS[d.status]}</span><span class="hint">Tippen zum Ändern</span></button>
+  </div>`;
+  const actions=ui.editing?'':`<div class="actions">
+    <button class="btn primary" data-act="edit">${ICON.edit}Parameter bearbeiten</button>
+    <button class="btn" data-act="service">${ICON.wrench}Wartung erfassen</button>
+    ${p?`<button class="btn" data-act="showOnPlan">${ICON.pin}Im Plan zeigen</button>`:`<button class="btn" data-act="placeExisting">${ICON.pin}Im Plan platzieren</button>`}
+  </div>`;
+  let params;
+  if(ui.editing){
+    params=`<form class="block" id="editForm" autocomplete="off"><h3>Parameter bearbeiten</h3><p class="editing-note">Geänderte Felder werden mit Datum, Uhrzeit und „${esc(me().name)}“ in der Historie festgehalten.</p>
+      <div class="form">${FIELDS.map(f=>fieldHtml(f,d[f.k],'f_')).join('')}</div>
+      <div class="formbar"><button type="button" class="btn ghost" data-act="cancelEdit">Abbrechen</button><button type="submit" class="btn primary">Änderungen speichern</button></div></form>`;
+  }else{
+    const ns=nextService(d),ss=serviceState(d);
+    params=`<div class="block"><h3>Parameter</h3><dl class="params">${FIELDS.map(f=>{
+      let v=d[f.k];
+      if(f.k==='lastService')v=fmtDate(v);
+      return `<div class="param"><dt>${esc(f.l)}</dt><dd class="${v===''||v==null?'empty-val':''} ${f.t==='number'?'num':''}">${v===''||v==null?'nicht erfasst':esc(v)}</dd></div>`;
+    }).join('')}<div class="param"><dt>Nächste Wartung</dt><dd class="num">${ns?`${fmtDate(ns.toISOString())}${ss==='due'?' <span class="badge due">fällig</span>':ss==='soon'?' <span class="badge soon">bald</span>':''}`:'<span class="empty-val">offen</span>'}</dd></div></dl></div>`;
+  }
+  const hist=`<div class="block"><h3>Historie</h3>
+    <form class="composer" id="noteForm"><input id="noteInput" placeholder="Notiz oder Mangel festhalten …" aria-label="Notiz"><button class="btn primary" type="submit">Hinzufügen</button></form>
+    <ol class="timeline">${d.history.map(h=>`<li class="tl"><span class="dot ${h.kind}"></span><div><div class="tt">${h.kind==='change'?'<span class="kind">Änderung · </span>':h.kind==='note'?'<span class="kind">Notiz · </span>':h.kind==='service'?'<span class="kind">Wartung · </span>':''}${esc(h.text)}</div><div class="tm">${esc(fmtDateTime(h.ts))} · ${esc(h.user)}</div></div></li>`).join('')}</ol>
+  </div>
+  <div class="block">${ui.confirm==='delete'?`<div class="note">Tür ${esc(d.nr)} mit ihrer Historie endgültig löschen?<div class="btnrow" style="margin-top:10px"><button class="btn" data-act="cancelDelete">Behalten</button><button class="btn accent" data-act="doDelete">Endgültig löschen</button></div></div>`:`<button class="btn ghost danger" data-act="askDelete">Tür löschen</button>`}</div>`;
+  return `<div class="detail">${head}${actions}${params}${hist}</div>`;
+}
+function fieldHtml(f,val,prefix){
+  const id=prefix+f.k,v=val??'';
+  if(f.opts){
+    const opts=f.opts.includes(v)||v===''?f.opts:[v,...f.opts];
+    return `<div class="field"><label for="${id}">${esc(f.l)}</label><select id="${id}" name="${f.k}">${opts.map(o=>`<option ${o===v?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`;
+  }
+  return `<div class="field"><label for="${id}">${esc(f.l)}</label><input id="${id}" name="${f.k}" type="${f.t||'text'}" ${f.t==='number'?'inputmode="numeric"':''} value="${esc(v)}"></div>`;
+}
+
+/* Plan */
+function currentPlan(){
+  const ps=plansOf();
+  if(!ps.find(p=>p.id===ui.planId))ui.planId=ps[0]?.id||null;
+  return plan(ui.planId);
+}
+function planView(){
+  const ps=plansOf(),p=currentPlan();
+  const chips=ps.map(x=>`<button class="chip" data-act="plan" data-id="${x.id}" aria-pressed="${p&&x.id===p.id}">${esc(x.name)} <span class="cnt num">${S.doors.filter(d=>d.planId===x.id).length}</span></button>`).join('')+`<button class="chip add" data-act="upload">${ICON.plus.replace('<svg','<svg width="14" height="14"')} PDF / Bild hochladen</button>`;
+  const bar=`<div class="planbar"><div class="chips">${chips}</div>${p?`<button class="iconbtn" data-act="planMenu" aria-label="Plan umbenennen oder löschen">${ICON.dots}</button>`:''}</div>`;
+  if(!p){
+    return `<div class="planview">${bar}<div class="stage"><div class="planempty"><div><h3>Noch kein Plan im Projekt</h3>Lade einen Grundriss oder eine Türenübersicht als PDF oder Bild hoch.<br>Jede PDF-Seite wird ein eigener Plan, z. B. pro Geschoss oder Gebäude.<br><button class="btn primary" data-act="upload">${ICON.upload}Plan hochladen</button></div></div></div></div>`;
+  }
+  const pins=S.doors.filter(d=>d.planId===p.id&&d.x!=null).sort((a,b)=>a.y-b.y).map(d=>pinHtml(d)).join('');
+  const ghost=ui.pendingPos&&ui.pendingPos.planId===p.id?`<div class="pin ghost" style="left:${ui.pendingPos.x}%;top:${ui.pendingPos.y}%">${pinSvg('#FF7A50')}</div>`:'';
+  const t=ui.ticketId&&door(ui.ticketId)?.planId===p.id?ticketHtml(door(ui.ticketId)):'';
+  const placingDoor=ui.placing?.doorId?door(ui.placing.doorId):null;
+  const banner=ui.placing?`<div class="banner"><span>${placingDoor?`${esc(placingDoor.nr)}: Tippe auf die Position im Plan`:'Tippe auf die Stelle der neuen Tür'}</span><button data-act="cancelPlacing">Abbrechen</button></div>`:'';
+  return `<div class="planview">${bar}<div class="stage">
+    <div class="vp" id="vp"><div class="canvas ${ui.placing?'placing':''}" id="canvas" style="width:calc(${ui.zoom*100}% - 32px)"><img src="${p.src}" alt="Plan ${esc(p.name)}" draggable="false">${pins}${ghost}</div></div>
+    <div class="zoom"><button data-act="zoomIn" aria-label="Vergrößern">+</button><button data-act="zoomOut" aria-label="Verkleinern">−</button><button data-act="zoomFit" aria-label="Plan einpassen">${ICON.fit}</button></div>
+    ${banner}${t}
+    ${ui.placing||t?'':`<button class="fab" data-act="startPlacing" aria-label="Neue Tür im Plan platzieren">${ICON.plus}<span>Tür setzen</span></button>`}
+  </div></div>`;
+}
+function pinSvg(color){
+  return `<svg viewBox="0 0 30 38" aria-hidden="true"><path d="M15 37c-1-3-3-5-5.5-6.5H5a4 4 0 0 1-4-4V5a4 4 0 0 1 4-4h20a4 4 0 0 1 4 4v21.5a4 4 0 0 1-4 4h-4.5C18 32 16 34 15 37z" fill="${color}"/><g transform="rotate(-7 13 16)"><rect x="10" y="6" width="10" height="19" rx="1.6" fill="#fff"/><circle cx="17.6" cy="15.6" r="1.2" fill="${color}"/></g></svg>`;
+}
+function pinHtml(d){
+  return `<button class="pin" data-act="pin" data-id="${d.id}" style="left:${d.x}%;top:${d.y}%" ${ui.ticketId===d.id?'aria-current="true"':''} aria-label="${esc(d.nr)} ${esc(d.name)}">${pinSvg(PIN_COLORS[d.status])}<span class="pl">${esc(d.nr)}</span></button>`;
+}
+function ticketHtml(d){
+  const ns=nextService(d),ss=serviceState(d);
+  return `<div class="ticket" role="dialog" aria-label="Tür ${esc(d.nr)}">
+    <div class="th"><div><div class="nr">${esc(d.nr)}</div><h3>${esc(d.name||'Ohne Bezeichnung')}</h3></div><span class="tag s-${d.status}">${STATUS[d.status]}</span><button class="iconbtn" data-act="closeTicket" aria-label="Schließen">${ICON.close}</button></div>
+    <dl class="rows"><dt>Raum</dt><dd>${esc(d.room||'–')}</dd><dt>Türtyp</dt><dd>${esc(d.type||'–')}</dd><dt>Brandschutz</dt><dd>${esc(d.fire||'–')}</dd><dt>Nächste Wartung</dt><dd class="num">${ns?fmtDate(ns.toISOString()):'offen'}${ss==='due'?' <span class="badge due">fällig</span>':''}</dd></dl>
+    <div class="tb"><button class="btn" data-act="movePin" data-id="${d.id}">Verschieben</button><button class="btn primary" data-act="open" data-id="${d.id}">Details öffnen</button></div>
+  </div>`;
+}
+
+/* Tabelle */
+function tableRows(){
+  const t=ui.t,q=t.q.trim().toLowerCase();
+  const list=doorsOf().filter(d=>(!t.status||d.status===t.status)&&(!t.floor||d.floor===t.floor)&&(!t.fire||d.fire===t.fire)&&(!q||[d.nr,d.name,d.room,d.floor,d.type,d.fire,d.maker,d.hardware].join(' ').toLowerCase().includes(q)));
+  const key=t.sort;
+  list.sort((a,b)=>{
+    let va,vb;
+    if(key==='next'){va=nextService(a)?.getTime()??Infinity;vb=nextService(b)?.getTime()??Infinity;return (va-vb)*t.dir;}
+    if(key==='status'){va=STATUS_ORDER.indexOf(a.status);vb=STATUS_ORDER.indexOf(b.status);return (va-vb)*t.dir;}
+    return String(a[key]??'').localeCompare(String(b[key]??''),'de',{numeric:true})*t.dir;
+  });
+  return list;
+}
+const TCOLS=[['nr','Tür-Nr.'],['name','Bezeichnung'],['floor','Geschoss'],['room','Raum'],['type','Türtyp'],['fire','Brandschutz'],['status','Status'],['next','Nächste Wartung']];
+function tableView(){
+  const all=doorsOf(),t=ui.t;
+  const floors=[...new Set(all.map(d=>d.floor).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'de',{numeric:true}));
+  const sel=(id,label,val,opts)=>`<select id="${id}" aria-label="${label}"><option value="">${label}: alle</option>${opts.map(([v,l])=>`<option value="${esc(v)}" ${v===val?'selected':''}>${esc(l)}</option>`).join('')}</select>`;
+  return `<div class="toolbar"><label class="search">${ICON.search}<input id="tq" type="search" placeholder="In Tabelle suchen …" value="${esc(t.q)}" autocomplete="off" aria-label="Tabelle durchsuchen"></label>
+    <div class="tfilters">${sel('tStatus','Status',t.status,STATUS_ORDER.map(k=>[k,STATUS[k]]))}${sel('tFloor','Geschoss',t.floor,floors.map(f=>[f,f]))}${sel('tFire','Brandschutz',t.fire,FIRE.map(f=>[f,f]))}
+    <span class="count num" id="tCount"></span><button class="btn" data-act="csv">CSV exportieren</button></div></div>
+    <div class="tablewrap"><div class="tscroll"><table><thead><tr>${TCOLS.map(([k,l])=>`<th><button data-act="sort" data-k="${k}" ${t.sort===k?`data-dir="${t.dir>0?'↑':'↓'}"`:''}>${l}</button></th>`).join('')}</tr></thead><tbody id="tbody"></tbody></table></div></div>`;
+}
+function refreshTable(){
+  const tb=$('#tbody');if(!tb)return;
+  const rows=tableRows();
+  tb.innerHTML=rows.length?rows.map(d=>{const ns=nextService(d),ss=serviceState(d);return `<tr data-act="open" data-id="${d.id}" tabindex="0"><td class="nr">${esc(d.nr)}</td><td class="wrap">${esc(d.name)}</td><td>${esc(d.floor)}</td><td>${esc(d.room)}</td><td>${esc(d.type)}</td><td>${d.fire&&d.fire!=='ohne'?`<span class="badge fire">${esc(d.fire)}</span>`:esc(d.fire||'')}</td><td><span class="tag s-${d.status}">${STATUS[d.status]}</span></td><td class="num">${ns?fmtDate(ns.toISOString()):'–'}${ss==='due'?' <span class="badge due">fällig</span>':ss==='soon'?' <span class="badge soon">bald</span>':''}</td></tr>`}).join('')
+    :`<tr><td colspan="${TCOLS.length}" class="empty">Keine Türen für diese Filter.</td></tr>`;
+  const c=$('#tCount');if(c)c.textContent=`${rows.length} von ${doorsOf().length} Türen`;
+}
+
+function afterRender(){
+  refreshTable();
+  const ef=$('#editForm');
+  if(ef){
+    ef.addEventListener('input',e=>{const f=e.target.closest('.field');const d=door(ui.doorId);if(f&&d)f.classList.toggle('changed',String(d[e.target.name]??'')!==e.target.value);});
+    ef.addEventListener('change',e=>{const f=e.target.closest('.field');const d=door(ui.doorId);if(f&&d)f.classList.toggle('changed',String(d[e.target.name]??'')!==e.target.value);});
+  }
+}
+
+/* ---------- Sheets ---------- */
+function openSheet(html,label){
+  const o=$('#overlay');
+  o.innerHTML=`<div class="scrim" data-act="closeSheet"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(label||'')}"><div class="grab"></div>${html}</div>`;
+  o.classList.add('open');
+  const f=o.querySelector('input:not([type=hidden]),select');if(f&&isWide())setTimeout(()=>f.focus(),50);
+}
+function closeSheet(){const o=$('#overlay');o.classList.remove('open');o.innerHTML='';sheetState={};}
+let sheetState={};
+function projectsSheet(){
+  const rows=S.projects.map(p=>{const n=S.doors.filter(d=>d.projectId===p.id).length,pl=S.plans.filter(x=>x.projectId===p.id).length;
+    return `<button class="row" data-act="switchProject" data-id="${p.id}" role="radio" aria-checked="${p.id===proj().id}"><span class="projicon">${esc(initials(p.name))}</span><span class="rt"><span class="r1">${esc(p.name)}</span><br><span class="r2">${esc(p.place||'')} · ${n} ${n===1?'Tür':'Türen'} · ${pl} ${pl===1?'Plan':'Pläne'}</span></span>${p.id===proj().id?ICON.check:''}</button>`}).join('');
+  const install=installSection();
+  openSheet(`<h2>Projekte</h2><p class="sub">Türliste, Pläne und Tabelle zeigen immer das gewählte Projekt.</p>
+    <div class="rowlist" role="radiogroup">${rows}</div>
+    <h3>Neues Projekt</h3>
+    <form id="newProject" class="form" autocomplete="off"><div class="field"><label for="np_name">Projektname</label><input id="np_name" required placeholder="z. B. Klinikum Nord"></div><div class="field"><label for="np_place">Gebäude / Ort</label><input id="np_place" placeholder="z. B. Bettenhaus B · Erding"></div><div class="formbar" style="grid-column:1/-1;margin-top:0"><button class="btn primary" type="submit">${ICON.plus}Projekt anlegen</button></div></form>
+    <h3>Daten auf diesem Gerät</h3>
+    <p class="note">Alle Projekte, Türen, Pläne und die Historie werden nur lokal in diesem Browser gespeichert. Es gibt keinen Server und keinen Fernzugriff. Sichere deine Daten regelmäßig als Datei.</p>
+    <div class="btnrow" style="margin-top:10px"><button class="btn" data-act="exportJson">Sicherung exportieren</button><button class="btn" data-act="importJson">Sicherung importieren</button>${sheetState.reset?`<button class="btn accent" data-act="doReset">Wirklich alles zurücksetzen</button>`:`<button class="btn ghost danger" data-act="askReset">Demo-Daten zurücksetzen</button>`}</div>
+    ${install}`,'Projekte');
+}
+function usersSheet(){
+  openSheet(`<h2>Angemeldet als</h2><p class="sub">Jede Änderung an einer Tür wird mit diesem Namen in der Historie protokolliert.</p>
+    <div class="rowlist" role="radiogroup">${S.users.map(u=>`<button class="row" data-act="switchUser" data-id="${u.id}" role="radio" aria-checked="${u.id===me().id}"><span class="avatar">${esc(initials(u.name))}</span><span class="rt"><span class="r1">${esc(u.name)}</span><br><span class="r2">${esc(u.role)}</span></span>${u.id===me().id?ICON.check:''}</button>`).join('')}</div>
+    <p class="note" style="margin-top:14px">Platzhalter für das spätere Personal- und Berechtigungsregister. In der Cloud-Version kommt der Name aus der Anmeldung.</p>`,'Nutzer');
+}
+function newDoorSheet(pos){
+  const p=pos?plan(pos.planId):null;
+  const nr=suggestNr(p);
+  const v={nr,name:'',floor:p?p.name:'',room:'',type:TYPES[0],fire:'ohne'};
+  const f=[FIELDS[0],FIELDS[1],FIELDS[2],FIELDS[3],FIELDS[4],FIELDS[5]];
+  openSheet(`<h2>Neue Tür</h2><p class="sub">${p?`Position im Plan „${esc(p.name)}“ gesetzt. Die Tür wird direkt in die Türliste übernommen.`:'Die Tür wird in die Türliste übernommen. Im Plan kannst du sie später platzieren.'}</p>
+    <form id="newDoor" class="form" autocomplete="off">${f.map(x=>fieldHtml(x,v[x.k],'nd_')).join('')}
+    <div class="field"><label for="nd_status">Status</label><select id="nd_status" name="status">${STATUS_ORDER.map(k=>`<option value="${k}">${STATUS[k]}</option>`).join('')}</select></div>
+    <div class="formbar" style="grid-column:1/-1"><button type="button" class="btn ghost" data-act="closeSheet">Abbrechen</button><button class="btn primary" type="submit">Tür anlegen</button></div></form>`,'Neue Tür');
+}
+function suggestNr(p){
+  const tag=p?p.name.replace(/\./g,'').replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,4):'';
+  const prefix=tag?`T-${tag}-`:'T-';
+  let max=0;doorsOf().forEach(d=>{if(String(d.nr).startsWith(prefix)){const m=String(d.nr).slice(prefix.length).match(/^(\d+)/);if(m)max=Math.max(max,+m[1]);}});
+  return prefix+String(max+1).padStart(2,'0');
+}
+function planMenuSheet(){
+  const p=currentPlan();if(!p)return;
+  const n=S.doors.filter(d=>d.planId===p.id).length;
+  openSheet(`<h2>Plan „${esc(p.name)}“</h2><p class="sub">${n} Türen sind auf diesem Plan platziert.</p>
+    <form id="renamePlan" class="form" autocomplete="off"><div class="field" style="grid-column:1/-1"><label for="rp_name">Name des Plans</label><input id="rp_name" value="${esc(p.name)}" required></div><div class="formbar" style="grid-column:1/-1;margin-top:0"><button class="btn primary" type="submit">Umbenennen</button></div></form>
+    <h3>Plan entfernen</h3>
+    <p class="note">Die Türen bleiben in der Türliste erhalten, nur ihre Pins auf diesem Plan werden entfernt.</p>
+    <div class="btnrow" style="margin-top:10px">${sheetState.delPlan?`<button class="btn accent" data-act="doDeletePlan">Plan endgültig löschen</button>`:`<button class="btn ghost danger" data-act="askDeletePlan">Plan löschen</button>`}</div>`,'Plan');
+}
+
+/* ---------- Installation ---------- */
+let deferredPrompt=null;
+const isStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function installHint(){
+  if(isStandalone()||lsGet('dk.installDismissed'))return '';
+  if(deferredPrompt)return `<div class="installbar"><span class="it"><b>doorku</b> als App auf diesem Gerät installieren</span><button class="btn primary" data-act="install">Installieren</button><button class="iconbtn" data-act="dismissInstall" aria-label="Hinweis ausblenden">${ICON.close}</button></div>`;
+  if(isIOS()&&location.protocol==='https:'&&window.top===window)return `<div class="installbar"><span class="it">Als App nutzen: <b>Teilen</b> antippen, dann „Zum Home-Bildschirm“.</span><button class="iconbtn" data-act="dismissInstall" aria-label="Hinweis ausblenden">${ICON.close}</button></div>`;
+  return '';
+}
+function installSection(){
+  if(isStandalone())return `<h3>App</h3><p class="note">doorku läuft als installierte App und funktioniert auch ohne Internet.</p>`;
+  if(deferredPrompt)return `<h3>App</h3><div class="btnrow"><button class="btn primary" data-act="install">doorku installieren</button></div>`;
+  if(isIOS())return `<h3>App</h3><p class="note">Auf iPhone/iPad: In Safari auf <b>Teilen</b> tippen und „Zum Home-Bildschirm“ wählen.</p>`;
+  return `<h3>App</h3><p class="note">In Chrome oder Edge über das Menü „App installieren“ wählen. Auf iPhone/iPad in Safari: Teilen, dann „Zum Home-Bildschirm“.</p>`;
+}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;renderBottom();});
+window.addEventListener('appinstalled',()=>{deferredPrompt=null;toast('doorku wurde installiert');renderBottom();});
+
+/* ---------- Toast ---------- */
+let toastTimer;
+function toast(msg,ms=2600){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);if(ms)toastTimer=setTimeout(()=>t.classList.remove('show'),ms);}
+
+/* ---------- Aktionen ---------- */
+function openDoor(id){
+  ui.doorId=id;ui.editing=false;ui.confirm=null;
+  if(isWide()){ui.pane='detail';lsSet('dk.pane','detail');}
+  else ui.phoneDetail=true;
+  render();
+  const v=document.querySelector('#pane .view, main > .view');if(v)v.scrollTop=0;
+}
+const A={
+  tab(el){ui.tab=el.dataset.k;ui.phoneDetail=false;ui.editing=false;ui.placing=null;ui.pendingPos=null;lsSet('dk.tab',ui.tab);render();},
+  pane(el){ui.pane=el.dataset.k;ui.placing=null;ui.pendingPos=null;if(ui.pane!=='detail')ui.editing=false;lsSet('dk.pane',ui.pane);render();},
+  status(el){ui.status=el.dataset.k;refreshList();},
+  open(el){openDoor(el.dataset.id);},
+  back(){ui.phoneDetail=false;ui.editing=false;ui.confirm=null;render();},
+  cycle(){
+    const d=door(ui.doorId);if(!d)return;
+    const old=d.status,nx=STATUS_ORDER[(STATUS_ORDER.indexOf(old)+1)%STATUS_ORDER.length];
+    d.status=nx;log(d,'status',`Status geändert: „${STATUS[old]}“ → „${STATUS[nx]}“`);save();render();toast(`Status: ${STATUS[nx]}`);
+  },
+  edit(){ui.editing=true;render();},
+  cancelEdit(){ui.editing=false;render();},
+  service(){
+    const d=door(ui.doorId);if(!d)return;
+    const today=dateOnly(new Date().toISOString()),old=d.lastService;
+    d.lastService=today;log(d,'service',`Wartung durchgeführt${old?` (vorherige: ${fmtDate(old)})`:''}`);
+    save();render();toast('Wartung erfasst');
+  },
+  showOnPlan(){
+    const d=door(ui.doorId);if(!d||!d.planId)return;
+    ui.planId=d.planId;ui.ticketId=d.id;ui.zoom=Math.max(ui.zoom,1.6);
+    if(isWide())ui.pane='plan';else{ui.tab='plan';ui.phoneDetail=false;}
+    render();centerOn(d);
+  },
+  placeExisting(){
+    const d=door(ui.doorId);if(!d)return;
+    if(!plansOf().length){toast('Lade zuerst einen Plan hoch');}
+    ui.placing={doorId:d.id};ui.ticketId=null;
+    if(isWide())ui.pane='plan';else{ui.tab='plan';ui.phoneDetail=false;}
+    render();
+  },
+  movePin(el){ui.placing={doorId:el.dataset.id};ui.ticketId=null;render();},
+  startPlacing(){ui.placing={doorId:null};ui.ticketId=null;render();},
+  cancelPlacing(){ui.placing=null;ui.pendingPos=null;render();},
+  pin(el){if(ui.placing)return;ui.ticketId=el.dataset.id===ui.ticketId?null:el.dataset.id;render();},
+  closeTicket(){ui.ticketId=null;render();},
+  plan(el){ui.planId=el.dataset.id;ui.ticketId=null;ui.zoom=1;render();},
+  zoomIn(){setZoom(ui.zoom*1.35);},
+  zoomOut(){setZoom(ui.zoom/1.35);},
+  zoomFit(){setZoom(1);},
+  upload(){$('#planFile').click();},
+  planMenu(){sheetState={};planMenuSheet();},
+  askDeletePlan(){sheetState.delPlan=true;planMenuSheet();},
+  doDeletePlan(){
+    const p=currentPlan();if(!p)return;
+    S.doors.filter(d=>d.planId===p.id).forEach(d=>{d.planId=null;d.x=d.y=null;log(d,'change',`Pin entfernt, Plan „${p.name}“ wurde gelöscht`);});
+    S.plans=S.plans.filter(x=>x.id!==p.id);ui.planId=null;ui.ticketId=null;save();closeSheet();render();toast(`Plan „${p.name}“ gelöscht`);
+  },
+  newDoorList(){ui.pendingPos=null;newDoorSheet(null);},
+  askDelete(){ui.confirm='delete';render();},
+  cancelDelete(){ui.confirm=null;render();},
+  doDelete(){
+    const d=door(ui.doorId);if(!d)return;
+    S.doors=S.doors.filter(x=>x.id!==d.id);ui.doorId=null;ui.confirm=null;ui.phoneDetail=false;save();render();toast(`${d.nr} gelöscht`);
+  },
+  sort(el){const k=el.dataset.k;if(ui.t.sort===k)ui.t.dir*=-1;else{ui.t.sort=k;ui.t.dir=1;}render();},
+  csv(){
+    const rows=tableRows();
+    const cols=[...FIELDS.map(f=>[f.k,f.l]),['status','Status'],['next','Nächste Wartung']];
+    const q=v=>`"${String(v??'').replace(/"/g,'""')}"`;
+    const lines=[cols.map(c=>q(c[1])).join(';'),...rows.map(d=>cols.map(([k])=>q(k==='status'?STATUS[d.status]:k==='next'?(nextService(d)?fmtDate(nextService(d).toISOString()):''):k==='lastService'?fmtDate(d[k]):d[k])).join(';'))];
+    download('﻿'+lines.join('\r\n'),`doorku-${slug(proj().name)}-tuerliste.csv`,'text/csv;charset=utf-8');
+  },
+  sheetProjects(){sheetState={};projectsSheet();},
+  sheetUsers(){usersSheet();},
+  closeSheet(){closeSheet();},
+  switchProject(el){S.currentProjectId=el.dataset.id;resetView();save();closeSheet();render();toast(`Projekt: ${proj().name}`);},
+  switchUser(el){S.currentUserId=el.dataset.id;save();closeSheet();render();toast(`Angemeldet als ${me().name}`);},
+  exportJson(){download(JSON.stringify(S),`doorku-sicherung-${dateOnly(new Date().toISOString())}.json`,'application/json');},
+  importJson(){$('#importFile').click();},
+  askReset(){sheetState.reset=true;projectsSheet();},
+  doReset(){S=seed();resetView();save();closeSheet();render();toast('Demo-Daten wiederhergestellt');},
+  async install(){if(!deferredPrompt)return;deferredPrompt.prompt();try{await deferredPrompt.userChoice}catch(e){}deferredPrompt=null;renderBottom();},
+  dismissInstall(){lsSet('dk.installDismissed','1');renderBottom();},
+};
+function resetView(){ui.doorId=null;ui.phoneDetail=false;ui.editing=false;ui.planId=null;ui.ticketId=null;ui.placing=null;ui.pendingPos=null;ui.confirm=null;ui.zoom=1;ui.q='';ui.status='alle';ui.t.q='';ui.t.status=ui.t.floor=ui.t.fire='';}
+const slug=s=>s.toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+function download(content,name,type){
+  try{
+    const url=URL.createObjectURL(new Blob([content],{type}));
+    const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);toast(`${name} wird gespeichert`);
+  }catch(e){toast('Download ist hier nicht möglich');}
+}
+function setZoom(z){
+  const vp=$('#vp');const old=ui.zoom;ui.zoom=Math.min(5,Math.max(1,z));
+  const c=$('#canvas');if(!c||!vp)return;
+  const cx=(vp.scrollLeft+vp.clientWidth/2)/vp.scrollWidth,cy=(vp.scrollTop+vp.clientHeight/2)/vp.scrollHeight;
+  c.style.width=`calc(${ui.zoom*100}% - 32px)`;
+  vp.scrollLeft=cx*vp.scrollWidth-vp.clientWidth/2;vp.scrollTop=cy*vp.scrollHeight-vp.clientHeight/2;
+  if(old===ui.zoom&&z>old)toast('Maximale Vergrößerung');
+}
+function centerOn(d){
+  requestAnimationFrame(()=>{const vp=$('#vp'),c=$('#canvas');if(!vp||!c)return;
+    vp.scrollLeft=c.offsetLeft+c.offsetWidth*d.x/100-vp.clientWidth/2;vp.scrollTop=c.offsetTop+c.offsetHeight*d.y/100-vp.clientHeight/2;});
+}
+
+/* Klicks (Event-Delegation) */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');
+  if(el&&A[el.dataset.act]){e.preventDefault();A[el.dataset.act](el,e);return;}
+  const c=e.target.closest('#canvas');
+  if(c&&ui.placing){
+    const r=c.getBoundingClientRect();
+    const x=Math.round((e.clientX-r.left)/r.width*1000)/10,y=Math.round((e.clientY-r.top)/r.height*1000)/10;
+    const p=currentPlan();if(!p)return;
+    if(ui.placing.doorId){
+      const d=door(ui.placing.doorId);
+      const moved=d.planId===p.id;
+      d.planId=p.id;d.x=x;d.y=y;log(d,'change',moved?`Pin im Plan „${p.name}“ verschoben`:`Im Plan „${p.name}“ platziert`);
+      ui.placing=null;ui.ticketId=d.id;save();render();toast(`${d.nr} ${moved?'verschoben':'platziert'}`);
+    }else{
+      ui.pendingPos={planId:p.id,x,y};ui.placing=null;render();newDoorSheet(ui.pendingPos);
+    }
+  }
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){if($('#overlay').classList.contains('open')){closeSheet();ui.pendingPos=null;render();}else if(ui.placing){A.cancelPlacing();}else if(ui.ticketId){A.closeTicket();}}
+  if(e.key==='Enter'&&e.target.matches('tr[data-act]'))A.open(e.target);
+});
+document.addEventListener('input',e=>{
+  const id=e.target.id;
+  if(id==='q'){ui.q=e.target.value;refreshList();}
+  if(id==='tq'){ui.t.q=e.target.value;refreshTable();}
+});
+document.addEventListener('change',e=>{
+  const id=e.target.id;
+  if(id==='tStatus'){ui.t.status=e.target.value;refreshTable();}
+  if(id==='tFloor'){ui.t.floor=e.target.value;refreshTable();}
+  if(id==='tFire'){ui.t.fire=e.target.value;refreshTable();}
+});
+document.addEventListener('submit',e=>{
+  e.preventDefault();
+  const f=e.target;
+  if(f.id==='editForm'){
+    const d=door(ui.doorId);if(!d)return;
+    let n=0;
+    FIELDS.forEach(fd=>{
+      const el=f.elements[fd.k];if(!el)return;
+      let nv=el.value.trim();const ov=d[fd.k]??'';
+      if(fd.t==='number'&&nv!=='')nv=Number(nv);
+      if(String(nv)!==String(ov)){
+        const show=v=>fd.t==='date'?(fmtDate(v)||'–'):(v===''||v==null?'–':v);
+        log(d,'change',`${fd.l} geändert: „${show(ov)}“ → „${show(nv)}“`);d[fd.k]=nv;n++;
+      }
+    });
+    ui.editing=false;save();render();toast(n?`${n} ${n===1?'Änderung':'Änderungen'} gespeichert und protokolliert`:'Keine Änderungen');
+  }
+  if(f.id==='noteForm'){
+    const d=door(ui.doorId);const v=$('#noteInput').value.trim();if(!d||!v)return;
+    log(d,'note',v);save();render();toast('Notiz hinzugefügt');
+  }
+  if(f.id==='newDoor'){
+    const v=k=>(f.elements[k]?.value||'').trim();
+    const pos=ui.pendingPos;const p=pos?plan(pos.planId):null;
+    const d={id:uid(),projectId:proj().id,nr:v('nr')||suggestNr(p),name:v('name'),floor:v('floor'),room:v('room'),type:v('type'),fire:v('fire'),status:v('status')||'geplant',maker:'',width:'',height:'',year:'',hardware:'',interval:12,lastService:'',planId:p?p.id:null,x:pos?pos.x:null,y:pos?pos.y:null,history:[]};
+    d.history.push({ts:new Date().toISOString(),user:me().name,kind:'create',text:p?`Tür angelegt über Plan „${p.name}“`:'Tür angelegt aus Türliste'});
+    S.doors.push(d);ui.pendingPos=null;save();closeSheet();
+    if(p){ui.ticketId=d.id;render();}else{openDoor(d.id);}
+    toast(`${d.nr} zur Türliste hinzugefügt`);
+  }
+  if(f.id==='newProject'){
+    const name=$('#np_name').value.trim();if(!name)return;
+    const p={id:uid(),name,place:$('#np_place').value.trim()};
+    S.projects.push(p);S.currentProjectId=p.id;resetView();save();closeSheet();render();toast(`Projekt „${name}“ angelegt`);
+  }
+  if(f.id==='renamePlan'){
+    const p=currentPlan();const n=$('#rp_name').value.trim();if(!p||!n)return;
+    p.name=n;save();closeSheet();render();toast('Plan umbenannt');
+  }
+});
+$('#overlay').addEventListener('click',e=>{if(e.target.classList.contains('scrim')&&ui.pendingPos){ui.pendingPos=null;render();}});
+
+/* ---------- Plan-Upload (PDF.js lokal unter vendor/) ---------- */
+let pdfjsReady=null;
+function loadPdfJs(){
+  if(window.pdfjsLib)return Promise.resolve(window.pdfjsLib);
+  if(pdfjsReady)return pdfjsReady;
+  pdfjsReady=new Promise((res,rej)=>{
+    const s=document.createElement('script');s.src='vendor/pdf.min.js';
+    s.onload=()=>{try{window.pdfjsLib.GlobalWorkerOptions.workerSrc='vendor/pdf.worker.min.js';res(window.pdfjsLib)}catch(e){rej(e)}};
+    s.onerror=()=>{pdfjsReady=null;rej(new Error('PDF.js konnte nicht geladen werden'))};
+    document.head.appendChild(s);
+  });
+  return pdfjsReady;
+}
+async function pdfToPlans(file){
+  const lib=await loadPdfJs();
+  const pdf=await lib.getDocument({data:await file.arrayBuffer()}).promise;
+  const n=Math.min(pdf.numPages,20),out=[];
+  const base=file.name.replace(/\.pdf$/i,'');
+  for(let i=1;i<=n;i++){
+    toast(`PDF wird verarbeitet: Seite ${i} von ${n}`,0);
+    const page=await pdf.getPage(i);
+    const v1=page.getViewport({scale:1});
+    const scale=Math.min(4,2400/Math.max(v1.width,v1.height));
+    const vp=page.getViewport({scale});
+    const cv=document.createElement('canvas');cv.width=Math.round(vp.width);cv.height=Math.round(vp.height);
+    const ctx=cv.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);
+    await page.render({canvasContext:ctx,viewport:vp}).promise;
+    out.push({name:n>1?`${base} · S. ${i}`:base,src:cv.toDataURL('image/jpeg',.86),w:cv.width,h:cv.height});
+  }
+  if(pdf.numPages>20)toast('Nur die ersten 20 Seiten wurden übernommen',4000);
+  return out;
+}
+function imageToPlan(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>{const img=new Image();img.onload=()=>res([{name:file.name.replace(/\.[^.]+$/,''),src:r.result,w:img.naturalWidth,h:img.naturalHeight}]);img.onerror=rej;img.src=r.result;};
+    r.onerror=rej;r.readAsDataURL(file);
+  });
+}
+$('#planFile').addEventListener('change',async e=>{
+  const files=[...e.target.files];e.target.value='';if(!files.length)return;
+  let added=[];
+  for(const f of files){
+    try{
+      const res=f.type==='application/pdf'||/\.pdf$/i.test(f.name)?await pdfToPlans(f):await imageToPlan(f);
+      res.forEach(r=>{const p={id:uid(),projectId:proj().id,created:new Date().toISOString(),...r};S.plans.push(p);added.push(p);});
+    }catch(err){console.error(err);toast(`„${f.name}“ konnte nicht gelesen werden`,4000);}
+  }
+  if(added.length){ui.planId=added[0].id;ui.zoom=1;ui.ticketId=null;save();render();toast(added.length===1?`Plan „${added[0].name}“ hinzugefügt`:`${added.length} Pläne hinzugefügt`);}
+});
+$('#importFile').addEventListener('change',async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{
+    const data=JSON.parse(await f.text());
+    if(!data||!Array.isArray(data.projects)||!Array.isArray(data.doors)||!Array.isArray(data.plans))throw new Error('Format');
+    data.users=data.users?.length?data.users:S.users;
+    S=data;resetView();save();closeSheet();render();toast('Sicherung importiert');
+  }catch(err){toast('Diese Datei ist keine doorku-Sicherung',4000);}
+});
+
+/* ---------- Start ---------- */
+function setOnline(){$('#offline').hidden=navigator.onLine;}
+window.addEventListener('online',setOnline);window.addEventListener('offline',setOnline);
+wideMQ.addEventListener?.('change',()=>{if(isWide()&&ui.phoneDetail){ui.pane='detail';}ui.phoneDetail=false;render();});
+(async function start(){
+  await store.open();
+  S=await store.get('state');
+  if(!S||!Array.isArray(S.doors)){S=seed();save();}
+  if(isWide()&&!ui.doorId){const first=doorsOf().sort(byNr).find(d=>d.status==='offen')||doorsOf().sort(byNr)[0];ui.doorId=first?.id||null;}
+  setOnline();render();
+  try{navigator.storage?.persist?.()}catch(e){}
+  if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
+    try{navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
+  }
+})();
+</script>
+</body>
+</html>
