@@ -6,7 +6,7 @@ Installierbare Web-App (Progressive Web App) für Handy und Tablet. Alle Daten b
 
 | Datei | Zweck |
 |---|---|
-| `index.html` | Die komplette App (Türliste, Türdetail mit Historie, Plan mit Pins, Tabelle, Projekte, Nutzerwechsel) |
+| `index.html` | Die komplette App (Übersicht als Startseite, Türliste nach Dringlichkeit sortiert, Türdetail mit Aufgabe/Priorität/Frist und Historie, Plan mit Pins, Tabelle, Projekte, Nutzerwechsel) |
 | `manifest.webmanifest` | Name, Farben und Icons für „Zum Home-Bildschirm“ |
 | `sw.js` | Service Worker: App funktioniert nach dem ersten Aufruf auch offline |
 | `icons/` | App-Icons (SVG, 192/512 px, maskable, Apple Touch Icon) |
@@ -30,3 +30,9 @@ In `sw.js` die Konstante `VERSION` hochzählen, damit installierte Apps die neue
 ## Daten
 
 Projekte → „Sicherung exportieren“ speichert alles (inkl. Pläne) als JSON-Datei, „Sicherung importieren“ stellt sie wieder her. Löscht man die Browserdaten, sind die Daten ohne Sicherung weg.
+
+## Übersicht und Reihenfolge
+
+Die App startet immer mit der Übersicht über alle Projekte: Kennzahlen, „Jetzt angehen“, anstehende Wartungen (60 Tage), Fristen, Projektstand und letzte Aktivität.
+
+Jede Tür kann eine offene Aufgabe mit Priorität (Dringend, Hoch, Normal, Niedrig) und Frist haben. Türliste und Tabelle ordnen sich automatisch so: überfällige Frist oder Wartung, dann Dringend, dann Frist in 14 Tagen oder Wartung in 30 Tagen, dann Hoch, dann offene Mängel, dann Türen mit Termin vor Türen ohne Termin, erledigte Türen zuletzt. Innerhalb einer Stufe entscheidet Priorität, dann der nächste Termin.
