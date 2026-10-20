@@ -36,3 +36,7 @@ Projekte → „Sicherung exportieren“ speichert alles (inkl. Pläne) als JSON
 Die App startet immer mit der Übersicht über alle Projekte: Kennzahlen, „Jetzt angehen“, anstehende Wartungen (60 Tage), Fristen, Projektstand und letzte Aktivität.
 
 Jede Tür kann eine offene Aufgabe mit Priorität (Dringend, Hoch, Normal, Niedrig) und Frist haben. Türliste und Tabelle ordnen sich automatisch so: überfällige Frist oder Wartung, dann Dringend, dann Frist in 14 Tagen oder Wartung in 30 Tagen, dann Hoch, dann offene Mängel, dann Türen mit Termin vor Türen ohne Termin, erledigte Türen zuletzt. Innerhalb einer Stufe entscheidet Priorität, dann der nächste Termin.
+
+## Projektphasen
+
+Jedes Projekt hat eine Phase: Planung, Bauphase oder Nutzung. Gewählt wird sie im Projekt-Menü (oben auf den Projektnamen tippen) oder beim Anlegen. Wartungsfristen werden erst in der Phase „Nutzung“ überwacht. Die Übersicht lässt sich nach Phase filtern.

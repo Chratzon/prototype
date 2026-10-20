@@ -169,6 +169,17 @@ main{min-height:0;position:relative;overflow:hidden}
 .bar{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
 .bar i{display:block;height:100%;background:var(--petrol)}
 .homelink{margin-right:auto}
+.ph-planung{background:var(--surface-2);color:var(--muted)}
+.ph-bau{background:var(--amber-soft);color:var(--amber-text)}
+.ph-nutzung{background:var(--petrol-soft);color:var(--petrol-text)}
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.phase{display:grid;gap:2px;align-content:start;text-align:left;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.phase:hover{border-color:var(--muted)}
+.phase[aria-checked="true"]{border-color:var(--petrol);background:var(--petrol-soft)}
+.phase .pi{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--surface-2);color:var(--muted)}
+.phase[aria-checked="true"] .pi{background:var(--petrol);color:#fff}
+.phase .pt{font-weight:600;font-size:14px;margin-top:4px}
+.phase .ph{font-size:12px;color:var(--muted);line-height:1.35}
 
 /* Status-Tags */
 .tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap}
@@ -352,6 +363,9 @@ const STATUS_ORDER=['geplant','pruefung','offen','erledigt'];
 const TYPES=['Drehflügeltür 1-flg.','Drehflügeltür 2-flg.','Rohrrahmentür','Schiebetür','Pendeltür','Tor'];
 const FIRE=['ohne','T30','T30-RS','T60','T90','RS'];
 const PRIOS=['Dringend','Hoch','Normal','Niedrig'];
+const PHASES={planung:'Planung',bau:'Bauphase',nutzung:'Nutzung'};
+const PHASE_ORDER=['planung','bau','nutzung'];
+const PHASE_HINT={planung:'Türen erfassen und planen, noch keine Wartungen',bau:'Einbau und Abnahme, noch keine Wartungen',nutzung:'Gebäude in Betrieb, Wartungsfristen werden überwacht'};
 const PRIO_RANK={Dringend:0,Hoch:1,Normal:2,Niedrig:3};
 // g:'task' = Felder der offenen Aufgabe (Ticket), werden im Detail separat über den Parametern gezeigt
 const FIELDS=[
@@ -408,8 +422,10 @@ function nextService(d){
   if(!d.lastService||!d.interval)return null;
   const t=new Date(d.lastService+'T12:00:00');t.setMonth(t.getMonth()+Number(d.interval));return t;
 }
+// Wartungen werden erst in der Projektphase „Nutzung“ überwacht
+const inUse=d=>(S.projects.find(p=>p.id===d.projectId)?.phase||'nutzung')==='nutzung';
 function serviceState(d){
-  const n=nextService(d);if(!n)return null;
+  const n=inUse(d)?nextService(d):null;if(!n)return null;
   const diff=(n-Date.now())/864e5;
   return diff<0?'due':diff<=30?'soon':'ok';
 }
@@ -426,7 +442,7 @@ const isOpen=d=>d.status!=='erledigt';
 function urgency(d){
   const open=isOpen(d);
   const fd=open&&d.due?daysUntil(d.due):null;            // Frist zählt nur, solange die Tür nicht erledigt ist
-  const ns=nextService(d),sd=ns?daysUntil(ns):null;       // Wartung zählt immer
+  const ns=inUse(d)?nextService(d):null,sd=ns?daysUntil(ns):null; // Wartung zählt nur in der Nutzungsphase
   const dates=[fd,sd].filter(x=>x!=null),near=dates.length?Math.min(...dates):null;
   const pr=open?(PRIO_RANK[d.prio]??2):3;
   let tier;
@@ -454,8 +470,9 @@ function urgentBadges(d){
 }
 // Bestehende Daten (ohne Aufgabenfelder) weiter laden
 function migrate(st){
+  st.projects.forEach(p=>{if(!PHASES[p.phase])p.phase='nutzung';});
   st.doors.forEach(d=>{if(!PRIOS.includes(d.prio))d.prio='Normal';if(d.due==null)d.due='';if(d.task==null)d.task='';if(!Array.isArray(d.history))d.history=[];});
-  st.v=2;return st;
+  st.v=3;return st;
 }
 
 /* ---------- Demo-Grundriss (SVG) ---------- */
@@ -503,8 +520,8 @@ function demoPlan(title,top,bottom){
 /* ---------- Demo-Daten ---------- */
 function seed(){
   const users=[{id:'u1',name:'Thomas Huber',role:'Projektleitung'},{id:'u2',name:'Mara Nowak',role:'Technikerin'},{id:'u3',name:'Anna Vogel',role:'Planerin'}];
-  const p1={id:'p1',name:'Sägewerk Köll',place:'Bürogebäude · Grafing'};
-  const p2={id:'p2',name:'Wohnanlage Rosenweg',place:'Haus A · Rosenheim'};
+  const p1={id:'p1',name:'Sägewerk Köll',place:'Bürogebäude · Grafing',phase:'nutzung'};
+  const p2={id:'p2',name:'Wohnanlage Rosenweg',place:'Haus A · Rosenheim',phase:'bau'};
   const eg=demoPlan('Grundriss EG',['Büro 0.01','Büro 0.02','Besprechung 0.03','Teeküche 0.04'],['Treppenhaus TH1','Technik 0.05','Archiv 0.06','WC 0.07','Lager 0.08']);
   const og=demoPlan('Grundriss 1. OG',['Büro 1.01','Büro 1.02','Büro 1.03'],['Treppenhaus TH1','Server 1.04','Kopierraum 1.05','WC 1.06']);
   const kg=demoPlan('Haus A · Kellergeschoss',['Keller 1','Keller 2','Keller 3','Keller 4'],['Treppenhaus','Heizung','Fahrradraum']);
@@ -535,7 +552,7 @@ function seed(){
     base({projectId:'p2',nr:'T-KG-06',name:'Heizraum',floor:'KG',room:'Heizung',type:'Drehflügeltür 1-flg.',fire:'T90',maker:'Hörmann',interval:12,lastService:dateOnly(daysAgo(100)),status:'erledigt',...at('pl3',kg.doors[6]),history:[H(20,'Thomas Huber','create','Tür angelegt über Plan „KG Haus A“')]}),
   ];
   doors.forEach(d=>d.history.sort((a,b)=>a.ts<b.ts?1:-1));
-  return {v:2,users,projects:[p1,p2],plans,doors,currentProjectId:'p1',currentUserId:'u1'};
+  return {v:3,users,projects:[p1,p2],plans,doors,currentProjectId:'p1',currentUserId:'u1'};
 }
 
 /* ---------- Speicher (IndexedDB, Fallback: nur im Arbeitsspeicher) ---------- */
@@ -570,6 +587,7 @@ const ui={
   tab:'home',                      // home | list | plan | table; App startet immer mit der Übersicht
   pane:lsGet('dk.pane')||'detail', // detail | plan | table (Tablet, rechts)
   doorId:null, phoneDetail:false, editing:false,
+  dphase:lsGet('dk.dphase')||'alle',
   q:'', status:'alle', sort:lsGet('dk.sort')||'prio',
   planId:null, zoom:1, ticketId:null, placing:null, pendingPos:null,
   t:{q:'',status:'',floor:'',fire:'',sort:'prio',dir:1},
@@ -608,7 +626,7 @@ function render(){
 }
 function renderHeader(){
   const p=proj();
-  $('#projBtn').innerHTML=ui.tab==='home'?`<span class="pn"><span>Alle Projekte</span>${ICON.chev}</span><span class="ps">Übersicht</span>`:`<span class="pn"><span>${esc(p.name)}</span>${ICON.chev}</span><span class="ps">${esc(p.place||'')}</span>`;
+  $('#projBtn').innerHTML=ui.tab==='home'?`<span class="pn"><span>Alle Projekte</span>${ICON.chev}</span><span class="ps">Übersicht</span>`:`<span class="pn"><span>${esc(p.name)}</span>${ICON.chev}</span><span class="ps">${esc([p.place,PHASES[p.phase]].filter(Boolean).join(' · '))}</span>`;
   const u=me();
   $('#userBtn').innerHTML=`<span class="avatar">${esc(initials(u.name))}</span><span class="un">${esc(u.name)}</span>`;
 }
@@ -623,7 +641,9 @@ function renderBottom(){
 
 /* Übersicht: projektübergreifend die wichtigsten Punkte */
 function dashView(){
-  const all=S.doors,pname=id=>S.projects.find(p=>p.id===id)?.name||'';
+  const projects=S.projects.filter(p=>ui.dphase==='alle'||p.phase===ui.dphase),pids=new Set(projects.map(p=>p.id));
+  const all=S.doors.filter(d=>pids.has(d.projectId)),pname=id=>S.projects.find(p=>p.id===id)?.name||'';
+  const phaseChips=['alle',...PHASE_ORDER].map(k=>{const n=k==='alle'?S.projects.length:S.projects.filter(p=>p.phase===k).length;return `<button class="chip" data-act="dashPhase" data-k="${k}" aria-pressed="${ui.dphase===k}">${k==='alle'?'Alle Phasen':PHASES[k]} <span class="cnt num">${n}</span></button>`;}).join('');
   const U=new Map(all.map(d=>[d.id,urgency(d)]));
   const sub=d=>esc([pname(d.projectId),d.floor,d.room].filter(Boolean).join(' · '));
   const sideFor=(n,date)=>`<span class="side ${n<0?'late':n<=14?'near':''}">${n<0?'überfällig':esc(relDays(n))}<span class="d num">${fmtDate(date)}</span></span>`;
@@ -653,11 +673,11 @@ function dashView(){
     .map(d=>item(d,sideFor(U.get(d.id).fd,d.due),d.task||(d.prio!=='Normal'?'Priorität '+d.prio:'')));
 
   // Projekte
-  const projs=S.projects.map(p=>{
+  const projs=projects.map(p=>{
     const ds=all.filter(d=>d.projectId===p.id),done=ds.filter(d=>d.status==='erledigt').length;
     const late=ds.filter(d=>U.get(d.id).near!=null&&U.get(d.id).near<0).length,off=ds.filter(d=>d.status==='offen').length,urg=ds.filter(d=>isOpen(d)&&d.prio==='Dringend').length;
     const flags=[late?`<span class="badge due">${late} überfällig</span>`:'',urg?`<span class="badge urgent">${urg} dringend</span>`:'',off?`<span class="badge">${off} ${off===1?'Mangel':'Mängel'}</span>`:''].join('');
-    return `<button class="pcard" data-act="goProject" data-id="${p.id}"><span class="r1"><span class="projicon">${esc(initials(p.name))}</span><span>${esc(p.name)}<br><span class="r2">${esc(p.place||'')}</span></span></span>
+    return `<button class="pcard" data-act="goProject" data-id="${p.id}"><span class="r1"><span class="projicon">${esc(initials(p.name))}</span><span style="flex:1;min-width:0">${esc(p.name)}<br><span class="r2">${esc(p.place||'')}</span></span><span class="tag ph-${p.phase}">${PHASES[p.phase]}</span></span>
       <span class="r2 num">${ds.length} ${ds.length===1?'Tür':'Türen'} · ${done} erledigt</span><span class="bar"><i style="width:${ds.length?Math.round(done/ds.length*100):0}%"></i></span>${flags?`<span class="badges" style="margin-top:0">${flags}</span>`:''}</button>`;
   }).join('');
 
@@ -667,13 +687,14 @@ function dashView(){
 
   const today=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   return `<div class="dash">
-    <div class="dtitle"><h2>Übersicht</h2><div class="sub">${esc(today)} · ${S.projects.length} ${S.projects.length===1?'Projekt':'Projekte'} · ${all.length} ${all.length===1?'Tür':'Türen'}</div></div>
+    <div class="dtitle"><h2>Übersicht</h2><div class="sub">${esc(today)} · ${projects.length} ${projects.length===1?'Projekt':'Projekte'} · ${all.length} ${all.length===1?'Tür':'Türen'}</div></div>
+    <div class="chips">${phaseChips}</div>
     <div class="kpis">${kpi(overdue,'Überfällig','alert')}${kpi(urgent,'Dringend','alert')}${kpi(soon,'Bald fällig','warn')}${kpi(defects,'Offene Mängel','warn')}</div>
     <div class="dgrid">
       ${panel('Jetzt angehen',focus,8,'Nichts Dringendes. Alle Fristen und Wartungen sind im grünen Bereich.','full')}
-      ${panel('Anstehende Wartungen',maint,6,'Keine Wartung in den nächsten 60 Tagen.')}
+      ${panel('Anstehende Wartungen',maint,6,projects.some(p=>p.phase==='nutzung')?'Keine Wartung in den nächsten 60 Tagen.':'Wartungen werden erst in der Phase „Nutzung“ überwacht.')}
       ${panel('Fristen',dues,6,'Keine offenen Aufgaben mit Frist.')}
-      <section class="panel full"><h3>Projekte</h3>${projs?`<div class="projcards">${projs}</div>`:'<div class="pempty">Noch keine Projekte.</div>'}</section>
+      <section class="panel full"><h3>Projekte</h3>${projs?`<div class="projcards">${projs}</div>`:`<div class="pempty">${S.projects.length?'Kein Projekt in dieser Phase.':'Noch keine Projekte.'}</div>`}</section>
       ${panel('Letzte Aktivität',acts.slice(0,6),6,'Noch keine Einträge.','full')}
     </div></div>`;
 }
@@ -863,12 +884,15 @@ function closeSheet(){const o=$('#overlay');o.classList.remove('open');o.innerHT
 let sheetState={};
 function projectsSheet(){
   const rows=S.projects.map(p=>{const n=S.doors.filter(d=>d.projectId===p.id).length,pl=S.plans.filter(x=>x.projectId===p.id).length;
-    return `<button class="row" data-act="switchProject" data-id="${p.id}" role="radio" aria-checked="${p.id===proj().id}"><span class="projicon">${esc(initials(p.name))}</span><span class="rt"><span class="r1">${esc(p.name)}</span><br><span class="r2">${esc(p.place||'')} · ${n} ${n===1?'Tür':'Türen'} · ${pl} ${pl===1?'Plan':'Pläne'}</span></span>${p.id===proj().id?ICON.check:''}</button>`}).join('');
+    return `<button class="row" data-act="switchProject" data-id="${p.id}" role="radio" aria-checked="${p.id===proj().id}"><span class="projicon">${esc(initials(p.name))}</span><span class="rt"><span class="r1">${esc(p.name)}</span><br><span class="r2">${esc(p.place||'')} · ${n} ${n===1?'Tür':'Türen'} · ${pl} ${pl===1?'Plan':'Pläne'}</span></span><span class="tag ph-${p.phase}">${PHASES[p.phase]}</span>${p.id===proj().id?ICON.check:''}</button>`}).join('');
+  const cp=proj();
+  const phaseSel=`<h3>Phase von „${esc(cp.name)}“</h3><div class="phases" role="radiogroup" aria-label="Projektphase">${PHASE_ORDER.map((k,i)=>`<button class="phase" data-act="setPhase" data-k="${k}" role="radio" aria-checked="${cp.phase===k}"><span class="pi num">${i+1}</span><span class="pt">${PHASES[k]}</span><span class="ph">${PHASE_HINT[k]}</span></button>`).join('')}</div>`;
   const install=installSection();
   openSheet(`<h2>Projekte</h2><p class="sub">Türliste, Pläne und Tabelle zeigen immer das gewählte Projekt.</p>
     <div class="rowlist" role="radiogroup">${rows}</div>
+    ${phaseSel}
     <h3>Neues Projekt</h3>
-    <form id="newProject" class="form" autocomplete="off"><div class="field"><label for="np_name">Projektname</label><input id="np_name" required placeholder="z. B. Klinikum Nord"></div><div class="field"><label for="np_place">Gebäude / Ort</label><input id="np_place" placeholder="z. B. Bettenhaus B · Erding"></div><div class="formbar" style="grid-column:1/-1;margin-top:0"><button class="btn primary" type="submit">${ICON.plus}Projekt anlegen</button></div></form>
+    <form id="newProject" class="form" autocomplete="off"><div class="field"><label for="np_name">Projektname</label><input id="np_name" required placeholder="z. B. Klinikum Nord"></div><div class="field"><label for="np_place">Gebäude / Ort</label><input id="np_place" placeholder="z. B. Bettenhaus B · Erding"></div><div class="field"><label for="np_phase">Phase</label><select id="np_phase">${PHASE_ORDER.map(k=>`<option value="${k}">${PHASES[k]}</option>`).join('')}</select></div><div class="formbar" style="grid-column:1/-1;margin-top:0"><button class="btn primary" type="submit">${ICON.plus}Projekt anlegen</button></div></form>
     <h3>Daten auf diesem Gerät</h3>
     <p class="note">Alle Projekte, Türen, Pläne und die Historie werden nur lokal in diesem Browser gespeichert. Es gibt keinen Server und keinen Fernzugriff. Sichere deine Daten regelmäßig als Datei.</p>
     <div class="btnrow" style="margin-top:10px"><button class="btn" data-act="exportJson">Sicherung exportieren</button><button class="btn" data-act="importJson">Sicherung importieren</button>${sheetState.reset?`<button class="btn accent" data-act="doReset">Wirklich alles zurücksetzen</button>`:`<button class="btn ghost danger" data-act="askReset">Demo-Daten zurücksetzen</button>`}</div>
@@ -940,6 +964,8 @@ const A={
   home(){ui.tab='home';ui.phoneDetail=false;ui.editing=false;ui.placing=null;ui.pendingPos=null;ui.ticketId=null;closeSheet();render();},
   openAny(el){const d=door(el.dataset.id);if(!d)return;if(d.projectId!==S.currentProjectId){S.currentProjectId=d.projectId;resetView();save();}ui.tab='list';openDoor(d.id);},
   goProject(el){S.currentProjectId=el.dataset.id;resetView();ui.tab='list';if(isWide())ui.doorId=doorsOf().sort(byUrgency)[0]?.id||null;save();render();},
+  dashPhase(el){ui.dphase=el.dataset.k;lsSet('dk.dphase',ui.dphase);render();},
+  setPhase(el){const p=proj(),k=el.dataset.k;if(p.phase===k)return;p.phase=k;save();projectsSheet();render();toast(`${p.name}: Phase „${PHASES[k]}“`);},
   listSort(el){ui.sort=el.dataset.k;lsSet('dk.sort',ui.sort);render();},
   tab(el){ui.tab=el.dataset.k;ui.phoneDetail=false;ui.editing=false;ui.placing=null;ui.pendingPos=null;lsSet('dk.tab',ui.tab);render();},
   pane(el){ui.pane=el.dataset.k;ui.placing=null;ui.pendingPos=null;if(ui.pane!=='detail')ui.editing=false;lsSet('dk.pane',ui.pane);render();},
@@ -1104,8 +1130,8 @@ document.addEventListener('submit',e=>{
   }
   if(f.id==='newProject'){
     const name=$('#np_name').value.trim();if(!name)return;
-    const p={id:uid(),name,place:$('#np_place').value.trim()};
-    S.projects.push(p);S.currentProjectId=p.id;resetView();save();closeSheet();render();toast(`Projekt „${name}“ angelegt`);
+    const p={id:uid(),name,place:$('#np_place').value.trim(),phase:$('#np_phase').value||'planung'};
+    S.projects.push(p);S.currentProjectId=p.id;resetView();if(ui.tab==='home')ui.tab='list';save();closeSheet();render();toast(`Projekt „${name}“ angelegt`);
   }
   if(f.id==='renamePlan'){
     const p=currentPlan();const n=$('#rp_name').value.trim();if(!p||!n)return;
