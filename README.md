@@ -40,3 +40,11 @@ Jede Tür kann eine offene Aufgabe mit Priorität (Dringend, Hoch, Normal, Niedr
 ## Projektphasen
 
 Jedes Projekt hat eine Phase: Planung, Bauphase oder Nutzung. Gewählt wird sie im Projekt-Menü (oben auf den Projektnamen tippen) oder beim Anlegen. Wartungsfristen werden erst in der Phase „Nutzung“ überwacht. Die Übersicht lässt sich nach Phase filtern.
+
+Die App stellt je Phase andere Inhalte nach vorn:
+
+| Phase | Startansicht | Im Vordergrund |
+|---|---|---|
+| Planung | Türliste | Planungsangaben mit Vollständigkeit (Türtyp, Brandschutz, Maße, Hersteller, Beschlag), Detailzeichnungen und Unterlagen je Tür (PDF oder Bild) |
+| Bauphase | Plan | Teileliste je Tür (Offen, Bestellt, Geliefert, Montiert), Ansicht „Teile“ nach Einbauort, Teile im Plan-Pin |
+| Nutzung | Wartung | Zustand (Gut bis Mangelhaft), fällige Wartungen, Wartungsprotokoll mit Datum, Zustand und Bemerkung |

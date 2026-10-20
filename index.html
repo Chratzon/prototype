@@ -169,6 +169,46 @@ main{min-height:0;position:relative;overflow:hidden}
 .bar{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
 .bar i{display:block;height:100%;background:var(--petrol)}
 .homelink{margin-right:auto}
+.segbar{align-items:center}
+.block h3 .cnt{color:var(--muted);letter-spacing:0;text-transform:none;font-weight:500;margin-left:6px}
+.param.miss{background:var(--amber-soft)}
+.files{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.file{display:grid;gap:4px;text-align:left;font-size:12.5px;border:1px solid var(--line);border-radius:10px;padding:6px;background:var(--surface);min-width:0}
+.file img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;background:#fff}
+.file span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file.add{place-items:center;align-content:center;min-height:120px;border-style:dashed;color:var(--petrol-text);text-align:center}
+.file.add svg{width:22px;height:22px}
+.file.add span{white-space:normal}
+.fileview{background:var(--plan-bg);border-radius:12px;padding:8px;max-height:60vh;overflow:auto}
+.fileview img{display:block;width:100%;height:auto;background:#fff}
+.parts{display:grid;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.pgroup .parts{border:0;border-radius:0;border-top:1px solid var(--line)}
+.part{display:flex;align-items:center;gap:10px;padding:7px 8px 7px 12px;border-top:1px solid var(--line)}
+.part:first-child{border-top:0}
+.part .pn{flex:1;min-width:0;font-size:14px}
+.part .qty{color:var(--muted);font-size:13px}
+.iconbtn.sm{width:30px;height:30px}.iconbtn.sm svg{width:16px;height:16px}
+.pt-offen{background:var(--surface-2);color:var(--muted)}
+.pt-bestellt{background:var(--amber-soft);color:var(--amber-text)}
+.pt-geliefert{background:var(--petrol-soft);color:var(--petrol-text)}
+.pt-montiert{background:var(--petrol);color:#fff}
+.pghead{display:flex;align-items:center;gap:8px;padding:10px 10px 10px 14px}
+.pgt{flex:1;min-width:0;text-align:left;font-weight:600}
+.pgt .r2{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.linkbtn{color:var(--petrol-text);font-weight:600;text-decoration:underline}
+.muted{color:var(--muted)}
+.conds{display:flex;flex-wrap:wrap;gap:6px}
+.cond{padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface);font-size:13.5px;font-weight:500}
+.cond[aria-checked="true"].c-gut{background:var(--petrol);border-color:var(--petrol);color:#fff}
+.cond[aria-checked="true"].c-gebrauchsspuren{background:var(--surface-2);border-color:var(--muted)}
+.cond[aria-checked="true"].c-pflegebeduerftig{background:var(--amber-soft);border-color:var(--amber-text);color:var(--amber-text)}
+.cond[aria-checked="true"].c-mangelhaft{background:var(--coral);border-color:var(--coral);color:#fff}
+.mrow{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-top:1px solid var(--line)}
+.mrow .mt{flex:1;min-width:0;display:grid;gap:2px;text-align:left}
+.mrow .t1{font-weight:600;font-size:14.5px}
+.mrow .t2{font-size:13px;color:var(--muted)}
+.mrow .badges{margin-top:2px}
+@media (max-width:480px){.hide-s{display:none}.navbtn{font-size:10.5px}.ni{padding:2px 10px}}
 .ph-planung{background:var(--surface-2);color:var(--muted)}
 .ph-bau{background:var(--amber-soft);color:var(--amber-text)}
 .ph-nutzung{background:var(--petrol-soft);color:var(--petrol-text)}
@@ -218,7 +258,7 @@ main{min-height:0;position:relative;overflow:hidden}
 .btn.danger{color:var(--coral-text)}
 .block{padding:18px 16px 4px}
 .block h3{font-size:13px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--petrol-text);margin-bottom:10px;font-family:var(--f-ui)}
-.params{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin:0}
+.params{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin:0}
 .param{background:var(--surface);padding:10px 12px;min-width:0;box-shadow:1px 0 0 var(--line),0 1px 0 var(--line)}
 .param dt{font-size:12px;color:var(--muted);margin-bottom:2px}
 .param dd{margin:0;font-weight:500;overflow-wrap:anywhere}
@@ -354,6 +394,7 @@ tbody tr:last-child td{border-bottom:0}
 <div id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="planFile" accept="application/pdf,image/*" multiple hidden>
 <input type="file" id="importFile" accept="application/json,.json" hidden>
+<input type="file" id="docFile" accept="application/pdf,image/*" multiple hidden>
 
 <script>
 'use strict';
@@ -365,7 +406,28 @@ const FIRE=['ohne','T30','T30-RS','T60','T90','RS'];
 const PRIOS=['Dringend','Hoch','Normal','Niedrig'];
 const PHASES={planung:'Planung',bau:'Bauphase',nutzung:'Nutzung'};
 const PHASE_ORDER=['planung','bau','nutzung'];
-const PHASE_HINT={planung:'Türen erfassen und planen, noch keine Wartungen',bau:'Einbau und Abnahme, noch keine Wartungen',nutzung:'Gebäude in Betrieb, Wartungsfristen werden überwacht'};
+const PHASE_HINT={planung:'Türliste, Angaben und Detailzeichnungen im Vordergrund',bau:'Plan und Teilelisten für den Einbau im Vordergrund',nutzung:'Zustand und Wartungen im Vordergrund'};
+const CONDS=['Gut','Gebrauchsspuren','Pflegebedürftig','Mangelhaft'];
+const PART_STATES=['offen','bestellt','geliefert','montiert'];
+const PART_STATE={offen:'Offen',bestellt:'Bestellt',geliefert:'Geliefert',montiert:'Montiert'};
+const PART_SUGGEST=['Türblatt','Zarge','Bänder','Schloss','Drückergarnitur','Profilzylinder','Obentürschließer','Feststellanlage','Bodendichtung','Schließfolgeregler','Panikbeschlag','E-Öffner','Türstopper'];
+// Kernangaben, die in der Planung je Tür vorliegen sollten
+const PLAN_KEYS=['type','fire','width','height','maker','hardware'];
+function completeness(d){
+  const missing=PLAN_KEYS.filter(k=>d[k]===''||d[k]==null).map(k=>FIELDS.find(f=>f.k===k).l);
+  return {n:PLAN_KEYS.length-missing.length,of:PLAN_KEYS.length,missing};
+}
+function defaultParts(d){
+  const two=/2-flg/.test(d.type||''),slide=/Schiebe/.test(d.type||'');
+  const l=[[two?'Türblatt (Gang- und Standflügel)':'Türblatt',1],['Zarge',1]];
+  if(!slide)l.push(['Bänder',two?6:3],['Schloss',1],['Drückergarnitur',1],['Profilzylinder',1]);
+  else l.push(['Laufschiene',1],['Griffmuschel',2]);
+  if(d.fire&&d.fire!=='ohne')l.push(['Obentürschließer',two?2:1]);
+  if(two&&d.fire&&d.fire!=='ohne')l.push(['Schließfolgeregler',1]);
+  if(/RS/.test(d.fire||''))l.push(['Bodendichtung',two?2:1]);
+  return l.map(([name,qty])=>({id:uid(),name,qty,state:'offen'}));
+}
+
 const PRIO_RANK={Dringend:0,Hoch:1,Normal:2,Niedrig:3};
 // g:'task' = Felder der offenen Aufgabe (Ticket), werden im Detail separat über den Parametern gezeigt
 const FIELDS=[
@@ -401,6 +463,8 @@ const ICON={
   check:'<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>',
   fit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
   dots:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>',
+  parts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 4 7v10l8 4 8-4V7z"/><path d="m4 7 8 4 8-4M12 11v10"/></svg>',
+  maint:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M14.5 6.5a4 4 0 0 0 5 5L11 20a2.1 2.1 0 0 1-3-3l8.5-8.5"/><path d="M14.5 6.5 17 4l3 3-2.5 2.5"/></svg>',
   home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg>',
   upload:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 20h16"/></svg>',
 };
@@ -454,6 +518,8 @@ function urgency(d){
   else if(open&&near!=null)tier=5;                         // Termin vor keinem Termin
   else if(open)tier=6;
   else tier=near!=null?7:8;                                // erledigt ans Ende
+  if(inUse(d)&&d.condition==='Mangelhaft')tier=Math.min(tier,4);       // Zustand zählt in der Nutzung
+  else if(inUse(d)&&d.condition==='Pflegebedürftig')tier=Math.min(tier,5);
   return {tier,pr,near,fd,sd};
 }
 const STATUS_URG={offen:0,pruefung:1,geplant:2,erledigt:3};
@@ -471,8 +537,8 @@ function urgentBadges(d){
 // Bestehende Daten (ohne Aufgabenfelder) weiter laden
 function migrate(st){
   st.projects.forEach(p=>{if(!PHASES[p.phase])p.phase='nutzung';});
-  st.doors.forEach(d=>{if(!PRIOS.includes(d.prio))d.prio='Normal';if(d.due==null)d.due='';if(d.task==null)d.task='';if(!Array.isArray(d.history))d.history=[];});
-  st.v=3;return st;
+  st.doors.forEach(d=>{if(!PRIOS.includes(d.prio))d.prio='Normal';if(d.due==null)d.due='';if(d.task==null)d.task='';if(!Array.isArray(d.history))d.history=[];if(!Array.isArray(d.parts))d.parts=[];if(!Array.isArray(d.files))d.files=[];if(d.condition==null)d.condition='';});
+  st.v=4;return st;
 }
 
 /* ---------- Demo-Grundriss (SVG) ---------- */
@@ -522,6 +588,7 @@ function seed(){
   const users=[{id:'u1',name:'Thomas Huber',role:'Projektleitung'},{id:'u2',name:'Mara Nowak',role:'Technikerin'},{id:'u3',name:'Anna Vogel',role:'Planerin'}];
   const p1={id:'p1',name:'Sägewerk Köll',place:'Bürogebäude · Grafing',phase:'nutzung'};
   const p2={id:'p2',name:'Wohnanlage Rosenweg',place:'Haus A · Rosenheim',phase:'bau'};
+  const p3={id:'p3',name:'Klinikum Nord',place:'Bettenhaus B · Erding',phase:'planung'};
   const eg=demoPlan('Grundriss EG',['Büro 0.01','Büro 0.02','Besprechung 0.03','Teeküche 0.04'],['Treppenhaus TH1','Technik 0.05','Archiv 0.06','WC 0.07','Lager 0.08']);
   const og=demoPlan('Grundriss 1. OG',['Büro 1.01','Büro 1.02','Büro 1.03'],['Treppenhaus TH1','Server 1.04','Kopierraum 1.05','WC 1.06']);
   const kg=demoPlan('Haus A · Kellergeschoss',['Keller 1','Keller 2','Keller 3','Keller 4'],['Treppenhaus','Heizung','Fahrradraum']);
@@ -531,7 +598,7 @@ function seed(){
     {id:'pl3',projectId:'p2',name:'KG Haus A',src:kg.src,w:kg.w,h:kg.h,created:daysAgo(20)},
   ];
   const H=(d,user,kind,text)=>({ts:daysAgo(d),user,kind,text});
-  const base=(o)=>Object.assign({id:uid(),task:'',prio:'Normal',due:'',maker:'',width:'',height:'',year:'',hardware:'',interval:12,lastService:'',status:'geplant',planId:null,x:null,y:null},o);
+  const base=(o)=>Object.assign({id:uid(),task:'',prio:'Normal',due:'',condition:'',parts:[],files:[],maker:'',width:'',height:'',year:'',hardware:'',interval:12,lastService:'',status:'geplant',planId:null,x:null,y:null},o);
   const at=(plan,pos)=>({planId:plan,x:pos.x,y:pos.y});
   const doors=[
     base({projectId:'p1',nr:'T-EG-00',name:'Haupteingang',floor:'EG',room:'Flur / Eingang',type:'Drehflügeltür 2-flg.',fire:'ohne',maker:'Hörmann',width:1800,height:2250,year:2019,hardware:'Panikschloss, E-Öffner',interval:12,lastService:dateOnly(daysAgo(120)),status:'erledigt',...at('pl1',eg.doors[0]),history:[H(40,'Anna Vogel','create','Tür angelegt über Plan „EG“'),H(120,'Mara Nowak','service','Wartung durchgeführt')]}),
@@ -551,8 +618,19 @@ function seed(){
     base({projectId:'p2',nr:'T-KG-05',task:'Bodendichtung tauschen (Rauchschutz)',prio:'Hoch',due:dateOnly(daysAgo(2)),name:'Treppenhaus KG',floor:'KG',room:'Treppenhaus',type:'Rohrrahmentür',fire:'T30-RS',interval:12,status:'offen',...at('pl3',kg.doors[5]),history:[H(20,'Thomas Huber','create','Tür angelegt über Plan „KG Haus A“'),H(5,'Mara Nowak','note','Dichtung unten beschädigt, Rauchschutz nicht gewährleistet.')]}),
     base({projectId:'p2',nr:'T-KG-06',name:'Heizraum',floor:'KG',room:'Heizung',type:'Drehflügeltür 1-flg.',fire:'T90',maker:'Hörmann',interval:12,lastService:dateOnly(daysAgo(100)),status:'erledigt',...at('pl3',kg.doors[6]),history:[H(20,'Thomas Huber','create','Tür angelegt über Plan „KG Haus A“')]}),
   ];
+  // Demo: Zustand in der Nutzung, Teile in der Bauphase, Türliste in der Planung
+  const byN=n=>doors.find(d=>d.nr===n);
+  ['T-EG-00','T-EG-01','T-EG-04','T-EG-07','T-EG-08','T-OG-01','T-OG-05'].forEach(n=>byN(n).condition='Gut');
+  byN('T-EG-03').condition='Gebrauchsspuren';byN('T-OG-04').condition='Pflegebedürftig';byN('T-EG-05').condition='Mangelhaft';byN('T-EG-06').condition='Gebrauchsspuren';
+  doors.filter(d=>d.projectId==='p2').forEach((d,i)=>{d.parts=defaultParts(d);d.parts.forEach((x,j)=>x.state=PART_STATES[Math.max(0,Math.min(3,3-i-(j%3)))]);});
+  doors.push(
+    base({projectId:'p3',nr:'T-01',name:'Patientenzimmer',floor:'EG',room:'Zimmer 0.12',type:'Drehflügeltür 1-flg.',fire:'ohne',width:1250,height:2135,maker:'Schörghuber',hardware:'Feuchtraumgeeignet, Drückergarnitur',history:[H(9,'Anna Vogel','create','Tür angelegt aus Türliste')]}),
+    base({projectId:'p3',nr:'T-02',name:'Flurtür Station',floor:'EG',room:'Flur Station B',type:'Drehflügeltür 2-flg.',fire:'T30-RS',width:2000,height:2250,task:'Feststellanlage mit Brandmeldeanlage abstimmen',prio:'Hoch',due:dateOnly(daysAgo(-10)),history:[H(8,'Anna Vogel','create','Tür angelegt aus Türliste')]}),
+    base({projectId:'p3',nr:'T-03',name:'Technikraum',floor:'KG',room:'Technik -1.04',type:'Drehflügeltür 1-flg.',fire:'T90',history:[H(8,'Anna Vogel','create','Tür angelegt aus Türliste')]}),
+    base({projectId:'p3',nr:'T-04',name:'Aufzugsvorraum',floor:'EG',room:'Vorraum Aufzug',type:'Schiebetür',fire:'RS',width:1400,history:[H(7,'Anna Vogel','create','Tür angelegt aus Türliste')]}),
+  );
   doors.forEach(d=>d.history.sort((a,b)=>a.ts<b.ts?1:-1));
-  return {v:3,users,projects:[p1,p2],plans,doors,currentProjectId:'p1',currentUserId:'u1'};
+  return {v:4,users,projects:[p1,p2,p3],plans,doors,currentProjectId:'p1',currentUserId:'u1'};
 }
 
 /* ---------- Speicher (IndexedDB, Fallback: nur im Arbeitsspeicher) ---------- */
@@ -587,7 +665,7 @@ const ui={
   tab:'home',                      // home | list | plan | table; App startet immer mit der Übersicht
   pane:lsGet('dk.pane')||'detail', // detail | plan | table (Tablet, rechts)
   doorId:null, phoneDetail:false, editing:false,
-  dphase:lsGet('dk.dphase')||'alle',
+  dphase:lsGet('dk.dphase')||'alle', partState:'alle', fileDoor:null,
   q:'', status:'alle', sort:lsGet('dk.sort')||'prio',
   planId:null, zoom:1, ticketId:null, placing:null, pendingPos:null,
   t:{q:'',status:'',floor:'',fire:'',sort:'prio',dir:1},
@@ -605,21 +683,37 @@ const plan=id=>S.plans.find(p=>p.id===id);
 function log(d,kind,text){d.history.unshift({ts:new Date().toISOString(),user:me().name,kind,text});}
 function byNr(a,b){return String(a.nr).localeCompare(String(b.nr),'de',{numeric:true})}
 
+/* ---------- Ansichten je Projektphase ---------- */
+// Planung: Türliste und Angaben vorn. Bau: Plan und Teile vorn. Nutzung: Zustand und Wartung vorn.
+const VIEWS={list:'Türliste',plan:'Plan',table:'Tabelle',parts:'Teile',maint:'Wartung',detail:'Türdetail'};
+const PHASE_VIEWS={planung:['list','table','plan'],bau:['plan','parts','list','table'],nutzung:['maint','list','plan','table']};
+const PHASE_PANES={planung:['detail','table','plan'],bau:['plan','parts','detail','table'],nutzung:['maint','detail','plan','table']};
+const phase=()=>PHASES[proj().phase]?proj().phase:'nutzung';
+function firstView(){ui.tab=PHASE_VIEWS[phase()][0];ui.pane=PHASE_PANES[phase()][0];}
+function fixView(){
+  if(ui.tab!=='home'&&!PHASE_VIEWS[phase()].includes(ui.tab))ui.tab=PHASE_VIEWS[phase()][0];
+  if(!PHASE_PANES[phase()].includes(ui.pane))ui.pane=PHASE_PANES[phase()][0];
+}
+function paneHtml(k){
+  if(k==='plan')return planView();
+  if(k==='detail')return `<div class="view">${detailView()}</div>`;
+  if(k==='table')return `<div class="view">${tableView()}</div>`;
+  if(k==='parts')return `<div class="view">${partsView()}</div>`;
+  if(k==='maint')return `<div class="view">${maintView()}</div>`;
+  return listView();
+}
+
 /* ---------- Rendering ---------- */
 function render(){
+  fixView();
   renderHeader();
   const main=$('#main');
   if(ui.tab==='home'){
     main.innerHTML=`<div class="view" id="dashScroll">${dashView()}</div>`;
   }else if(isWide()){
-    main.innerHTML=`<div class="split"><aside>${listView()}</aside><section><div class="segbar"><button class="btn ghost homelink" data-act="home">${ICON.home}Übersicht</button><div class="seg" role="group" aria-label="Ansicht">${['detail','plan','table'].map(k=>`<button data-act="pane" data-k="${k}" aria-pressed="${ui.pane===k}">${{detail:'Türdetail',plan:'Plan',table:'Tabelle'}[k]}</button>`).join('')}</div></div><div class="pane" id="pane">${ui.pane==='detail'?`<div class="view">${detailView()}</div>`:ui.pane==='plan'?planView():`<div class="view">${tableView()}</div>`}</div></section></div>`;
+    main.innerHTML=`<div class="split"><aside>${listView()}</aside><section><div class="segbar"><button class="btn ghost homelink" data-act="home">${ICON.home}Übersicht</button><span class="tag ph-${phase()}">${PHASES[phase()]}</span><div class="seg" role="group" aria-label="Ansicht">${PHASE_PANES[phase()].map(k=>`<button data-act="pane" data-k="${k}" aria-pressed="${ui.pane===k}">${VIEWS[k]}</button>`).join('')}</div></div><div class="pane" id="pane">${paneHtml(ui.pane)}</div></section></div>`;
   }else{
-    let inner;
-    if(ui.phoneDetail&&door(ui.doorId))inner=`<div class="view">${detailView()}</div>`;
-    else if(ui.tab==='plan')inner=planView();
-    else if(ui.tab==='table')inner=`<div class="view">${tableView()}</div>`;
-    else inner=listView();
-    main.innerHTML=inner;
+    main.innerHTML=ui.phoneDetail&&door(ui.doorId)?paneHtml('detail'):paneHtml(ui.tab);
   }
   renderBottom();
   afterRender();
@@ -634,7 +728,8 @@ function renderBottom(){
   let h='';
   if(installHint())h+=installHint();
   if(!isWide()){
-    h+=`<nav class="bottomnav" aria-label="Hauptnavigation">${[['home','Übersicht'],['list','Türliste'],['plan','Plan'],['table','Tabelle']].map(([k,l])=>`<button class="navbtn" data-act="tab" data-k="${k}" ${ui.tab===k&&!ui.phoneDetail?'aria-current="page"':''}><span class="ni">${ICON[k]}</span>${l}</button>`).join('')}</nav>`;
+    const items=[['home','Übersicht'],...(ui.tab==='home'?[['list','Türliste'],['plan','Plan'],['table','Tabelle']]:PHASE_VIEWS[phase()].map(k=>[k,VIEWS[k]]))];
+    h+=`<nav class="bottomnav" aria-label="Hauptnavigation" style="grid-template-columns:repeat(${items.length},1fr)">${items.map(([k,l])=>`<button class="navbtn" data-act="tab" data-k="${k}" ${ui.tab===k&&!ui.phoneDetail?'aria-current="page"':''}><span class="ni">${ICON[k]}</span>${l}</button>`).join('')}</nav>`;
   }
   $('#bottom').innerHTML=h;
 }
@@ -676,9 +771,13 @@ function dashView(){
   const projs=projects.map(p=>{
     const ds=all.filter(d=>d.projectId===p.id),done=ds.filter(d=>d.status==='erledigt').length;
     const late=ds.filter(d=>U.get(d.id).near!=null&&U.get(d.id).near<0).length,off=ds.filter(d=>d.status==='offen').length,urg=ds.filter(d=>isOpen(d)&&d.prio==='Dringend').length;
+    let metric,ratio;
+    if(p.phase==='planung'){const c=ds.filter(d=>completeness(d).n===PLAN_KEYS.length).length;metric=`${c} von ${ds.length} Türen vollständig beschrieben`;ratio=ds.length?c/ds.length:0;}
+    else if(p.phase==='bau'){const ps=ds.flatMap(d=>d.parts||[]),m=ps.filter(x=>x.state==='montiert').length;metric=ps.length?`${m} von ${ps.length} Teilen montiert`:'Noch keine Teilelisten';ratio=ps.length?m/ps.length:0;}
+    else{const okc=ds.filter(d=>serviceState(d)!=='due'&&d.condition!=='Mangelhaft').length,care=ds.filter(d=>d.condition==='Pflegebedürftig'||d.condition==='Mangelhaft').length;metric=`${okc} von ${ds.length} Türen in Ordnung${care?` · ${care} pflegebedürftig`:''}`;ratio=ds.length?okc/ds.length:0;}
     const flags=[late?`<span class="badge due">${late} überfällig</span>`:'',urg?`<span class="badge urgent">${urg} dringend</span>`:'',off?`<span class="badge">${off} ${off===1?'Mangel':'Mängel'}</span>`:''].join('');
     return `<button class="pcard" data-act="goProject" data-id="${p.id}"><span class="r1"><span class="projicon">${esc(initials(p.name))}</span><span style="flex:1;min-width:0">${esc(p.name)}<br><span class="r2">${esc(p.place||'')}</span></span><span class="tag ph-${p.phase}">${PHASES[p.phase]}</span></span>
-      <span class="r2 num">${ds.length} ${ds.length===1?'Tür':'Türen'} · ${done} erledigt</span><span class="bar"><i style="width:${ds.length?Math.round(done/ds.length*100):0}%"></i></span>${flags?`<span class="badges" style="margin-top:0">${flags}</span>`:''}</button>`;
+      <span class="r2 num">${ds.length} ${ds.length===1?'Tür':'Türen'} · ${esc(metric)}</span><span class="bar"><i style="width:${Math.round(ratio*100)}%"></i></span>${flags?`<span class="badges" style="margin-top:0">${flags}</span>`:''}</button>`;
   }).join('');
 
   // Letzte Aktivität
@@ -720,12 +819,15 @@ function statusChips(){
   }).join('');
 }
 function badgesHtml(d){
-  const b=urgentBadges(d);
+  const b=urgentBadges(d),ph=phase();
+  if(ph==='planung'){const c=completeness(d);if(c.n<c.of)b.push(`<span class="badge low">Angaben ${c.n}/${c.of}</span>`);if(d.files?.length)b.push(`<span class="badge">${d.files.length} ${d.files.length===1?'Zeichnung':'Zeichnungen'}</span>`);}
+  if(ph==='bau'){const ps=d.parts||[],m=ps.filter(x=>x.state==='montiert').length;b.push(ps.length?`<span class="badge ${m===ps.length?'':'soon'}">Teile ${m}/${ps.length} montiert</span>`:'<span class="badge low">keine Teileliste</span>');}
+  if(ph==='nutzung'&&condBadge(d))b.push(condBadge(d));
   if(d.fire&&d.fire!=='ohne')b.push(`<span class="badge fire">${esc(d.fire)}</span>`);
   const s=serviceState(d);
   if(s==='due')b.push('<span class="badge due">Wartung fällig</span>');
   else if(s==='soon')b.push('<span class="badge soon">Wartung bald fällig</span>');
-  if(!d.planId)b.push('<span class="badge nopin">nicht im Plan</span>');
+  if(!d.planId&&ph!=='nutzung')b.push('<span class="badge nopin">nicht im Plan</span>');
   return b.length?`<div class="badges">${b.join('')}</div>`:'';
 }
 function cardsHtml(){
@@ -743,44 +845,137 @@ function cardsHtml(){
 }
 function refreshList(){const c=$('#cards');if(c)c.innerHTML=cardsHtml();const sc=$('#statusChips');if(sc)sc.innerHTML=statusChips();}
 
-/* Türdetail */
+/* Türdetail: Reihenfolge der Blöcke richtet sich nach der Projektphase */
 function detailView(){
   const d=door(ui.doorId);
   if(!d||d.projectId!==proj().id){
     return `<div class="empty" style="padding-top:80px"><h3>Keine Tür ausgewählt</h3>Wähle links eine Tür aus der Liste oder tippe im Plan auf einen Pin.</div>`;
   }
-  const p=plan(d.planId);
+  const ph=phase(),p=plan(d.planId);
   const head=`<div class="dhead">
     ${isWide()?'<span></span>':`<button class="iconbtn" data-act="back" aria-label="Zurück">${ICON.back}</button>`}
     <div style="min-width:0"><div class="nr">${esc(d.nr)}</div><h2>${esc(d.name||'Ohne Bezeichnung')}</h2><div class="meta">${esc([d.floor,d.room].filter(Boolean).join(' · '))}${p?` · Plan „${esc(p.name)}“`:''}</div></div>
     <button class="tagbtn" data-act="cycle" title="Status weiterschalten"><span class="tag s-${d.status}">${STATUS[d.status]}</span><span class="hint">Tippen zum Ändern</span></button>
   </div>`;
-  const actions=ui.editing?'':`<div class="actions">
-    <button class="btn primary" data-act="edit">${ICON.edit}Parameter bearbeiten</button>
-    <button class="btn" data-act="service">${ICON.wrench}Wartung erfassen</button>
-    ${p?`<button class="btn" data-act="showOnPlan">${ICON.pin}Im Plan zeigen</button>`:`<button class="btn" data-act="placeExisting">${ICON.pin}Im Plan platzieren</button>`}
-  </div>`;
-  let params;
+  const B={
+    edit:`<button class="btn" data-act="edit">${ICON.edit}Parameter bearbeiten</button>`,
+    service:`<button class="btn" data-act="service">${ICON.wrench}Wartung erfassen</button>`,
+    plan:p?`<button class="btn" data-act="showOnPlan">${ICON.pin}Im Plan zeigen</button>`:`<button class="btn" data-act="placeExisting">${ICON.pin}Im Plan platzieren</button>`,
+    file:`<button class="btn" data-act="addFile">${ICON.upload}Zeichnung / Unterlage</button>`,
+  };
+  const prim=h=>h.replace('class="btn"','class="btn primary"');
+  const order={planung:[prim(B.edit),B.file,B.plan],bau:[prim(B.plan),B.edit],nutzung:[prim(B.service),B.edit,B.plan]}[ph];
+  const actions=ui.editing?'':`<div class="actions">${order.join('')}</div>`;
   if(ui.editing){
-    params=`<form class="block" id="editForm" autocomplete="off"><h3>Parameter bearbeiten</h3><p class="editing-note">Geänderte Felder werden mit Datum, Uhrzeit und „${esc(me().name)}“ in der Historie festgehalten.</p>
+    const form=`<form class="block" id="editForm" autocomplete="off"><h3>Parameter bearbeiten</h3><p class="editing-note">Geänderte Felder werden mit Datum, Uhrzeit und „${esc(me().name)}“ in der Historie festgehalten.</p>
       <div class="form">${FIELDS.map(f=>fieldHtml(f,d[f.k],'f_')).join('')}</div>
       <div class="formbar"><button type="button" class="btn ghost" data-act="cancelEdit">Abbrechen</button><button type="submit" class="btn primary">Änderungen speichern</button></div></form>`;
-  }else{
-    const ns=nextService(d),ss=serviceState(d);
-    const u=urgency(d);
-    const taskBlock=`<div class="block"><h3>Aufgabe</h3><dl class="params"><div class="param" style="grid-column:1/-1"><dt>Aufgabe / Mangel</dt><dd class="${d.task?'':'empty-val'}">${d.task?esc(d.task):'keine offene Aufgabe erfasst'}</dd></div><div class="param"><dt>Priorität</dt><dd>${esc(d.prio)}</dd></div><div class="param"><dt>Frist</dt><dd class="num ${d.due?'':'empty-val'}">${d.due?`${fmtDate(d.due)}${u.fd!=null&&u.fd<0?' <span class="badge due">überfällig</span>':u.fd!=null&&u.fd<=14?` <span class="badge soon">${relDays(u.fd)}</span>`:''}`:'keine Frist'}</dd></div></dl></div>`;
-    params=taskBlock+`<div class="block"><h3>Parameter</h3><dl class="params">${FIELDS.filter(f=>f.g!=='task').map(f=>{
-      let v=d[f.k];
-      if(f.t==='date')v=fmtDate(v);
-      return `<div class="param"><dt>${esc(f.l)}</dt><dd class="${v===''||v==null?'empty-val':''} ${f.t==='number'?'num':''}">${v===''||v==null?'nicht erfasst':esc(v)}</dd></div>`;
-    }).join('')}<div class="param"><dt>Nächste Wartung</dt><dd class="num">${ns?`${fmtDate(ns.toISOString())}${ss==='due'?' <span class="badge due">fällig</span>':ss==='soon'?' <span class="badge soon">bald</span>':''}`:'<span class="empty-val">offen</span>'}</dd></div></dl></div>`;
+    return `<div class="detail">${head}${form}</div>`;
   }
+  const blocks={planung:[filesBlock(d),paramsBlock(d,true),taskBlock(d)],bau:[partsBlock(d),taskBlock(d),filesBlock(d,true),paramsBlock(d)],nutzung:[careBlock(d),taskBlock(d),paramsBlock(d)]}[ph];
   const hist=`<div class="block"><h3>Historie</h3>
     <form class="composer" id="noteForm"><input id="noteInput" placeholder="Notiz oder Mangel festhalten …" aria-label="Notiz"><button class="btn primary" type="submit">Hinzufügen</button></form>
     <ol class="timeline">${d.history.map(h=>`<li class="tl"><span class="dot ${h.kind}"></span><div><div class="tt">${h.kind==='change'?'<span class="kind">Änderung · </span>':h.kind==='note'?'<span class="kind">Notiz · </span>':h.kind==='service'?'<span class="kind">Wartung · </span>':''}${esc(h.text)}</div><div class="tm">${esc(fmtDateTime(h.ts))} · ${esc(h.user)}</div></div></li>`).join('')}</ol>
   </div>
   <div class="block">${ui.confirm==='delete'?`<div class="note">Tür ${esc(d.nr)} mit ihrer Historie endgültig löschen?<div class="btnrow" style="margin-top:10px"><button class="btn" data-act="cancelDelete">Behalten</button><button class="btn accent" data-act="doDelete">Endgültig löschen</button></div></div>`:`<button class="btn ghost danger" data-act="askDelete">Tür löschen</button>`}</div>`;
-  return `<div class="detail">${head}${actions}${params}${hist}</div>`;
+  return `<div class="detail">${head}${actions}${blocks.join('')}${hist}</div>`;
+}
+function taskBlock(d){
+  const u=urgency(d);
+  return `<div class="block"><h3>Aufgabe</h3><dl class="params"><div class="param" style="grid-column:1/-1"><dt>Aufgabe / Mangel</dt><dd class="${d.task?'':'empty-val'}">${d.task?esc(d.task):'keine offene Aufgabe erfasst'}</dd></div><div class="param"><dt>Priorität</dt><dd>${esc(d.prio)}</dd></div><div class="param"><dt>Frist</dt><dd class="num ${d.due?'':'empty-val'}">${d.due?`${fmtDate(d.due)}${u.fd!=null&&u.fd<0?' <span class="badge due">überfällig</span>':u.fd!=null&&u.fd<=14?` <span class="badge soon">${relDays(u.fd)}</span>`:''}`:'keine Frist'}</dd></div></dl></div>`;
+}
+function paramsBlock(d,planning){
+  const ns=nextService(d),ss=serviceState(d);
+  const c=completeness(d);
+  const title=planning?`Planungsangaben <span class="cnt">${c.n} von ${c.of} Kernangaben</span>`:'Parameter';
+  return `<div class="block"><h3>${title}</h3>${planning&&c.n<c.of?`<p class="editing-note">Es fehlen noch: ${esc(c.missing.join(', '))}</p>`:''}<dl class="params">${FIELDS.filter(f=>f.g!=='task').map(f=>{
+    let v=d[f.k];
+    if(f.t==='date')v=fmtDate(v);
+    const miss=planning&&PLAN_KEYS.includes(f.k)&&(v===''||v==null);
+    return `<div class="param ${miss?'miss':''}"><dt>${esc(f.l)}</dt><dd class="${v===''||v==null?'empty-val':''} ${f.t==='number'?'num':''}">${v===''||v==null?'nicht erfasst':esc(v)}</dd></div>`;
+  }).join('')}${planning?'':`<div class="param"><dt>Nächste Wartung</dt><dd class="num">${ns?`${fmtDate(ns.toISOString())}${ss==='due'?' <span class="badge due">fällig</span>':ss==='soon'?' <span class="badge soon">bald</span>':''}`:'<span class="empty-val">offen</span>'}</dd></div>`}</dl></div>`;
+}
+function filesBlock(d,compact){
+  const fs=d.files||[];
+  if(compact&&!fs.length)return '';
+  return `<div class="block"><h3>Detailzeichnungen und Unterlagen <span class="cnt">${fs.length||''}</span></h3>
+    <div class="files">${fs.map(f=>`<button class="file" data-act="viewFile" data-id="${f.id}"><img src="${f.src}" alt="" loading="lazy"><span>${esc(f.name)}</span></button>`).join('')}
+    <button class="file add" data-act="addFile">${ICON.plus}<span>PDF oder Bild hinzufügen</span></button></div></div>`;
+}
+function partsBlock(d){
+  const ps=d.parts||[],m=ps.filter(x=>x.state==='montiert').length;
+  const rows=ps.map(x=>`<div class="part"><span class="pn">${esc(x.name)}${x.qty>1?` <span class="qty num">× ${x.qty}</span>`:''}</span><button class="tag pt-${x.state}" data-act="partCycle" data-door="${d.id}" data-id="${x.id}" title="Status weiterschalten">${PART_STATE[x.state]}</button><button class="iconbtn sm" data-act="partDel" data-door="${d.id}" data-id="${x.id}" aria-label="Teil entfernen">${ICON.close}</button></div>`).join('');
+  return `<div class="block"><h3>Teileliste <span class="cnt">${ps.length?`${m} von ${ps.length} montiert`:''}</span></h3>
+    ${ps.length?`<div class="bar" style="margin-bottom:10px"><i style="width:${Math.round(m/ps.length*100)}%"></i></div><div class="parts">${rows}</div>`:`<div class="note">Noch keine Teile erfasst. Übernimm die üblichen Teile für „${esc(d.type||'diese Tür')}“ oder lege sie einzeln an.<div class="btnrow" style="margin-top:10px"><button class="btn primary" data-act="partsDefault">Standard-Teile übernehmen</button></div></div>`}
+    <form class="composer" id="partForm" style="margin-top:10px"><input id="partName" placeholder="Teil, z. B. Türblatt, Bänder, Schloss …" aria-label="Teil" list="partSuggest"><input id="partQty" type="number" inputmode="numeric" min="1" value="1" aria-label="Anzahl" style="flex:0 0 64px"><button class="btn" type="submit">Hinzufügen</button></form>
+    <datalist id="partSuggest">${PART_SUGGEST.map(x=>`<option value="${esc(x)}">`).join('')}</datalist></div>`;
+}
+function careBlock(d){
+  const ns=nextService(d),ss=serviceState(d),n=d.history.filter(h=>h.kind==='service').length;
+  const last=d.history.find(h=>h.kind==='service');
+  return `<div class="block"><h3>Zustand und Wartung</h3>
+    <div class="conds" role="radiogroup" aria-label="Zustand">${CONDS.map(c=>`<button class="cond c-${slug(c)}" data-act="setCond" data-k="${c}" role="radio" aria-checked="${d.condition===c}">${c}</button>`).join('')}</div>
+    <dl class="params" style="margin-top:10px"><div class="param"><dt>Nächste Wartung</dt><dd class="num">${ns?`${fmtDate(ns.toISOString())}${ss==='due'?' <span class="badge due">fällig</span>':ss==='soon'?' <span class="badge soon">bald</span>':''}`:'<span class="empty-val">Intervall oder letzte Wartung fehlt</span>'}</dd></div>
+    <div class="param"><dt>Letzte Wartung</dt><dd class="num ${d.lastService?'':'empty-val'}">${d.lastService?fmtDate(d.lastService):'nicht erfasst'}</dd></div>
+    <div class="param"><dt>Intervall</dt><dd class="num ${d.interval?'':'empty-val'}">${d.interval?`${esc(d.interval)} Monate`:'nicht erfasst'}</dd></div>
+    <div class="param"><dt>Wartungen protokolliert</dt><dd class="num">${n}</dd></div>
+    ${last?`<div class="param" style="grid-column:1/-1"><dt>Letzter Eintrag</dt><dd>${esc(last.text)} <span class="empty-val">· ${esc(fmtDate(last.ts))}, ${esc(last.user)}</span></dd></div>`:''}</dl></div>`;
+}
+
+/* Bauphase: alle Teile des Projekts nach Einbauort */
+function partsView(){
+  const ds=doorsOf().slice().sort((a,b)=>String(a.floor).localeCompare(String(b.floor),'de',{numeric:true})||String(a.room).localeCompare(String(b.room),'de',{numeric:true})||byNr(a,b));
+  const all=ds.flatMap(d=>d.parts||[]),f=ui.partState;
+  const chips=['alle',...PART_STATES].map(k=>`<button class="chip" data-act="partFilter" data-k="${k}" aria-pressed="${f===k}">${k==='alle'?'Alle':PART_STATE[k]} <span class="cnt num">${k==='alle'?all.length:all.filter(x=>x.state===k).length}</span></button>`).join('');
+  const m=all.filter(x=>x.state==='montiert').length;
+  const groups=ds.map(d=>{
+    const ps=(d.parts||[]).filter(x=>f==='alle'||x.state===f);
+    if(!ps.length&&(f!=='alle'||(d.parts||[]).length))return '';
+    const dm=(d.parts||[]).filter(x=>x.state==='montiert').length;
+    return `<section class="panel pgroup"><div class="pghead"><button class="pgt" data-act="open" data-id="${d.id}"><span class="nr">${esc(d.nr)}</span> ${esc(d.name||'')}<span class="r2">${esc([d.floor,d.room].filter(Boolean).join(' · ')||'Einbauort fehlt')}${(d.parts||[]).length?` · ${dm}/${d.parts.length} montiert`:''}</span></button>${d.planId?`<button class="btn" data-act="planDoor" data-id="${d.id}">${ICON.pin}Plan</button>`:''}</div>
+      ${ps.length?`<div class="parts">${ps.map(x=>`<div class="part"><span class="pn">${esc(x.name)}${x.qty>1?` <span class="qty num">× ${x.qty}</span>`:''}</span><button class="tag pt-${x.state}" data-act="partCycle" data-door="${d.id}" data-id="${x.id}">${PART_STATE[x.state]}</button></div>`).join('')}</div>`:`<div class="pempty">Keine Teileliste. <button class="linkbtn" data-act="partsDefaultFor" data-id="${d.id}">Standard-Teile übernehmen</button></div>`}</section>`;
+  }).join('');
+  return `<div class="toolbar"><div class="sortrow" style="font-size:13.5px;color:var(--ink)"><b>Teileliste</b><span class="muted">${m} von ${all.length} Teilen montiert</span></div>
+    ${all.length?`<div class="bar"><i style="width:${Math.round(m/all.length*100)}%"></i></div>`:''}<div class="chips">${chips}</div></div>
+    <div class="cards">${groups||`<div class="empty"><h3>Keine Teile in diesem Filter</h3>Wähle einen anderen Status.</div>`}</div>`;
+}
+
+/* Nutzung: Wartungen und Zustand */
+function maintView(){
+  const ds=doorsOf(),late=[],soon=[],later=[],none=[];
+  ds.forEach(d=>{const n=nextService(d);if(!n)none.push(d);else{const k=daysUntil(n);(k<0?late:k<=30?soon:later).push(d);}});
+  const byNext=(a,b)=>nextService(a)-nextService(b)||byNr(a,b);
+  const care=ds.filter(d=>d.condition==='Pflegebedürftig'||d.condition==='Mangelhaft').sort((a,b)=>CONDS.indexOf(b.condition)-CONDS.indexOf(a.condition)||byNr(a,b));
+  const row=d=>{const n=nextService(d),k=n?daysUntil(n):null;
+    return `<div class="mrow"><button class="mt" data-act="open" data-id="${d.id}"><span class="t1"><span class="nr">${esc(d.nr)}</span> ${esc(d.name||'Ohne Bezeichnung')}</span><span class="t2">${esc([d.floor,d.room].filter(Boolean).join(' · '))}${d.fire&&d.fire!=='ohne'?` · ${esc(d.fire)}`:''}${n?` · ${k<0?'überfällig '+relDays(k):relDays(k)} (${fmtDate(n.toISOString())})`:' · keine Wartungsdaten'}</span>${condBadge(d)?`<span class="badges">${condBadge(d)}</span>`:''}</button><button class="btn ${k!=null&&k<0?'primary':''}" data-act="serviceDoor" data-id="${d.id}">${ICON.wrench}<span class="hide-s">Erfassen</span></button></div>`;};
+  const grp=(t,list,cls,empty)=>list.length||empty?`<section class="panel"><h3>${t}<span class="cnt num">${list.length||''}</span></h3>${list.length?list.map(row).join(''):`<div class="pempty">${empty}</div>`}</section>`:'';
+  const kpi=(v,l,cls)=>`<div class="kpi ${v?cls:'ok'}"><div class="v">${v}</div><div class="l">${l}</div></div>`;
+  return `<div class="dash" style="max-width:900px;margin:0">
+    <div class="kpis">${kpi(late.length,'Wartung überfällig','alert')}${kpi(soon.length,'In 30 Tagen fällig','warn')}${kpi(care.length,'Pflegebedürftig / Mangel','warn')}${kpi(none.length,'Ohne Wartungsdaten','warn')}</div>
+    ${grp('Überfällig',late.sort(byNext),'',  'Keine Wartung überfällig.')}
+    ${grp('In den nächsten 30 Tagen',soon.sort(byNext),'','Keine Wartung in den nächsten 30 Tagen.')}
+    ${grp('Zustand auffällig',care,'')}
+    ${grp('Später',later.sort(byNext),'')}
+    ${grp('Ohne Wartungsdaten',none.sort(byNr),'')}
+  </div>`;
+}
+function condBadge(d){
+  if(d.condition==='Mangelhaft')return '<span class="badge due">Mangelhaft</span>';
+  if(d.condition==='Pflegebedürftig')return '<span class="badge soon">Pflegebedürftig</span>';
+  return '';
+}
+function serviceSheet(d){
+  openSheet(`<h2>Wartung erfassen</h2><p class="sub">${esc(d.nr)} · ${esc(d.name||'')}${d.room?' · '+esc(d.room):''}</p>
+    <form id="serviceForm" class="form" autocomplete="off" data-id="${d.id}">
+      <div class="field"><label for="sv_date">Datum</label><input id="sv_date" type="date" value="${dateOnly(new Date().toISOString())}" required></div>
+      <div class="field"><label for="sv_cond">Zustand nach Wartung</label><select id="sv_cond">${CONDS.map(c=>`<option ${c===(d.condition||'Gut')?'selected':''}>${c}</option>`).join('')}</select></div>
+      <div class="field" style="grid-column:1/-1"><label for="sv_note">Bemerkung</label><textarea id="sv_note" placeholder="z. B. Schließer nachgestellt, Dichtung geprüft"></textarea></div>
+      <div class="formbar" style="grid-column:1/-1"><button type="button" class="btn ghost" data-act="closeSheet">Abbrechen</button><button class="btn primary" type="submit">Wartung speichern</button></div></form>`,'Wartung erfassen');
+}
+function fileSheet(d,f){
+  openSheet(`<h2>${esc(f.name)}</h2><p class="sub">${esc(d.nr)} · hinzugefügt ${esc(fmtDate(f.created))}${f.user?' von '+esc(f.user):''}</p>
+    <div class="fileview"><img src="${f.src}" alt="${esc(f.name)}"></div>
+    <div class="btnrow" style="margin-top:12px">${sheetState.delFile?`<button class="btn accent" data-act="doDelFile" data-id="${f.id}">Endgültig entfernen</button>`:`<button class="btn ghost danger" data-act="askDelFile" data-id="${f.id}">Unterlage entfernen</button>`}<button class="btn" data-act="closeSheet">Schließen</button></div>`,'Unterlage');
 }
 function fieldHtml(f,val,prefix){
   const id=prefix+f.k,v=val??'';
@@ -826,7 +1021,7 @@ function ticketHtml(d){
   const ns=nextService(d),ss=serviceState(d);
   return `<div class="ticket" role="dialog" aria-label="Tür ${esc(d.nr)}">
     <div class="th"><div><div class="nr">${esc(d.nr)}</div><h3>${esc(d.name||'Ohne Bezeichnung')}</h3></div><span class="tag s-${d.status}">${STATUS[d.status]}</span><button class="iconbtn" data-act="closeTicket" aria-label="Schließen">${ICON.close}</button></div>
-    <dl class="rows"><dt>Raum</dt><dd>${esc(d.room||'–')}</dd><dt>Türtyp</dt><dd>${esc(d.type||'–')}</dd><dt>Brandschutz</dt><dd>${esc(d.fire||'–')}</dd>${d.task&&isOpen(d)?`<dt>Aufgabe</dt><dd>${esc(d.task)}</dd>`:''}<dt>Priorität</dt><dd>${esc(d.prio)}${d.due&&isOpen(d)?` · Frist ${fmtDate(d.due)}`:''}</dd><dt>Nächste Wartung</dt><dd class="num">${ns?fmtDate(ns.toISOString()):'offen'}${ss==='due'?' <span class="badge due">fällig</span>':''}</dd></dl>
+    <dl class="rows"><dt>Raum</dt><dd>${esc(d.room||'–')}</dd><dt>Türtyp</dt><dd>${esc(d.type||'–')}</dd><dt>Brandschutz</dt><dd>${esc(d.fire||'–')}</dd>${d.task&&isOpen(d)?`<dt>Aufgabe</dt><dd>${esc(d.task)}</dd>`:''}<dt>Priorität</dt><dd>${esc(d.prio)}${d.due&&isOpen(d)?` · Frist ${fmtDate(d.due)}`:''}</dd>${phase()==='bau'?`<dt>Teile</dt><dd>${(d.parts||[]).length?d.parts.map(x=>`${esc(x.name)}${x.qty>1?' ×'+x.qty:''} <span class="tag pt-${x.state}" style="padding:0 7px;font-size:11px">${PART_STATE[x.state]}</span>`).join('<br>'):'keine Teileliste'}</dd>`:''}${phase()==='nutzung'?`<dt>Zustand</dt><dd>${esc(d.condition||'nicht erfasst')}</dd><dt>Nächste Wartung</dt><dd class="num">${ns?fmtDate(ns.toISOString()):'offen'}${ss==='due'?' <span class="badge due">fällig</span>':''}</dd>`:''}</dl>
     <div class="tb"><button class="btn" data-act="movePin" data-id="${d.id}">Verschieben</button><button class="btn primary" data-act="open" data-id="${d.id}">Details öffnen</button></div>
   </div>`;
 }
@@ -962,10 +1157,10 @@ function openDoor(id){
 }
 const A={
   home(){ui.tab='home';ui.phoneDetail=false;ui.editing=false;ui.placing=null;ui.pendingPos=null;ui.ticketId=null;closeSheet();render();},
-  openAny(el){const d=door(el.dataset.id);if(!d)return;if(d.projectId!==S.currentProjectId){S.currentProjectId=d.projectId;resetView();save();}ui.tab='list';openDoor(d.id);},
-  goProject(el){S.currentProjectId=el.dataset.id;resetView();ui.tab='list';if(isWide())ui.doorId=doorsOf().sort(byUrgency)[0]?.id||null;save();render();},
+  openAny(el){const d=door(el.dataset.id);if(!d)return;if(d.projectId!==S.currentProjectId){S.currentProjectId=d.projectId;resetView();save();}firstView();openDoor(d.id);},
+  goProject(el){S.currentProjectId=el.dataset.id;resetView();firstView();if(isWide())ui.doorId=doorsOf().sort(byUrgency)[0]?.id||null;save();render();},
   dashPhase(el){ui.dphase=el.dataset.k;lsSet('dk.dphase',ui.dphase);render();},
-  setPhase(el){const p=proj(),k=el.dataset.k;if(p.phase===k)return;p.phase=k;save();projectsSheet();render();toast(`${p.name}: Phase „${PHASES[k]}“`);},
+  setPhase(el){const p=proj(),k=el.dataset.k;if(p.phase===k)return;p.phase=k;if(ui.tab!=='home')firstView();save();projectsSheet();render();toast(`${p.name}: Phase „${PHASES[k]}“`);},
   listSort(el){ui.sort=el.dataset.k;lsSet('dk.sort',ui.sort);render();},
   tab(el){ui.tab=el.dataset.k;ui.phoneDetail=false;ui.editing=false;ui.placing=null;ui.pendingPos=null;lsSet('dk.tab',ui.tab);render();},
   pane(el){ui.pane=el.dataset.k;ui.placing=null;ui.pendingPos=null;if(ui.pane!=='detail')ui.editing=false;lsSet('dk.pane',ui.pane);render();},
@@ -979,12 +1174,19 @@ const A={
   },
   edit(){ui.editing=true;render();},
   cancelEdit(){ui.editing=false;render();},
-  service(){
-    const d=door(ui.doorId);if(!d)return;
-    const today=dateOnly(new Date().toISOString()),old=d.lastService;
-    d.lastService=today;log(d,'service',`Wartung durchgeführt${old?` (vorherige: ${fmtDate(old)})`:''}`);
-    save();render();toast('Wartung erfasst');
-  },
+  serviceDoor(el){const d=door(el.dataset.id);if(d)serviceSheet(d);},
+  setCond(el){const d=door(ui.doorId);if(!d||d.condition===el.dataset.k)return;const o=d.condition;d.condition=el.dataset.k;log(d,'change',`Zustand geändert: „${o||'–'}“ → „${d.condition}“`);save();render();toast(`Zustand: ${d.condition}`);},
+  partCycle(el){const d=door(el.dataset.door),x=d?.parts.find(p=>p.id===el.dataset.id);if(!x)return;const o=x.state,n=PART_STATES[(PART_STATES.indexOf(o)+1)%PART_STATES.length];x.state=n;log(d,'change',`Teil „${x.name}“: ${PART_STATE[o]} → ${PART_STATE[n]}`);save();render();},
+  partDel(el){const d=door(el.dataset.door),x=d?.parts.find(p=>p.id===el.dataset.id);if(!x)return;d.parts=d.parts.filter(p=>p!==x);log(d,'change',`Teil „${x.name}“ aus der Teileliste entfernt`);save();render();},
+  partsDefault(){const d=door(ui.doorId);if(!d)return;d.parts=defaultParts(d);log(d,'change',`Teileliste angelegt (${d.parts.length} Positionen)`);save();render();},
+  partsDefaultFor(el){const d=door(el.dataset.id);if(!d)return;d.parts=defaultParts(d);log(d,'change',`Teileliste angelegt (${d.parts.length} Positionen)`);save();render();},
+  partFilter(el){ui.partState=el.dataset.k;render();},
+  planDoor(el){ui.doorId=el.dataset.id;A.showOnPlan();},
+  addFile(){ui.fileDoor=ui.doorId;$('#docFile').click();},
+  viewFile(el){const d=door(ui.doorId),f=d?.files.find(x=>x.id===el.dataset.id);if(f){sheetState={};fileSheet(d,f);}},
+  askDelFile(el){const d=door(ui.doorId),f=d?.files.find(x=>x.id===el.dataset.id);if(f){sheetState.delFile=true;fileSheet(d,f);}},
+  doDelFile(el){const d=door(ui.doorId),f=d?.files.find(x=>x.id===el.dataset.id);if(!f)return;d.files=d.files.filter(x=>x!==f);log(d,'change',`Unterlage „${f.name}“ entfernt`);save();closeSheet();render();toast('Unterlage entfernt');},
+  service(){const d=door(ui.doorId);if(d)serviceSheet(d);},
   showOnPlan(){
     const d=door(ui.doorId);if(!d||!d.planId)return;
     ui.planId=d.planId;ui.ticketId=d.id;ui.zoom=Math.max(ui.zoom,1.6);
@@ -1033,7 +1235,7 @@ const A={
   sheetProjects(){sheetState={};projectsSheet();},
   sheetUsers(){usersSheet();},
   closeSheet(){closeSheet();},
-  switchProject(el){S.currentProjectId=el.dataset.id;resetView();if(ui.tab==='home')ui.tab='list';save();closeSheet();render();toast(`Projekt: ${proj().name}`);},
+  switchProject(el){S.currentProjectId=el.dataset.id;resetView();firstView();save();closeSheet();render();toast(`Projekt: ${proj().name}`);},
   switchUser(el){S.currentUserId=el.dataset.id;save();closeSheet();render();toast(`Angemeldet als ${me().name}`);},
   exportJson(){download(JSON.stringify(S),`doorku-sicherung-${dateOnly(new Date().toISOString())}.json`,'application/json');},
   importJson(){$('#importFile').click();},
@@ -1115,6 +1317,19 @@ document.addEventListener('submit',e=>{
     });
     ui.editing=false;save();render();toast(n?`${n} ${n===1?'Änderung':'Änderungen'} gespeichert und protokolliert`:'Keine Änderungen');
   }
+  if(f.id==='serviceForm'){
+    const d=door(f.dataset.id);if(!d)return;
+    const date=$('#sv_date').value||dateOnly(new Date().toISOString()),cond=$('#sv_cond').value,note=$('#sv_note').value.trim(),old=d.lastService;
+    d.lastService=date;d.condition=cond;
+    log(d,'service',`Wartung durchgeführt am ${fmtDate(date)} · Zustand: ${cond}${note?` · ${note}`:''}${old?` (vorherige: ${fmtDate(old)})`:''}`);
+    save();closeSheet();render();toast('Wartung erfasst');
+  }
+  if(f.id==='partForm'){
+    const d=door(ui.doorId);const n=$('#partName').value.trim();if(!d||!n)return;
+    const qty=Math.max(1,parseInt($('#partQty').value,10)||1);
+    d.parts.push({id:uid(),name:n,qty,state:'offen'});log(d,'change',`Teil „${n}“${qty>1?` (× ${qty})`:''} zur Teileliste hinzugefügt`);save();render();
+    setTimeout(()=>$('#partName')?.focus(),0);
+  }
   if(f.id==='noteForm'){
     const d=door(ui.doorId);const v=$('#noteInput').value.trim();if(!d||!v)return;
     log(d,'note',v);save();render();toast('Notiz hinzugefügt');
@@ -1131,7 +1346,7 @@ document.addEventListener('submit',e=>{
   if(f.id==='newProject'){
     const name=$('#np_name').value.trim();if(!name)return;
     const p={id:uid(),name,place:$('#np_place').value.trim(),phase:$('#np_phase').value||'planung'};
-    S.projects.push(p);S.currentProjectId=p.id;resetView();if(ui.tab==='home')ui.tab='list';save();closeSheet();render();toast(`Projekt „${name}“ angelegt`);
+    S.projects.push(p);S.currentProjectId=p.id;resetView();firstView();save();closeSheet();render();toast(`Projekt „${name}“ angelegt`);
   }
   if(f.id==='renamePlan'){
     const p=currentPlan();const n=$('#rp_name').value.trim();if(!p||!n)return;
@@ -1189,6 +1404,17 @@ $('#planFile').addEventListener('change',async e=>{
     }catch(err){console.error(err);toast(`„${f.name}“ konnte nicht gelesen werden`,4000);}
   }
   if(added.length){ui.planId=added[0].id;ui.zoom=1;ui.ticketId=null;save();render();toast(added.length===1?`Plan „${added[0].name}“ hinzugefügt`:`${added.length} Pläne hinzugefügt`);}
+});
+$('#docFile').addEventListener('change',async e=>{
+  const files=[...e.target.files];e.target.value='';const d=door(ui.fileDoor);if(!files.length||!d)return;
+  let n=0;
+  for(const f of files){
+    try{
+      const res=f.type==='application/pdf'||/\.pdf$/i.test(f.name)?await pdfToPlans(f):await imageToPlan(f);
+      res.forEach(r=>{d.files.push({id:uid(),name:r.name,src:r.src,created:new Date().toISOString(),user:me().name});log(d,'change',`Unterlage „${r.name}“ hinzugefügt`);n++;});
+    }catch(err){console.error(err);toast(`„${f.name}“ konnte nicht gelesen werden`,4000);}
+  }
+  if(n){save();render();toast(n===1?'Unterlage hinzugefügt':`${n} Unterlagen hinzugefügt`);}
 });
 $('#importFile').addEventListener('change',async e=>{
   const f=e.target.files[0];e.target.value='';if(!f)return;
