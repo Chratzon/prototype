@@ -221,6 +221,67 @@ main{min-height:0;position:relative;overflow:hidden}
 .phase .pt{font-weight:600;font-size:14px;margin-top:4px}
 .phase .ph{font-size:12px;color:var(--muted);line-height:1.35}
 
+/* Dokumente und Anbauteile */
+.segbar{flex-wrap:wrap}
+.sortrow{flex-wrap:wrap}
+.toolbar.static{position:static}
+.projicon svg{width:20px;height:20px}
+.doclist{display:grid;gap:8px;padding:0 14px 14px}
+.docrow{display:flex;gap:12px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;width:100%;min-width:0}
+.docrow:hover{border-color:var(--muted)}
+.docthumb{width:44px;height:58px;flex:0 0 auto;border-radius:5px;border:1px solid var(--line);background:#fff;object-fit:cover;object-position:top;display:block}
+.docthumb.sm{width:32px;height:42px}
+.docrow .dt{flex:1;min-width:0;display:grid;gap:2px}
+.docrow .t1{font-weight:600;font-size:14.5px;overflow-wrap:anywhere}
+.docrow .t2{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.docrow .badges{margin-top:2px}
+.dc-zulassung{background:var(--petrol-soft);color:var(--petrol-text)}
+.dc-datenblatt{background:var(--surface-2);color:var(--ink)}
+.dc-pruefbuch{background:var(--amber-soft);color:var(--amber-text)}
+.dc-ue{background:var(--coral-soft);color:var(--coral-text)}
+.dc-sonstiges{background:var(--surface-2);color:var(--muted)}
+.dgroup{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:10px 0 0}
+.dgroup:first-child{margin-top:0}
+.pick .check{visibility:hidden;flex:0 0 auto}
+.pick[aria-checked="true"]{border-color:var(--petrol);background:var(--petrol-soft)}
+.pick[aria-checked="true"] .check{visibility:visible}
+.pick[aria-checked="mixed"]{border-color:var(--petrol);border-style:dashed}
+.pick[aria-checked="mixed"] .check{visibility:visible;opacity:.45}
+.pickbar{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.pickbar .search{flex:1;min-width:180px}
+.links{display:grid;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.linkrow{display:flex;align-items:center;gap:10px;padding:7px 8px 7px 10px;border-top:1px solid var(--line);min-width:0}
+.linkrow:first-child{border-top:0}
+.linkrow .lt{flex:1;min-width:0;text-align:left;display:grid;gap:1px}
+.linkrow .t1{font-size:14px;font-weight:500;overflow-wrap:anywhere}
+.linkrow .t2{font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+.sub2{font-size:12px;font-weight:600;color:var(--muted);margin:12px 0 6px}
+.dochead{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+.dochead .docprev img{width:96px;height:128px;object-fit:cover;object-position:top;border:1px solid var(--line);border-radius:6px;background:#fff;display:block}
+.dochead h2{margin-top:6px;overflow-wrap:anywhere}
+.field input[type=file]{height:auto;padding:8px 11px}
+/* Erfassungstabelle (Türliste in Tabellenform) */
+.grid table{min-width:0;width:max-content}
+.grid th{border-right:1px solid var(--line)}
+.grid td{padding:0;border-right:1px solid var(--line)}
+.grid td input,.grid td select{border:0;background:transparent;height:38px;padding:0 10px;width:100%;min-width:96px;font-size:13.5px;border-radius:0}
+.grid td input:focus,.grid td select:focus{outline:2px solid var(--petrol);outline-offset:-2px;background:var(--surface)}
+.grid td.c-nr input{font-family:var(--f-head);font-weight:700;color:var(--petrol-text);min-width:100px}
+.grid td.c-name input,.grid td.c-room input{min-width:150px}
+.grid td.c-width input,.grid td.c-height input{min-width:76px}
+.grid td.c-item input{min-width:170px}
+.grid td.cb,.grid th.cb{width:40px;text-align:center}
+.grid td.cb input{width:18px;height:18px;min-width:0;accent-color:var(--petrol)}
+.grid td.c-docs{padding:0 6px}
+.grid td.c-docs .btn{height:30px;font-size:13px;padding:0 10px}
+.grid tbody tr{cursor:default}
+.grid tbody tr:hover td{background:transparent}
+.grid tbody tr.sel td{background:var(--petrol-soft)}
+.grid th.item{color:var(--petrol-text)}
+.bulkbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--ink);color:var(--surface);border-radius:12px;padding:8px 8px 8px 14px;font-size:13.5px}
+.bulkbar b{margin-right:auto}
+.bulkbar .btn{height:32px;font-size:13px;background:var(--surface);color:var(--ink);border-color:transparent}
+
 /* Status-Tags */
 .tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap}
 .tag::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
@@ -411,6 +472,14 @@ const CONDS=['Gut','Gebrauchsspuren','Pflegebedürftig','Mangelhaft'];
 const PART_STATES=['offen','bestellt','geliefert','montiert'];
 const PART_STATE={offen:'Offen',bestellt:'Bestellt',geliefert:'Geliefert',montiert:'Montiert'};
 const PART_SUGGEST=['Türblatt','Zarge','Bänder','Schloss','Drückergarnitur','Profilzylinder','Obentürschließer','Feststellanlage','Bodendichtung','Schließfolgeregler','Panikbeschlag','E-Öffner','Türstopper'];
+// Dokumente für die Übergabe an den Bauherrn; jedes Dokument kann beliebig vielen Türen und Anbauteilen zugeordnet sein
+const DOC_ORDER=['zulassung','ue','pruefbuch','datenblatt','sonstiges'];
+const DOC_CAT={zulassung:'Zulassung',datenblatt:'Datenblatt',pruefbuch:'Prüfbuch',ue:'Übereinstimmungserklärung',sonstiges:'Sonstiges'};
+const DOC_CAT_PL={zulassung:'Zulassungen',datenblatt:'Datenblätter',pruefbuch:'Prüfbücher',ue:'Übereinstimmungserklärungen',sonstiges:'Sonstige'};
+// Anbauteile sind eigene Objekte je Projekt (Produkt/Typ), die mehreren Türen zugeordnet werden
+const ITEM_CATS=['Obentürschließer','Feststellanlage','Schließfolgeregler','Schloss','Panikbeschlag','Drückergarnitur','Profilzylinder','Bänder','E-Öffner','Bodendichtung','Türstopper','Zutrittskontrolle','Sonstiges'];
+// Spalten der Erfassungstabelle (Türliste in Tabellenform), danach folgen die Anbauteil-Spalten
+const GRID_F=['nr','name','floor','room','type','fire','width','height','maker'];
 // Kernangaben, die in der Planung je Tür vorliegen sollten
 const PLAN_KEYS=['type','fire','width','height','maker','hardware'];
 function completeness(d){
@@ -466,6 +535,7 @@ const ICON={
   parts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 4 7v10l8 4 8-4V7z"/><path d="m4 7 8 4 8-4M12 11v10"/></svg>',
   maint:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M14.5 6.5a4 4 0 0 0 5 5L11 20a2.1 2.1 0 0 1-3-3l8.5-8.5"/><path d="M14.5 6.5 17 4l3 3-2.5 2.5"/></svg>',
   home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg>',
+  docs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>',
   upload:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 20h16"/></svg>',
 };
 const PIN_COLORS={geplant:'#6B7570',pruefung:'#C98A12',offen:'#FF7A50',erledigt:'#0E6E5C'};
@@ -538,7 +608,13 @@ function urgentBadges(d){
 function migrate(st){
   st.projects.forEach(p=>{if(!PHASES[p.phase])p.phase='nutzung';});
   st.doors.forEach(d=>{if(!PRIOS.includes(d.prio))d.prio='Normal';if(d.due==null)d.due='';if(d.task==null)d.task='';if(!Array.isArray(d.history))d.history=[];if(!Array.isArray(d.parts))d.parts=[];if(!Array.isArray(d.files))d.files=[];if(d.condition==null)d.condition='';});
-  st.v=4;return st;
+  if(!Array.isArray(st.docs))st.docs=[];if(!Array.isArray(st.items))st.items=[];
+  st.docs.forEach(x=>{if(!Array.isArray(x.doorIds))x.doorIds=[];if(!Array.isArray(x.itemIds))x.itemIds=[];if(!DOC_CAT[x.cat])x.cat='sonstiges';});
+  st.items.forEach(i=>{if(!Array.isArray(i.doorIds))i.doorIds=[];});
+  st.projects.forEach(p=>{if(!Array.isArray(p.gridCols))p.gridCols=[];});
+  // Ältere Demo-Daten bekommen einmalig Beispiel-Dokumente und Anbauteile
+  if((st.v||0)<5&&!st.docs.length&&!st.items.length)seedDocs(st);
+  st.v=5;return st;
 }
 
 /* ---------- Demo-Grundriss (SVG) ---------- */
@@ -630,7 +706,51 @@ function seed(){
     base({projectId:'p3',nr:'T-04',name:'Aufzugsvorraum',floor:'EG',room:'Vorraum Aufzug',type:'Schiebetür',fire:'RS',width:1400,history:[H(7,'Anna Vogel','create','Tür angelegt aus Türliste')]}),
   );
   doors.forEach(d=>d.history.sort((a,b)=>a.ts<b.ts?1:-1));
-  return {v:4,users,projects:[p1,p2,p3],plans,doors,currentProjectId:'p1',currentUserId:'u1'};
+  const st={v:4,users,projects:[p1,p2,p3],plans,doors,docs:[],items:[],currentProjectId:'p1',currentUserId:'u1'};
+  seedDocs(st);st.v=5;return st;
+}
+// Platzhalter-Vorschau für Demo-Dokumente (A4 hochkant)
+function docMock(cat,title,nr){
+  const col={zulassung:'#0E6E5C',datenblatt:'#1E2422',pruefbuch:'#C98A12',ue:'#FF7A50',sonstiges:'#6B7570'}[cat];
+  const words=title.split(' '),lines=[''];
+  words.forEach(w=>{if((lines[lines.length-1]+' '+w).trim().length>28)lines.push(w);else lines[lines.length-1]=(lines[lines.length-1]+' '+w).trim();});
+  let s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 594" width="420" height="594"><rect width="420" height="594" fill="#fff"/><rect width="420" height="74" fill="${col}"/><text x="30" y="46" font-family="Arial,Helvetica,sans-serif" font-size="19" font-weight="700" fill="#fff">${esc(DOC_CAT[cat])}</text>`;
+  lines.slice(0,3).forEach((l,i)=>{s+=`<text x="30" y="${118+i*24}" font-family="Arial,Helvetica,sans-serif" font-size="19" font-weight="700" fill="#1E2422">${esc(l)}</text>`;});
+  const y0=118+Math.min(3,lines.length)*24;
+  if(nr)s+=`<text x="30" y="${y0+4}" font-family="Arial,Helvetica,sans-serif" font-size="14" fill="#6B7570">${esc(nr)}</text>`;
+  for(let i=0;i<16;i++)s+=`<rect x="30" y="${y0+32+i*19}" width="${360-((i*53)%110)}" height="7" rx="3" fill="#E4E7E5"/>`;
+  s+=`<text x="30" y="568" font-family="Arial,Helvetica,sans-serif" font-size="12" fill="#9aa39f">Demo-Dokument · doorku</text></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
+}
+function seedDocs(st){
+  const has=pid=>st.projects.some(p=>p.id===pid);
+  const ids=(pid,l)=>l.map(n=>st.doors.find(d=>d.projectId===pid&&d.nr===n)?.id).filter(Boolean);
+  const item=(pid,cat,name,doors)=>{const i={id:uid(),projectId:pid,cat,name,note:'',doorIds:ids(pid,doors)};st.items.push(i);return i;};
+  const doc=(pid,cat,name,nr,valid,doors,items)=>{const m=docMock(cat,name,nr);st.docs.push({id:uid(),projectId:pid,cat,name,nr,valid,src:m,thumb:m,mime:'image/svg+xml',fileName:slug(name)+'.svg',pages:1,demo:true,created:daysAgo(14),user:'Anna Vogel',doorIds:ids(pid,doors),itemIds:(items||[]).map(i=>i.id)});};
+  const in2y=dateOnly(daysAgo(-730));
+  if(has('p1')){
+    const ts=item('p1','Obentürschließer','GEZE TS 5000',['T-EG-03','T-EG-06','T-EG-07','T-OG-05']);
+    const fsa=item('p1','Feststellanlage','GEZE TS 5000 R-ISM',['T-EG-05','T-OG-04']);
+    const pan=item('p1','Panikbeschlag','dormakaba PHA 2500',['T-EG-00']);
+    const zyl=item('p1','Profilzylinder','ABUS EC660',['T-EG-00','T-EG-01','T-EG-02','T-EG-03','T-EG-06','T-OG-05']);
+    item('p1','E-Öffner','effeff 118',['T-EG-00']);
+    doc('p1','zulassung','Hörmann T30-1 H3 Feuerschutztür','abZ Z-6.20-1938',in2y,['T-EG-03']);
+    doc('p1','zulassung','Teckentrup T90-1 Feuerschutztür','abZ Z-6.20-2008',in2y,['T-EG-06','T-OG-05']);
+    doc('p1','zulassung','Teckentrup T30-1 Feuerschutztür','abZ Z-6.20-1987',in2y,['T-EG-07']);
+    doc('p1','zulassung','Hörmann Rohrrahmentür T30-RS','abZ Z-6.20-2201',dateOnly(daysAgo(20)),['T-EG-05','T-OG-04']);
+    doc('p1','ue','Übereinstimmungserklärung Feuer- und Rauchschutztüren','ÜE-2019-014','',['T-EG-03','T-EG-05','T-EG-06','T-EG-07','T-OG-04','T-OG-05']);
+    doc('p1','pruefbuch','Prüfbuch Feststellanlagen','PB-FSA-01','',['T-EG-05','T-OG-04']);
+    doc('p1','datenblatt','GEZE TS 5000 Datenblatt','','',[],[ts]);
+    doc('p1','datenblatt','GEZE TS 5000 R-ISM Datenblatt','','',[],[fsa]);
+    doc('p1','datenblatt','dormakaba PHA 2500 Datenblatt','','',[],[pan]);
+    doc('p1','datenblatt','ABUS EC660 Datenblatt','','',[],[zyl]);
+  }
+  if(has('p3')){
+    const ts=item('p3','Obentürschließer','dormakaba TS 93',['T-02','T-03']);
+    item('p3','Feststellanlage','dormakaba RMZ',['T-02']);
+    item('p3','Drückergarnitur','FSB 1076 Edelstahl',['T-01','T-02','T-03']);
+    doc('p3','datenblatt','dormakaba TS 93 Datenblatt','','',[],[ts]);
+  }
 }
 
 /* ---------- Speicher (IndexedDB, Fallback: nur im Arbeitsspeicher) ---------- */
@@ -670,6 +790,8 @@ const ui={
   planId:null, zoom:1, ticketId:null, placing:null, pendingPos:null,
   t:{q:'',status:'',floor:'',fire:'',sort:'prio',dir:1},
   confirm:null,
+  dmode:'docs', dcat:'alle', dq:'',                 // Dokumentenbereich: Dokumente | Anbauteile
+  tmode:lsGet('dk.tmode')||'view', sel:new Set(),   // Tabelle: Ansehen | Erfassen, ausgewählte Zeilen
 };
 const wideMQ=matchMedia('(min-width: 820px)');
 const isWide=()=>wideMQ.matches;
@@ -680,14 +802,78 @@ const doorsOf=()=>S.doors.filter(d=>d.projectId===proj().id);
 const plansOf=()=>S.plans.filter(p=>p.projectId===proj().id);
 const door=id=>S.doors.find(d=>d.id===id);
 const plan=id=>S.plans.find(p=>p.id===id);
+const docsOf=()=>S.docs.filter(x=>x.projectId===proj().id);
+const itemsOf=()=>S.items.filter(i=>i.projectId===proj().id);
+const docById=id=>S.docs.find(x=>x.id===id);
+const itemById=id=>S.items.find(i=>i.id===id);
+const itemsOfDoor=d=>S.items.filter(i=>i.doorIds.includes(d.id));
+// Dokumente einer Tür: direkt zugeordnet oder über ein zugeordnetes Anbauteil
+function docsOfDoor(d){
+  const out=S.docs.filter(x=>x.doorIds.includes(d.id)).map(doc=>({doc,via:null}));
+  itemsOfDoor(d).forEach(i=>S.docs.forEach(doc=>{if(doc.itemIds.includes(i.id)&&!out.some(o=>o.doc===doc))out.push({doc,via:i});}));
+  return out.sort((a,b)=>DOC_ORDER.indexOf(a.doc.cat)-DOC_ORDER.indexOf(b.doc.cat)||a.doc.name.localeCompare(b.doc.name,'de'));
+}
+function doorsOfDoc(x){const s=new Set(x.doorIds);S.items.filter(i=>x.itemIds.includes(i.id)).forEach(i=>i.doorIds.forEach(id=>s.add(id)));return [...s].filter(id=>door(id));}
+const itemDocs=i=>S.docs.filter(x=>x.itemIds.includes(i.id));
+const needsZul=d=>d.fire&&d.fire!=='ohne';
+const hasZul=d=>docsOfDoor(d).some(o=>o.doc.cat==='zulassung');
+function docGaps(){
+  return {
+    fire:doorsOf().filter(d=>needsZul(d)&&!hasZul(d)).sort(byNr),
+    items:itemsOf().filter(i=>i.doorIds.length&&!itemDocs(i).some(x=>x.cat==='datenblatt')),
+    expired:docsOf().filter(x=>x.valid&&daysUntil(x.valid)<0),
+    loose:docsOf().filter(x=>!x.doorIds.length&&!x.itemIds.length),
+  };
+}
+function linkDocDoor(x,d,on){
+  if(x.doorIds.includes(d.id)===on)return false;
+  x.doorIds=on?[...x.doorIds,d.id]:x.doorIds.filter(id=>id!==d.id);
+  log(d,'change',`${DOC_CAT[x.cat]} „${x.name}“ ${on?'zugeordnet':'entfernt'}`);return true;
+}
+function linkItemDoor(i,d,on){
+  if(i.doorIds.includes(d.id)===on)return false;
+  i.doorIds=on?[...i.doorIds,d.id]:i.doorIds.filter(id=>id!==d.id);
+  log(d,'change',`Anbauteil „${i.name}“ (${i.cat}) ${on?'zugeordnet':'entfernt'}`);return true;
+}
+function linkDocItem(x,i,on){
+  if(x.itemIds.includes(i.id)===on)return false;
+  x.itemIds=on?[...x.itemIds,i.id]:x.itemIds.filter(id=>id!==i.id);return true;
+}
+function newDoorObj(o){
+  return Object.assign({id:uid(),projectId:proj().id,nr:'',name:'',floor:'',room:'',type:TYPES[0],fire:'ohne',task:'',prio:'Normal',due:'',status:'geplant',condition:'',parts:[],files:[],maker:'',width:'',height:'',year:'',hardware:'',interval:12,lastService:'',planId:null,x:null,y:null,history:[]},o);
+}
+// Ein Feld einer Tür setzen und in der Historie festhalten (quiet: ohne Eintrag, z. B. bei neu angelegten Zeilen)
+function setDoorField(d,k,raw,quiet){
+  const fd=FIELDS.find(f=>f.k===k);if(!fd)return false;
+  let nv=String(raw??'').trim();
+  if(fd.t==='number'&&nv!==''&&!isNaN(Number(nv.replace(',','.'))))nv=Number(nv.replace(',','.'));
+  const ov=d[k]??'';
+  if(String(nv)===String(ov))return false;
+  const show=v=>fd.t==='date'?(fmtDate(v)||'–'):(v===''||v==null?'–':v);
+  if(!quiet)log(d,'change',`${fd.l} geändert: „${show(ov)}“ → „${show(nv)}“`);
+  d[k]=nv;return true;
+}
+// Anbauteile einer Kategorie für eine Tür setzen. Mehrere mit „;“ trennen. Unbekannte Namen werden als neues Objekt angelegt.
+function setDoorItems(d,cat,raw){
+  const names=String(raw??'').split(';').map(x=>x.trim()).filter(Boolean);
+  const cur=itemsOfDoor(d).filter(i=>i.cat===cat),low=names.map(n=>n.toLowerCase());
+  const res={changed:false,created:[]};
+  cur.forEach(i=>{if(!low.includes(i.name.toLowerCase())&&linkItemDoor(i,d,false))res.changed=true;});
+  names.forEach(n=>{
+    let i=itemsOf().find(x=>x.cat===cat&&x.name.toLowerCase()===n.toLowerCase());
+    if(!i){i={id:uid(),projectId:proj().id,cat,name:n,note:'',doorIds:[]};S.items.push(i);res.created.push(i);}
+    if(linkItemDoor(i,d,true))res.changed=true;
+  });
+  return res;
+}
 function log(d,kind,text){d.history.unshift({ts:new Date().toISOString(),user:me().name,kind,text});}
 function byNr(a,b){return String(a.nr).localeCompare(String(b.nr),'de',{numeric:true})}
 
 /* ---------- Ansichten je Projektphase ---------- */
 // Planung: Türliste und Angaben vorn. Bau: Plan und Teile vorn. Nutzung: Zustand und Wartung vorn.
-const VIEWS={list:'Türliste',plan:'Plan',table:'Tabelle',parts:'Teile',maint:'Wartung',detail:'Türdetail'};
-const PHASE_VIEWS={planung:['list','table','plan'],bau:['plan','parts','list','table'],nutzung:['maint','list','plan','table']};
-const PHASE_PANES={planung:['detail','table','plan'],bau:['plan','parts','detail','table'],nutzung:['maint','detail','plan','table']};
+const VIEWS={list:'Türliste',plan:'Plan',table:'Tabelle',parts:'Teile',maint:'Wartung',detail:'Türdetail',docs:'Dokumente'};
+const PHASE_VIEWS={planung:['list','table','docs','plan'],bau:['plan','parts','list','table','docs'],nutzung:['maint','list','plan','table','docs']};
+const PHASE_PANES={planung:['detail','table','docs','plan'],bau:['plan','parts','detail','table','docs'],nutzung:['maint','detail','plan','table','docs']};
 const phase=()=>PHASES[proj().phase]?proj().phase:'nutzung';
 function firstView(){ui.tab=PHASE_VIEWS[phase()][0];ui.pane=PHASE_PANES[phase()][0];}
 function fixView(){
@@ -700,6 +886,7 @@ function paneHtml(k){
   if(k==='table')return `<div class="view">${tableView()}</div>`;
   if(k==='parts')return `<div class="view">${partsView()}</div>`;
   if(k==='maint')return `<div class="view">${maintView()}</div>`;
+  if(k==='docs')return `<div class="view">${docsView()}</div>`;
   return listView();
 }
 
@@ -807,7 +994,7 @@ function listView(){
   return `<div class="view" id="listScroll"><div class="toolbar">
     <label class="search">${ICON.search}<input id="q" type="search" placeholder="Tür-Nr., Raum, Typ, Brandschutz …" value="${esc(ui.q)}" autocomplete="off" aria-label="Türen durchsuchen"></label>
     <div class="chips" id="statusChips">${statusChips()}</div>
-    <div class="sortrow">Reihenfolge<div class="seg small" role="group" aria-label="Reihenfolge">${[['prio','Dringlichkeit'],['nr','Tür-Nr.']].map(([k,l])=>`<button data-act="listSort" data-k="${k}" aria-pressed="${ui.sort===k}">${l}</button>`).join('')}</div></div>
+    <div class="sortrow">Reihenfolge<div class="seg small" role="group" aria-label="Reihenfolge">${[['prio','Dringlichkeit'],['nr','Tür-Nr.']].map(([k,l])=>`<button data-act="listSort" data-k="${k}" aria-pressed="${ui.sort===k}">${l}</button>`).join('')}</div><span class="spacer"></span><button class="btn ghost" data-act="toGrid" style="height:30px;padding:0 8px;font-size:13px">${ICON.table}Als Tabelle erfassen</button></div>
   </div><div class="cards" id="cards">${cardsHtml()}</div></div>
   <button class="fab" data-act="newDoorList" aria-label="Neue Tür anlegen">${ICON.plus}<span>Tür</span></button>`;
 }
@@ -872,7 +1059,7 @@ function detailView(){
       <div class="formbar"><button type="button" class="btn ghost" data-act="cancelEdit">Abbrechen</button><button type="submit" class="btn primary">Änderungen speichern</button></div></form>`;
     return `<div class="detail">${head}${form}</div>`;
   }
-  const blocks={planung:[filesBlock(d),paramsBlock(d,true),taskBlock(d)],bau:[partsBlock(d),taskBlock(d),filesBlock(d,true),paramsBlock(d)],nutzung:[careBlock(d),taskBlock(d),paramsBlock(d)]}[ph];
+  const blocks={planung:[filesBlock(d),paramsBlock(d,true),docBlock(d),taskBlock(d)],bau:[partsBlock(d),docBlock(d),taskBlock(d),filesBlock(d,true),paramsBlock(d)],nutzung:[careBlock(d),taskBlock(d),docBlock(d),paramsBlock(d)]}[ph];
   const hist=`<div class="block"><h3>Historie</h3>
     <form class="composer" id="noteForm"><input id="noteInput" placeholder="Notiz oder Mangel festhalten …" aria-label="Notiz"><button class="btn primary" type="submit">Hinzufügen</button></form>
     <ol class="timeline">${d.history.map(h=>`<li class="tl"><span class="dot ${h.kind}"></span><div><div class="tt">${h.kind==='change'?'<span class="kind">Änderung · </span>':h.kind==='note'?'<span class="kind">Notiz · </span>':h.kind==='service'?'<span class="kind">Wartung · </span>':''}${esc(h.text)}</div><div class="tm">${esc(fmtDateTime(h.ts))} · ${esc(h.user)}</div></div></li>`).join('')}</ol>
@@ -901,6 +1088,18 @@ function filesBlock(d,compact){
   return `<div class="block"><h3>Detailzeichnungen und Unterlagen <span class="cnt">${fs.length||''}</span></h3>
     <div class="files">${fs.map(f=>`<button class="file" data-act="viewFile" data-id="${f.id}"><img src="${f.src}" alt="" loading="lazy"><span>${esc(f.name)}</span></button>`).join('')}
     <button class="file add" data-act="addFile">${ICON.plus}<span>PDF oder Bild hinzufügen</span></button></div></div>`;
+}
+// Dokumentation einer Tür: Anbauteile und Dokumente (direkt oder über Anbauteile)
+function docBlock(d){
+  const its=itemsOfDoor(d).sort((a,b)=>ITEM_CATS.indexOf(a.cat)-ITEM_CATS.indexOf(b.cat)||a.name.localeCompare(b.name,'de')),dd=docsOfDoor(d);
+  const x=ICON.close;
+  const itemRows=its.map(i=>{const n=itemDocs(i).length;return `<div class="linkrow"><span class="projicon" style="width:32px;height:32px">${ICON.parts}</span><button class="lt" data-act="openItem" data-id="${i.id}"><span class="t1">${esc(i.name)}</span><span class="t2">${esc(i.cat)} · ${n?`${n} ${n===1?'Unterlage':'Unterlagen'}`:'ohne Datenblatt'}</span></button><button class="iconbtn sm" data-act="unlinkItem" data-item="${i.id}" data-door="${d.id}" aria-label="Anbauteil von der Tür lösen">${x}</button></div>`;}).join('');
+  const docRows=dd.map(({doc,via})=>`<div class="linkrow"><img class="docthumb sm" src="${doc.thumb}" alt="" loading="lazy"><button class="lt" data-act="openDoc" data-id="${doc.id}"><span class="t1">${esc(doc.name)}</span><span class="t2">${esc([DOC_CAT[doc.cat],doc.nr,via?`über Anbauteil „${via.name}“`:''].filter(Boolean).join(' · '))}${doc.valid&&daysUntil(doc.valid)<0?' <span class="badge due">abgelaufen</span>':''}</span></button>${via?'':`<button class="iconbtn sm" data-act="unlinkDoc" data-doc="${doc.id}" data-door="${d.id}" aria-label="Dokument von der Tür lösen">${x}</button>`}</div>`).join('');
+  const warn=needsZul(d)&&!dd.some(o=>o.doc.cat==='zulassung')?`<p class="note" style="background:var(--coral-soft);color:var(--coral-text);margin-bottom:10px">Für ${esc(d.fire)} ist noch keine Zulassung zugeordnet.</p>`:'';
+  return `<div class="block"><h3>Dokumentation <span class="cnt">${dd.length} ${dd.length===1?'Dokument':'Dokumente'} · ${its.length} ${its.length===1?'Anbauteil':'Anbauteile'}</span></h3>${warn}
+    <div class="sub2" style="margin-top:0">Anbauteile</div>${its.length?`<div class="links">${itemRows}</div>`:'<p class="editing-note" style="margin:0">Keine Anbauteile zugeordnet.</p>'}
+    <div class="sub2">Dokumente</div>${dd.length?`<div class="links">${docRows}</div>`:'<p class="editing-note" style="margin:0">Keine Dokumente zugeordnet.</p>'}
+    <div class="btnrow" style="margin-top:10px"><button class="btn" data-act="pickDocs" data-id="${d.id}">${ICON.docs}Dokumente zuordnen</button><button class="btn" data-act="pickItems" data-id="${d.id}">${ICON.parts}Anbauteile zuordnen</button><button class="btn" data-act="newDocFor" data-ids="${d.id}">${ICON.upload}Hochladen</button></div></div>`;
 }
 function partsBlock(d){
   const ps=d.parts||[],m=ps.filter(x=>x.state==='montiert').length;
@@ -938,6 +1137,167 @@ function partsView(){
   return `<div class="toolbar"><div class="sortrow" style="font-size:13.5px;color:var(--ink)"><b>Teileliste</b><span class="muted">${m} von ${all.length} Teilen montiert</span></div>
     ${all.length?`<div class="bar"><i style="width:${Math.round(m/all.length*100)}%"></i></div>`:''}<div class="chips">${chips}</div></div>
     <div class="cards">${groups||`<div class="empty"><h3>Keine Teile in diesem Filter</h3>Wähle einen anderen Status.</div>`}</div>`;
+}
+
+/* Dokumente und Anbauteile je Projekt */
+function docsView(){
+  const docs=docsOf(),items=itemsOf(),g=docGaps(),m=ui.dmode;
+  const kpi=(v,l,cls)=>`<div class="kpi ${v?cls:'ok'}"><div class="v">${v}</div><div class="l">${l}</div></div>`;
+  const gaps=[
+    ...g.fire.map(d=>`<button class="ditem" data-act="open" data-id="${d.id}"><span class="t1"><span class="nr">${esc(d.nr)}</span>${esc(d.name||'Ohne Bezeichnung')}</span><span class="side late">Zulassung fehlt</span><span class="t2">${esc([d.fire,d.floor,d.room].filter(Boolean).join(' · '))}</span></button>`),
+    ...g.expired.map(x=>`<button class="ditem" data-act="openDoc" data-id="${x.id}"><span class="t1">${esc(x.name)}</span><span class="side late">abgelaufen<span class="d num">${fmtDate(x.valid)}</span></span><span class="t2">${esc([DOC_CAT[x.cat],x.nr].filter(Boolean).join(' · '))}</span></button>`),
+    ...g.items.map(i=>`<button class="ditem" data-act="openItem" data-id="${i.id}"><span class="t1">${esc(i.name)}</span><span class="side near">Datenblatt fehlt</span><span class="t2">${esc(i.cat)} · ${i.doorIds.length} ${i.doorIds.length===1?'Tür':'Türen'}</span></button>`),
+    ...g.loose.map(x=>`<button class="ditem" data-act="openDoc" data-id="${x.id}"><span class="t1">${esc(x.name)}</span><span class="side near">nicht zugeordnet</span><span class="t2">${esc(DOC_CAT[x.cat])}</span></button>`),
+  ];
+  const seg=`<div class="seg" role="group" aria-label="Bereich">${[['docs','Dokumente',docs.length],['items','Anbauteile',items.length]].map(([k,l,n])=>`<button data-act="dmode" data-k="${k}" aria-pressed="${m===k}">${l} <span class="muted num">${n}</span></button>`).join('')}</div>`;
+  return `<div class="dash" style="max-width:900px;margin:0">
+    <div class="dtitle"><h2>Dokumentation</h2><div class="sub">Unterlagen für die Übergabe an den Bauherrn. Ein Dokument gilt für beliebig viele Türen, Datenblätter hängen am Anbauteil.</div></div>
+    <div class="kpis">${kpi(docs.length,'Dokumente','ok')}${kpi(items.length,'Anbauteile','ok')}${kpi(g.fire.length,'Brandschutztüren ohne Zulassung','alert')}${kpi(g.items.length,'Anbauteile ohne Datenblatt','warn')}</div>
+    ${gaps.length?`<section class="panel"><h3>Offene Punkte für die Übergabe<span class="cnt num">${gaps.length}</span></h3>${gaps.slice(0,8).join('')}${gaps.length>8?`<span class="more">+ ${gaps.length-8} weitere</span>`:''}</section>`:''}
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">${seg}<span class="spacer"></span>${m==='docs'?`<button class="btn primary" data-act="newDoc">${ICON.upload}Dokument hochladen</button>`:`<button class="btn" data-act="toGrid">${ICON.table}In Tabelle erfassen</button><button class="btn primary" data-act="newItem">${ICON.plus}Anbauteil</button>`}</div>
+    <label class="search">${ICON.search}<input id="dq" type="search" placeholder="${m==='docs'?'Bezeichnung, Nummer, Tür-Nr. …':'Anbauteil, Kategorie, Tür-Nr. …'}" value="${esc(ui.dq)}" autocomplete="off" aria-label="Suchen"></label>
+    ${m==='docs'?`<div class="chips" id="dcChips">${docChips()}</div>`:''}
+    <div id="docsList" style="display:grid;gap:8px;padding-bottom:72px">${docsListHtml()}</div>
+  </div>`;
+}
+function docChips(){
+  const all=docsOf();
+  return ['alle',...DOC_ORDER].map(k=>{const n=k==='alle'?all.length:all.filter(x=>x.cat===k).length;if(k!=='alle'&&!n&&ui.dcat!==k)return '';return `<button class="chip" data-act="dcat" data-k="${k}" aria-pressed="${ui.dcat===k}">${k==='alle'?'Alle':DOC_CAT_PL[k]} <span class="cnt num">${n}</span></button>`;}).join('');
+}
+function docRowHtml(x){
+  const nd=doorsOfDoc(x).length,ni=x.itemIds.length;
+  return `<button class="docrow" data-act="openDoc" data-id="${x.id}"><img class="docthumb" src="${x.thumb}" alt="" loading="lazy"><span class="dt"><span class="t1">${esc(x.name)}</span><span class="t2">${esc([x.nr,x.valid?'gültig bis '+fmtDate(x.valid):''].filter(Boolean).join(' · ')||x.fileName||'')}</span><span class="badges"><span class="badge dc-${x.cat}">${DOC_CAT[x.cat]}</span>${nd?`<span class="badge">${nd} ${nd===1?'Tür':'Türen'}</span>`:''}${ni?`<span class="badge">${ni} ${ni===1?'Anbauteil':'Anbauteile'}</span>`:''}${!nd&&!ni?'<span class="badge soon">nicht zugeordnet</span>':''}${x.valid&&daysUntil(x.valid)<0?'<span class="badge due">abgelaufen</span>':''}</span></span></button>`;
+}
+function itemRowHtml(i){
+  const ds=itemDocs(i),n=i.doorIds.filter(id=>door(id)).length,nrs=i.doorIds.map(id=>door(id)?.nr).filter(Boolean).sort((a,b)=>a.localeCompare(b,'de',{numeric:true}));
+  return `<button class="docrow" data-act="openItem" data-id="${i.id}"><span class="projicon" style="flex:0 0 auto">${ICON.parts}</span><span class="dt"><span class="t1">${esc(i.name)}</span><span class="t2">${esc(i.cat)}${nrs.length?' · '+esc(nrs.slice(0,6).join(', '))+(nrs.length>6?' …':''):''}</span><span class="badges"><span class="badge">${n} ${n===1?'Tür':'Türen'}</span>${ds.some(x=>x.cat==='datenblatt')?`<span class="badge dc-datenblatt">${ds.length} ${ds.length===1?'Unterlage':'Unterlagen'}</span>`:'<span class="badge soon">ohne Datenblatt</span>'}</span></span></button>`;
+}
+function docsListHtml(){
+  const q=ui.dq.trim().toLowerCase();
+  if(ui.dmode==='docs'){
+    const list=docsOf().filter(x=>(ui.dcat==='alle'||x.cat===ui.dcat)&&(!q||[x.name,x.nr,DOC_CAT[x.cat],...doorsOfDoc(x).map(id=>door(id).nr)].join(' ').toLowerCase().includes(q)));
+    if(!list.length)return docsOf().length?'<div class="empty"><h3>Keine Treffer</h3>Passe Suche oder Filter an.</div>':`<div class="empty"><h3>Noch keine Dokumente</h3>Lade Zulassungen, Datenblätter, Prüfbücher oder Übereinstimmungserklärungen als PDF oder Bild hoch und ordne sie den Türen zu.</div>`;
+    return DOC_ORDER.map(c=>{const l=list.filter(x=>x.cat===c).sort((a,b)=>a.name.localeCompare(b.name,'de'));return l.length?`<div class="dgroup">${DOC_CAT_PL[c]}</div>${l.map(docRowHtml).join('')}`:'';}).join('');
+  }
+  const list=itemsOf().filter(i=>!q||[i.name,i.cat,i.note,...i.doorIds.map(id=>door(id)?.nr)].join(' ').toLowerCase().includes(q));
+  if(!list.length)return itemsOf().length?'<div class="empty"><h3>Keine Treffer</h3>Passe die Suche an.</div>':`<div class="empty"><h3>Noch keine Anbauteile</h3>Am schnellsten in der Tabelle unter „Erfassen“: Produkt in die Spalte eintragen, z. B. „GEZE TS 5000“ bei Obentürschließer. Das Anbauteil wird als Objekt angelegt und der Tür zugeordnet.</div>`;
+  return ITEM_CATS.map(c=>{const l=list.filter(i=>i.cat===c).sort((a,b)=>a.name.localeCompare(b.name,'de'));return l.length?`<div class="dgroup">${esc(c)}</div>${l.map(itemRowHtml).join('')}`:'';}).join('');
+}
+function refreshDocs(){const l=$('#docsList');if(l)l.innerHTML=docsListHtml();const c=$('#dcChips');if(c)c.innerHTML=docChips();}
+
+/* Zuordnung: Auswahllisten in Sheets */
+function pickRow(k,a,b,on,label,q){
+  return `<button class="row pick" data-act="pick" data-k="${k}" data-a="${a}" data-b="${b}" role="checkbox" aria-checked="${on}" data-q="${esc(q||'')}"><span class="rt">${label}</span>${ICON.check}</button>`;
+}
+function pickSearch(list,ph,all=true){
+  return `<div class="pickbar"><label class="search">${ICON.search}<input type="search" data-pickq="${list}" placeholder="${esc(ph)}" autocomplete="off" aria-label="Filtern"></label>${all?`<button class="btn" data-act="pickAll" data-list="${list}">Alle Treffer zuordnen</button>`:''}</div>`;
+}
+const doorQ=d=>[d.nr,d.name,d.floor,d.room,d.type,d.fire,d.maker].join(' ').toLowerCase();
+const doorLabel=(d,extra)=>`<span class="r1"><span class="nr">${esc(d.nr)}</span> ${esc(d.name||'Ohne Bezeichnung')}</span><br><span class="r2">${esc([d.floor,d.room,needsZul(d)?d.fire:'',d.maker].filter(Boolean).join(' · '))}${extra?' · '+esc(extra):''}</span>`;
+function updatePickCounts(){
+  document.querySelectorAll('[data-cnt-for]').forEach(c=>{c.textContent=document.querySelectorAll(`#${c.dataset.cntFor} .pick[aria-checked="true"]`).length+' zugeordnet';});
+}
+function docSheet(x){
+  const ds=doorsOf().sort(byNr),its=itemsOf().sort((a,b)=>ITEM_CATS.indexOf(a.cat)-ITEM_CATS.indexOf(b.cat)||a.name.localeCompare(b.name,'de'));
+  const doorRows=ds.map(d=>{const on=x.doorIds.includes(d.id),via=!on&&itemsOfDoor(d).find(i=>x.itemIds.includes(i.id));return pickRow('docDoor',x.id,d.id,on,doorLabel(d,via?`über Anbauteil „${via.name}“`:''),doorQ(d));}).join('');
+  const itemRows=its.map(i=>pickRow('docItem',x.id,i.id,x.itemIds.includes(i.id),`<span class="r1">${esc(i.name)}</span><br><span class="r2">${esc(i.cat)} · ${i.doorIds.length} ${i.doorIds.length===1?'Tür':'Türen'}</span>`,(i.name+' '+i.cat).toLowerCase())).join('');
+  openSheet(`<div class="dochead"><button class="docprev" data-act="viewDoc" data-id="${x.id}" aria-label="Dokument ansehen"><img src="${x.thumb}" alt=""></button><div style="min-width:0"><span class="badge dc-${x.cat}">${DOC_CAT[x.cat]}</span><h2>${esc(x.name)}</h2><p class="sub" style="margin-bottom:10px">${esc([x.nr,x.valid?'gültig bis '+fmtDate(x.valid):'',x.pages>1?x.pages+' Seiten':''].filter(Boolean).join(' · '))}${x.valid&&daysUntil(x.valid)<0?' <span class="badge due">abgelaufen</span>':''}<br>hochgeladen ${esc(fmtDate(x.created))}${x.user?' von '+esc(x.user):''}</p>
+      <div class="btnrow"><button class="btn primary" data-act="viewDoc" data-id="${x.id}">Ansehen</button><button class="btn" data-act="dlDoc" data-id="${x.id}">Herunterladen</button></div></div></div>
+    <h3>Türen <span class="cnt" data-cnt-for="pickDoors" style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted)"></span></h3>
+    <p class="editing-note" style="margin:0 0 8px">Tippen ordnet zu oder löst. Mit dem Filter, z. B. „T30“, lassen sich alle passenden Türen auf einmal zuordnen.</p>
+    ${ds.length?pickSearch('pickDoors','Filtern, z. B. T30, EG, Hörmann'):''}
+    <div class="rowlist" id="pickDoors">${doorRows||'<div class="note">Noch keine Türen im Projekt.</div>'}</div>
+    <h3>Anbauteile <span class="cnt" data-cnt-for="pickItems" style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted)"></span></h3>
+    <p class="editing-note" style="margin:0 0 8px">Gilt dann für alle Türen, an denen das Anbauteil verbaut ist. Typisch für Datenblätter.</p>
+    <div class="rowlist" id="pickItems">${itemRows||'<div class="note">Noch keine Anbauteile im Projekt.</div>'}</div>
+    <h3>Angaben</h3>
+    <form id="docForm" class="form" autocomplete="off" data-id="${x.id}">
+      <div class="field"><label for="dc_cat">Art</label><select id="dc_cat">${DOC_ORDER.map(k=>`<option value="${k}" ${x.cat===k?'selected':''}>${DOC_CAT[k]}</option>`).join('')}</select></div>
+      <div class="field"><label for="dc_name">Bezeichnung</label><input id="dc_name" value="${esc(x.name)}" required></div>
+      <div class="field"><label for="dc_nr">Nummer / Zeichen</label><input id="dc_nr" value="${esc(x.nr||'')}"></div>
+      <div class="field"><label for="dc_valid">Gültig bis</label><input id="dc_valid" type="date" value="${esc(x.valid||'')}"></div>
+      <div class="formbar" style="grid-column:1/-1;margin-top:0">${sheetState.delDoc?`<button type="button" class="btn accent" data-act="doDelDoc" data-id="${x.id}">Endgültig löschen</button>`:`<button type="button" class="btn ghost danger" data-act="askDelDoc" data-id="${x.id}">Dokument löschen</button>`}<span class="spacer"></span><button type="submit" class="btn primary">Angaben speichern</button></div>
+    </form>`,'Dokument');
+  updatePickCounts();
+}
+function itemSheet(i){
+  const ds=doorsOf().sort(byNr),docs=docsOf().sort((a,b)=>DOC_ORDER.indexOf(a.cat)-DOC_ORDER.indexOf(b.cat)||a.name.localeCompare(b.name,'de'));
+  const docRows=docs.map(x=>pickRow('docItem',x.id,i.id,x.itemIds.includes(i.id),`<span class="r1">${esc(x.name)}</span><br><span class="r2">${esc([DOC_CAT[x.cat],x.nr].filter(Boolean).join(' · '))}</span>`,(x.name+' '+x.nr+' '+DOC_CAT[x.cat]).toLowerCase())).join('');
+  const doorRows=ds.map(d=>pickRow('itemDoor',i.id,d.id,i.doorIds.includes(d.id),doorLabel(d,itemsOfDoor(d).filter(o=>o.cat===i.cat&&o!==i).map(o=>o.name).join(', ')),doorQ(d))).join('');
+  openSheet(`<div class="dochead"><span class="projicon" style="width:56px;height:56px">${ICON.parts}</span><div style="min-width:0"><span class="badge">${esc(i.cat)}</span><h2>${esc(i.name)}</h2><p class="sub" style="margin-bottom:0">${esc(i.note||'Anbauteil als eigenes Objekt: Unterlagen einmal hinterlegen, an allen zugeordneten Türen sichtbar.')}</p></div></div>
+    <h3>Unterlagen <span class="cnt" data-cnt-for="pickDocsOfItem" style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted)"></span></h3>
+    <div class="rowlist" id="pickDocsOfItem">${docRows}</div>
+    <div class="btnrow" style="margin-top:8px"><button class="btn" data-act="newDocForItem" data-id="${i.id}">${ICON.upload}Datenblatt hochladen</button></div>
+    <h3>Türen <span class="cnt" data-cnt-for="pickItemDoors" style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted)"></span></h3>
+    ${ds.length?pickSearch('pickItemDoors','Filtern, z. B. T30, EG, Hörmann'):''}
+    <div class="rowlist" id="pickItemDoors">${doorRows||'<div class="note">Noch keine Türen im Projekt.</div>'}</div>
+    <h3>Angaben</h3>
+    <form id="itemForm" class="form" autocomplete="off" data-id="${i.id}">
+      <div class="field"><label for="it_cat">Kategorie</label><select id="it_cat">${ITEM_CATS.map(c=>`<option ${i.cat===c?'selected':''}>${esc(c)}</option>`).join('')}</select></div>
+      <div class="field"><label for="it_name">Produkt / Typ</label><input id="it_name" value="${esc(i.name)}" required></div>
+      <div class="field" style="grid-column:1/-1"><label for="it_note">Bemerkung</label><input id="it_note" value="${esc(i.note||'')}" placeholder="z. B. Gleitschiene, Farbe EV1"></div>
+      <div class="formbar" style="grid-column:1/-1;margin-top:0">${sheetState.delItem?`<button type="button" class="btn accent" data-act="doDelItem" data-id="${i.id}">Endgültig löschen</button>`:`<button type="button" class="btn ghost danger" data-act="askDelItem" data-id="${i.id}">Anbauteil löschen</button>`}<span class="spacer"></span><button type="submit" class="btn primary">Angaben speichern</button></div>
+    </form>`,'Anbauteil');
+  updatePickCounts();
+}
+// Dokumente oder Anbauteile einer oder mehreren Türen zuordnen
+function pickerSheet(kind,ids){
+  const ts=ids.map(door).filter(Boolean);if(!ts.length)return;
+  const st=has=>{const n=ts.filter(has).length;return n===0?'false':n===ts.length?'true':'mixed';};
+  const who=ts.length===1?`${ts[0].nr} · ${ts[0].name||'Ohne Bezeichnung'}`:`${ts.length} Türen: ${ts.slice(0,8).map(d=>d.nr).join(', ')}${ts.length>8?' …':''}`;
+  const B=ts.map(d=>d.id).join(',');
+  const multi=ts.length>1?'<p class="editing-note" style="margin:0 0 8px">Gestrichelt = nur einem Teil der Auswahl zugeordnet. Tippen ordnet allen zu.</p>':'';
+  if(kind==='docs'){
+    const groups=DOC_ORDER.map(c=>{const l=docsOf().filter(x=>x.cat===c).sort((a,b)=>a.name.localeCompare(b.name,'de'));return l.length?`<div class="dgroup">${DOC_CAT_PL[c]}</div>`+l.map(x=>{const n=doorsOfDoc(x).length;return pickRow('docDoor',x.id,B,st(d=>x.doorIds.includes(d.id)),`<span class="r1">${esc(x.name)}</span><br><span class="r2">${esc([x.nr,`${n} ${n===1?'Tür':'Türen'}`].filter(Boolean).join(' · '))}</span>`,(x.name+' '+x.nr+' '+DOC_CAT[x.cat]).toLowerCase());}).join(''):'';}).join('');
+    openSheet(`<h2>Dokumente zuordnen</h2><p class="sub">${esc(who)}</p>${multi}${docsOf().length?pickSearch('pickList','Dokument suchen …',false):''}
+      <div class="rowlist" id="pickList">${groups||'<div class="note">Noch keine Dokumente im Projekt. Lade das erste hoch, es wird direkt zugeordnet.</div>'}</div>
+      <div class="formbar"><button class="btn" data-act="newDocFor" data-ids="${B}">${ICON.upload}Neues Dokument hochladen</button><button class="btn primary" data-act="closeSheet">Fertig</button></div>`,'Dokumente zuordnen');
+  }else{
+    const groups=ITEM_CATS.map(c=>{const l=itemsOf().filter(i=>i.cat===c).sort((a,b)=>a.name.localeCompare(b.name,'de'));return l.length?`<div class="dgroup">${esc(c)}</div>`+l.map(i=>pickRow('itemDoor',i.id,B,st(d=>i.doorIds.includes(d.id)),`<span class="r1">${esc(i.name)}</span><br><span class="r2">${i.doorIds.length} ${i.doorIds.length===1?'Tür':'Türen'} · ${itemDocs(i).length?itemDocs(i).length+' Unterlagen':'ohne Datenblatt'}</span>`,(i.name+' '+i.cat).toLowerCase())).join(''):'';}).join('');
+    openSheet(`<h2>Anbauteile zuordnen</h2><p class="sub">${esc(who)}</p>${multi}${itemsOf().length?pickSearch('pickList','Anbauteil suchen …',false):''}
+      <div class="rowlist" id="pickList">${groups||'<div class="note">Noch keine Anbauteile im Projekt.</div>'}</div>
+      <h3>Neues Anbauteil</h3>${newItemForm(B)}
+      <div class="formbar"><button class="btn primary" data-act="closeSheet">Fertig</button></div>`,'Anbauteile zuordnen');
+  }
+}
+function newItemForm(ids){
+  return `<form id="newItemForm" class="form" autocomplete="off" data-ids="${ids||''}"><div class="field"><label for="ni_cat">Kategorie</label><select id="ni_cat">${ITEM_CATS.map(c=>`<option>${esc(c)}</option>`).join('')}</select></div><div class="field"><label for="ni_name">Produkt / Typ</label><input id="ni_name" required placeholder="z. B. GEZE TS 5000"></div><div class="formbar" style="grid-column:1/-1;margin-top:0"><button class="btn ${ids?'':'primary'}" type="submit">${ICON.plus}${ids?'Anlegen und zuordnen':'Anbauteil anlegen'}</button></div></form>`;
+}
+function newDocSheet(pre){
+  pre=pre||{};sheetState.newDoc=pre;
+  const ds=(pre.doorIds||[]).map(door).filter(Boolean),it=(pre.itemIds||[]).map(itemById).filter(Boolean);
+  const cat=pre.cat||(ui.dcat!=='alle'?ui.dcat:'zulassung');
+  const info=ds.length?`Wird ${ds.length===1?`Tür ${ds[0].nr}`:`${ds.length} Türen`} zugeordnet. Weitere Türen kannst du danach auswählen.`:it.length?`Wird dem Anbauteil „${it[0].name}“ zugeordnet und gilt damit für ${it[0].doorIds.length} ${it[0].doorIds.length===1?'Tür':'Türen'}.`:'Nach dem Hochladen ordnest du das Dokument den Türen zu.';
+  openSheet(`<h2>Dokument hochladen</h2><p class="sub">${esc(info)}</p>
+    <form id="newDocForm" class="form" autocomplete="off">
+      <div class="field" style="grid-column:1/-1"><label for="nd2_file">Datei (PDF oder Bild)</label><input id="nd2_file" type="file" accept="application/pdf,image/*" required></div>
+      <div class="field"><label for="nd2_cat">Art</label><select id="nd2_cat">${DOC_ORDER.map(k=>`<option value="${k}" ${k===cat?'selected':''}>${DOC_CAT[k]}</option>`).join('')}</select></div>
+      <div class="field"><label for="nd2_name">Bezeichnung</label><input id="nd2_name" placeholder="z. B. Hörmann T30-1 H3"></div>
+      <div class="field"><label for="nd2_nr">Nummer / Zeichen</label><input id="nd2_nr" placeholder="z. B. abZ Z-6.20-1938"></div>
+      <div class="field"><label for="nd2_valid">Gültig bis</label><input id="nd2_valid" type="date"></div>
+      <div class="formbar" style="grid-column:1/-1"><button type="button" class="btn ghost" data-act="closeSheet">Abbrechen</button><button class="btn primary" type="submit">${ICON.upload}Hochladen</button></div>
+    </form>`,'Dokument hochladen');
+}
+async function docViewer(x){
+  const pdf=x.mime==='application/pdf';
+  openSheet(`<h2>${esc(x.name)}</h2><p class="sub">${esc([DOC_CAT[x.cat],x.nr,x.pages>1?x.pages+' Seiten':''].filter(Boolean).join(' · '))}${x.demo?' · Demo-Dokument ohne echte Datei':''}</p>
+    <div class="fileview" id="docPages">${pdf?'<p class="muted" style="padding:12px">PDF wird geladen …</p>':`<img src="${x.src}" alt="${esc(x.name)}">`}</div>
+    <div class="btnrow" style="margin-top:12px"><button class="btn" data-act="openDoc" data-id="${x.id}">${ICON.back}Zurück</button><button class="btn" data-act="dlDoc" data-id="${x.id}">Herunterladen</button></div>`,'Dokument ansehen');
+  if(!pdf)return;
+  const box=$('#docPages');
+  try{
+    const lib=await loadPdfJs();
+    const bin=atob(x.src.slice(x.src.indexOf(',')+1)),bytes=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)bytes[k]=bin.charCodeAt(k);
+    const doc=await lib.getDocument({data:bytes}).promise;
+    const W=Math.min(1600,(box.clientWidth||600)*2);box.innerHTML='';
+    for(let i=1;i<=Math.min(doc.numPages,40);i++){
+      if(!box.isConnected)return;
+      const page=await doc.getPage(i),v1=page.getViewport({scale:1}),vp=page.getViewport({scale:W/v1.width});
+      const cv=document.createElement('canvas');cv.width=Math.round(vp.width);cv.height=Math.round(vp.height);cv.style.cssText='display:block;width:100%;height:auto;background:#fff;margin-bottom:8px';
+      await page.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;box.appendChild(cv);
+    }
+    if(doc.numPages>40)box.insertAdjacentHTML('beforeend','<p class="muted" style="padding:8px">Vorschau zeigt die ersten 40 Seiten. Herunterladen für das ganze Dokument.</p>');
+  }catch(err){console.error(err);if(box)box.innerHTML='<p class="muted" style="padding:12px">PDF konnte hier nicht angezeigt werden. Über „Herunterladen“ öffnen.</p>';}
 }
 
 /* Nutzung: Wartungen und Zustand */
@@ -1037,24 +1397,52 @@ function tableRows(){
     if(key==='due'){va=a.due&&isOpen(a)?a.due:'9999';vb=b.due&&isOpen(b)?b.due:'9999';return va.localeCompare(vb)*t.dir||byUrgency(a,b);}
     if(key==='next'){va=nextService(a)?.getTime()??Infinity;vb=nextService(b)?.getTime()??Infinity;return (va-vb)*t.dir;}
     if(key==='status'){va=STATUS_ORDER.indexOf(a.status);vb=STATUS_ORDER.indexOf(b.status);return (va-vb)*t.dir;}
+    if(key==='docs')return (docsOfDoor(a).length-docsOfDoor(b).length)*t.dir||byNr(a,b);
     return String(a[key]??'').localeCompare(String(b[key]??''),'de',{numeric:true})*t.dir;
   });
   return list;
 }
-const TCOLS=[['prio','Priorität'],['nr','Tür-Nr.'],['name','Bezeichnung'],['floor','Geschoss'],['room','Raum'],['type','Türtyp'],['fire','Brandschutz'],['status','Status'],['due','Frist'],['next','Nächste Wartung']];
+const TCOLS=[['prio','Priorität'],['nr','Tür-Nr.'],['name','Bezeichnung'],['floor','Geschoss'],['room','Raum'],['type','Türtyp'],['fire','Brandschutz'],['status','Status'],['due','Frist'],['next','Nächste Wartung'],['docs','Dokumentation']];
+const tmodeBar=()=>`<div class="sortrow">Tabelle<div class="seg small" role="group" aria-label="Tabellenmodus">${[['view','Ansehen'],['grid','Erfassen']].map(([k,l])=>`<button data-act="tmode" data-k="${k}" aria-pressed="${ui.tmode===k}">${l}</button>`).join('')}</div></div>`;
 function tableView(){
+  if(ui.tmode==='grid')return gridView();
   const all=doorsOf(),t=ui.t;
   const floors=[...new Set(all.map(d=>d.floor).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'de',{numeric:true}));
   const sel=(id,label,val,opts)=>`<select id="${id}" aria-label="${label}"><option value="">${label}: alle</option>${opts.map(([v,l])=>`<option value="${esc(v)}" ${v===val?'selected':''}>${esc(l)}</option>`).join('')}</select>`;
-  return `<div class="toolbar"><label class="search">${ICON.search}<input id="tq" type="search" placeholder="In Tabelle suchen …" value="${esc(t.q)}" autocomplete="off" aria-label="Tabelle durchsuchen"></label>
+  return `<div class="toolbar">${tmodeBar()}<label class="search">${ICON.search}<input id="tq" type="search" placeholder="In Tabelle suchen …" value="${esc(t.q)}" autocomplete="off" aria-label="Tabelle durchsuchen"></label>
     <div class="tfilters">${sel('tStatus','Status',t.status,STATUS_ORDER.map(k=>[k,STATUS[k]]))}${sel('tFloor','Geschoss',t.floor,floors.map(f=>[f,f]))}${sel('tFire','Brandschutz',t.fire,FIRE.map(f=>[f,f]))}
     <span class="count num" id="tCount"></span><button class="btn" data-act="csv">CSV exportieren</button></div></div>
     <div class="tablewrap"><div class="tscroll"><table><thead><tr>${TCOLS.map(([k,l])=>`<th><button data-act="sort" data-k="${k}" ${t.sort===k?`data-dir="${t.dir>0?'↑':'↓'}"`:''}>${l}</button></th>`).join('')}</tr></thead><tbody id="tbody"></tbody></table></div></div>`;
 }
+/* Erfassen: Türliste in Tabellenform. Türen und Anbauteile direkt in den Zellen anlegen. */
+function gridCats(){const s=new Set([...itemsOf().map(i=>i.cat),...(proj().gridCols||[])]);return ITEM_CATS.filter(c=>s.has(c));}
+const gridDoors=()=>doorsOf().sort(byNr);
+function bulkHtml(){
+  const n=ui.sel.size;if(!n)return '';
+  return `<div class="bulkbar"><b>${n} ${n===1?'Tür':'Türen'} ausgewählt</b><button class="btn" data-act="bulkDocs">${ICON.docs}Dokumente zuordnen</button><button class="btn" data-act="bulkItems">${ICON.parts}Anbauteile zuordnen</button><button class="btn" data-act="clearSel">Aufheben</button></div>`;
+}
+function gridLists(){return gridCats().map(c=>`<datalist id="dl-${slug(c)}">${itemsOf().filter(i=>i.cat===c).map(i=>`<option value="${esc(i.name)}">`).join('')}</datalist>`).join('');}
+function gridDocBtn(d){const n=docsOfDoor(d).length,miss=needsZul(d)&&!hasZul(d);return `<button class="btn ${miss?'danger':''}" data-act="pickDocs" data-id="${d.id}" title="${miss?'Zulassung fehlt':'Dokumente zuordnen'}">${n} Dok.${miss?' · Zul. fehlt':''}</button>`;}
+function gridView(){
+  ui.sel=new Set([...ui.sel].filter(id=>door(id)?.projectId===proj().id));
+  const ds=gridDoors(),cats=gridCats(),free=ITEM_CATS.filter(c=>!cats.includes(c));
+  const F=k=>FIELDS.find(f=>f.k===k);
+  const cell=(d,k)=>{const f=F(k),v=d[k]??'',lab=`${esc(f.l)} ${esc(d.nr)}`;
+    if(f.opts){const opts=f.opts.includes(v)||v===''?f.opts:[v,...f.opts];return `<select data-door="${d.id}" data-f="${k}" aria-label="${lab}">${opts.map(o=>`<option ${o===v?'selected':''}>${esc(o)}</option>`).join('')}</select>`;}
+    return `<input data-door="${d.id}" data-f="${k}" ${f.t==='number'?'inputmode="numeric"':''} value="${esc(v)}" aria-label="${lab}" autocomplete="off">`;};
+  const rows=ds.map(d=>{const its=itemsOfDoor(d);return `<tr data-door="${d.id}" class="${ui.sel.has(d.id)?'sel':''}"><td class="cb"><input type="checkbox" data-sel="${d.id}" ${ui.sel.has(d.id)?'checked':''} aria-label="${esc(d.nr)} auswählen"></td>${GRID_F.map(k=>`<td class="c-${k}">${cell(d,k)}</td>`).join('')}${cats.map(c=>`<td class="c-item"><input data-door="${d.id}" data-cat="${esc(c)}" list="dl-${slug(c)}" value="${esc(its.filter(i=>i.cat===c).map(i=>i.name).join('; '))}" placeholder="–" aria-label="${esc(c)} ${esc(d.nr)}" autocomplete="off"></td>`).join('')}<td class="c-docs">${gridDocBtn(d)}</td></tr>`;}).join('');
+  return `<div class="toolbar static">${tmodeBar()}
+    <div class="tfilters"><button class="btn primary" data-act="gridAdd">${ICON.plus}Zeile / Tür</button><select id="addCol" aria-label="Anbauteil-Spalte hinzufügen"><option value="">+ Anbauteil-Spalte</option>${free.map(c=>`<option>${esc(c)}</option>`).join('')}</select><span class="count num">${ds.length} Türen · ${itemsOf().length} Anbauteile</span></div>
+    <div id="bulkbar">${bulkHtml()}</div>
+    <p class="editing-note" style="margin:0">Wird sofort gespeichert und protokolliert. Enter springt eine Zeile tiefer. In Anbauteil-Spalten Produkt eintragen, z. B. „GEZE TS 5000“: Neues wird als Objekt angelegt, Bekanntes zugeordnet, mehrere mit „;“ trennen. Zeilen aus Excel lassen sich direkt einfügen.</p></div>
+    <div class="tablewrap grid"><div class="tscroll"><table><thead><tr><th class="cb"><input type="checkbox" id="gridAll" aria-label="Alle auswählen" ${ds.length&&ds.every(d=>ui.sel.has(d.id))?'checked':''}></th>${GRID_F.map(k=>`<th>${esc(F(k).l)}</th>`).join('')}${cats.map(c=>`<th class="item">${esc(c)}</th>`).join('')}<th>Dokumente</th></tr></thead>
+    <tbody>${rows||`<tr><td colspan="${GRID_F.length+cats.length+2}" class="empty" style="padding:24px">Noch keine Türen. „Zeile / Tür“ legt die erste an, oder Türliste aus Excel in eine Zelle einfügen.</td></tr>`}</tbody></table></div></div>
+    <div id="gridLists">${gridLists()}</div>`;
+}
 function refreshTable(){
   const tb=$('#tbody');if(!tb)return;
   const rows=tableRows();
-  tb.innerHTML=rows.length?rows.map(d=>{const ns=nextService(d),ss=serviceState(d);const u=urgency(d);return `<tr data-act="open" data-id="${d.id}" tabindex="0"><td>${isOpen(d)&&d.prio==='Dringend'?'<span class="badge urgent">Dringend</span>':isOpen(d)&&d.prio==='Hoch'?'<span class="badge high">Hoch</span>':esc(isOpen(d)?d.prio:'–')}</td><td class="nr">${esc(d.nr)}</td><td class="wrap">${esc(d.name)}</td><td>${esc(d.floor)}</td><td>${esc(d.room)}</td><td>${esc(d.type)}</td><td>${d.fire&&d.fire!=='ohne'?`<span class="badge fire">${esc(d.fire)}</span>`:esc(d.fire||'')}</td><td><span class="tag s-${d.status}">${STATUS[d.status]}</span></td><td class="num">${u.fd!=null?`${fmtDate(d.due)}${u.fd<0?' <span class="badge due">überfällig</span>':u.fd<=14?' <span class="badge soon">bald</span>':''}`:'–'}</td><td class="num">${ns?fmtDate(ns.toISOString()):'–'}${ss==='due'?' <span class="badge due">fällig</span>':ss==='soon'?' <span class="badge soon">bald</span>':''}</td></tr>`}).join('')
+  tb.innerHTML=rows.length?rows.map(d=>{const ns=nextService(d),ss=serviceState(d);const u=urgency(d);return `<tr data-act="open" data-id="${d.id}" tabindex="0"><td>${isOpen(d)&&d.prio==='Dringend'?'<span class="badge urgent">Dringend</span>':isOpen(d)&&d.prio==='Hoch'?'<span class="badge high">Hoch</span>':esc(isOpen(d)?d.prio:'–')}</td><td class="nr">${esc(d.nr)}</td><td class="wrap">${esc(d.name)}</td><td>${esc(d.floor)}</td><td>${esc(d.room)}</td><td>${esc(d.type)}</td><td>${d.fire&&d.fire!=='ohne'?`<span class="badge fire">${esc(d.fire)}</span>`:esc(d.fire||'')}</td><td><span class="tag s-${d.status}">${STATUS[d.status]}</span></td><td class="num">${u.fd!=null?`${fmtDate(d.due)}${u.fd<0?' <span class="badge due">überfällig</span>':u.fd<=14?' <span class="badge soon">bald</span>':''}`:'–'}</td><td class="num">${ns?fmtDate(ns.toISOString()):'–'}${ss==='due'?' <span class="badge due">fällig</span>':ss==='soon'?' <span class="badge soon">bald</span>':''}</td><td>${(()=>{const n=docsOfDoor(d).length,m=itemsOfDoor(d).length;return `${n||m?`${n} Dok. · ${m} AT`:'–'}${needsZul(d)&&!hasZul(d)?' <span class="badge due">Zulassung fehlt</span>':''}`;})()}</td></tr>`}).join('')
     :`<tr><td colspan="${TCOLS.length}" class="empty">Keine Türen für diese Filter.</td></tr>`;
   const c=$('#tCount');if(c)c.textContent=`${rows.length} von ${doorsOf().length} Türen`;
 }
@@ -1075,7 +1463,8 @@ function openSheet(html,label){
   o.classList.add('open');
   const f=o.querySelector('input:not([type=hidden]),select');if(f&&isWide())setTimeout(()=>f.focus(),50);
 }
-function closeSheet(){const o=$('#overlay');o.classList.remove('open');o.innerHTML='';sheetState={};}
+// dirty: im Sheet wurde zugeordnet, Hintergrund beim Schließen neu zeichnen
+function closeSheet(){const o=$('#overlay'),dirty=sheetState.dirty;o.classList.remove('open');o.innerHTML='';sheetState={};if(dirty&&S)render();}
 let sheetState={};
 function projectsSheet(){
   const rows=S.projects.map(p=>{const n=S.doors.filter(d=>d.projectId===p.id).length,pl=S.plans.filter(x=>x.projectId===p.id).length;
@@ -1222,14 +1611,14 @@ const A={
   cancelDelete(){ui.confirm=null;render();},
   doDelete(){
     const d=door(ui.doorId);if(!d)return;
-    S.doors=S.doors.filter(x=>x.id!==d.id);ui.doorId=null;ui.confirm=null;ui.phoneDetail=false;save();render();toast(`${d.nr} gelöscht`);
+    S.doors=S.doors.filter(x=>x.id!==d.id);S.docs.forEach(x=>{x.doorIds=x.doorIds.filter(id=>id!==d.id);});S.items.forEach(i=>{i.doorIds=i.doorIds.filter(id=>id!==d.id);});ui.doorId=null;ui.confirm=null;ui.phoneDetail=false;save();render();toast(`${d.nr} gelöscht`);
   },
   sort(el){const k=el.dataset.k;if(ui.t.sort===k)ui.t.dir*=-1;else{ui.t.sort=k;ui.t.dir=1;}render();},
   csv(){
     const rows=tableRows();
-    const cols=[...FIELDS.map(f=>[f.k,f.l]),['status','Status'],['next','Nächste Wartung']];
+    const cols=[...FIELDS.map(f=>[f.k,f.l]),['status','Status'],['next','Nächste Wartung'],['items','Anbauteile'],['docs','Dokumente']];
     const q=v=>`"${String(v??'').replace(/"/g,'""')}"`;
-    const lines=[cols.map(c=>q(c[1])).join(';'),...rows.map(d=>cols.map(([k])=>q(k==='status'?STATUS[d.status]:k==='next'?(nextService(d)?fmtDate(nextService(d).toISOString()):''):FIELDS.find(f=>f.k===k)?.t==='date'?fmtDate(d[k]):d[k])).join(';'))];
+    const lines=[cols.map(c=>q(c[1])).join(';'),...rows.map(d=>cols.map(([k])=>q(k==='status'?STATUS[d.status]:k==='next'?(nextService(d)?fmtDate(nextService(d).toISOString()):''):k==='items'?itemsOfDoor(d).map(i=>`${i.cat}: ${i.name}`).join(', '):k==='docs'?docsOfDoor(d).map(o=>`${DOC_CAT[o.doc.cat]}: ${o.doc.name}${o.doc.nr?` (${o.doc.nr})`:''}`).join(', '):FIELDS.find(f=>f.k===k)?.t==='date'?fmtDate(d[k]):d[k])).join(';'))];
     download('﻿'+lines.join('\r\n'),`doorku-${slug(proj().name)}-tuerliste.csv`,'text/csv;charset=utf-8');
   },
   sheetProjects(){sheetState={};projectsSheet();},
@@ -1243,8 +1632,52 @@ const A={
   doReset(){S=migrate(seed());resetView();save();closeSheet();render();toast('Demo-Daten wiederhergestellt');},
   async install(){if(!deferredPrompt)return;deferredPrompt.prompt();try{await deferredPrompt.userChoice}catch(e){}deferredPrompt=null;renderBottom();},
   dismissInstall(){lsSet('dk.installDismissed','1');renderBottom();},
+  // Dokumente und Anbauteile
+  dmode(el){ui.dmode=el.dataset.k;ui.dq='';render();},
+  dcat(el){ui.dcat=el.dataset.k;refreshDocs();},
+  newDoc(){sheetState={};newDocSheet({});},
+  newItem(){sheetState={};openSheet(`<h2>Anbauteil anlegen</h2><p class="sub">Ein Anbauteil ist ein Produkt oder Typ, z. B. ein Obentürschließer. Es wird einmal angelegt, bekommt seine Datenblätter und wird allen Türen zugeordnet, an denen es verbaut ist.</p>${newItemForm('')}<p class="note" style="margin-top:14px">Viele Anbauteile auf einmal: Tabelle, Modus „Erfassen“.</p>`,'Anbauteil anlegen');},
+  newDocFor(el){const ids=(el.dataset.ids||'').split(',').filter(Boolean);const dirty=sheetState.dirty;sheetState={dirty};newDocSheet({doorIds:ids});},
+  newDocForItem(el){const dirty=sheetState.dirty;sheetState={dirty};newDocSheet({itemIds:[el.dataset.id],cat:'datenblatt'});},
+  openDoc(el){const x=docById(el.dataset.id);if(!x)return;sheetState={dirty:sheetState.dirty};docSheet(x);},
+  openItem(el){const i=itemById(el.dataset.id);if(!i)return;sheetState={dirty:sheetState.dirty};itemSheet(i);},
+  viewDoc(el){const x=docById(el.dataset.id);if(x)docViewer(x);},
+  dlDoc(el){
+    const x=docById(el.dataset.id);if(!x)return;
+    try{const a=document.createElement('a');a.href=x.src;a.download=x.fileName||slug(x.name);document.body.appendChild(a);a.click();a.remove();toast(`${a.download} wird gespeichert`);}catch(e){toast('Download ist hier nicht möglich');}
+  },
+  pickDocs(el){sheetState={};pickerSheet('docs',[el.dataset.id||ui.doorId]);},
+  pickItems(el){sheetState={};pickerSheet('items',[el.dataset.id||ui.doorId]);},
+  bulkDocs(){sheetState={};pickerSheet('docs',[...ui.sel]);},
+  bulkItems(){sheetState={};pickerSheet('items',[...ui.sel]);},
+  clearSel(){ui.sel.clear();render();},
+  pick(el){
+    const k=el.dataset.k,on=el.getAttribute('aria-checked')!=='true',bs=el.dataset.b.split(',');
+    if(k==='docDoor'){const x=docById(el.dataset.a);bs.forEach(id=>{const d=door(id);if(x&&d)linkDocDoor(x,d,on);});}
+    if(k==='itemDoor'){const i=itemById(el.dataset.a);bs.forEach(id=>{const d=door(id);if(i&&d)linkItemDoor(i,d,on);});}
+    if(k==='docItem'){const x=docById(el.dataset.a),i=itemById(bs[0]);if(x&&i)linkDocItem(x,i,on);}
+    el.setAttribute('aria-checked',String(on));sheetState.dirty=true;save();updatePickCounts();
+  },
+  pickAll(el){
+    const rows=[...document.querySelectorAll(`#${el.dataset.list} .pick`)].filter(r=>!r.hidden&&r.getAttribute('aria-checked')!=='true');
+    rows.forEach(r=>A.pick(r));toast(rows.length?`${rows.length} zusätzlich zugeordnet`:'Alle Treffer sind schon zugeordnet');
+  },
+  unlinkDoc(el){const x=docById(el.dataset.doc),d=door(el.dataset.door);if(x&&d&&linkDocDoor(x,d,false)){save();render();toast('Dokument gelöst');}},
+  unlinkItem(el){const i=itemById(el.dataset.item),d=door(el.dataset.door);if(i&&d&&linkItemDoor(i,d,false)){save();render();toast('Anbauteil gelöst');}},
+  askDelDoc(el){sheetState.delDoc=true;docSheet(docById(el.dataset.id));},
+  doDelDoc(el){const x=docById(el.dataset.id);if(!x)return;x.doorIds.forEach(id=>{const d=door(id);if(d)log(d,'change',`${DOC_CAT[x.cat]} „${x.name}“ gelöscht`);});S.docs=S.docs.filter(y=>y!==x);save();closeSheet();render();toast('Dokument gelöscht');},
+  askDelItem(el){sheetState.delItem=true;itemSheet(itemById(el.dataset.id));},
+  doDelItem(el){const i=itemById(el.dataset.id);if(!i)return;i.doorIds.forEach(id=>{const d=door(id);if(d)log(d,'change',`Anbauteil „${i.name}“ gelöscht`);});S.docs.forEach(x=>{x.itemIds=x.itemIds.filter(id=>id!==i.id);});S.items=S.items.filter(y=>y!==i);save();closeSheet();render();toast('Anbauteil gelöscht');},
+  // Tabelle erfassen
+  tmode(el){ui.tmode=el.dataset.k;lsSet('dk.tmode',ui.tmode);render();},
+  toGrid(){ui.tmode='grid';lsSet('dk.tmode','grid');closeSheet();if(isWide()){ui.pane='table';lsSet('dk.pane','table');}else{ui.tab='table';ui.phoneDetail=false;}render();},
+  gridAdd(){
+    const d=newDoorObj({nr:suggestNr(null)});d.history.push({ts:new Date().toISOString(),user:me().name,kind:'create',text:'Tür angelegt in der Tabelle'});
+    S.doors.push(d);save();render();
+    const el=document.querySelector(`.grid input[data-door="${d.id}"][data-f="name"]`);if(el){el.focus();el.scrollIntoView({block:'nearest',inline:'nearest'});}
+  },
 };
-function resetView(){ui.doorId=null;ui.phoneDetail=false;ui.editing=false;ui.planId=null;ui.ticketId=null;ui.placing=null;ui.pendingPos=null;ui.confirm=null;ui.zoom=1;ui.q='';ui.status='alle';ui.t.q='';ui.t.status=ui.t.floor=ui.t.fire='';}
+function resetView(){ui.sel=new Set();ui.dq='';ui.dcat='alle';ui.doorId=null;ui.phoneDetail=false;ui.editing=false;ui.planId=null;ui.ticketId=null;ui.placing=null;ui.pendingPos=null;ui.confirm=null;ui.zoom=1;ui.q='';ui.status='alle';ui.t.q='';ui.t.status=ui.t.floor=ui.t.fire='';}
 const slug=s=>s.toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 function download(content,name,type){
   try{
@@ -1288,17 +1721,58 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){if($('#overlay').classList.contains('open')){closeSheet();ui.pendingPos=null;render();}else if(ui.placing){A.cancelPlacing();}else if(ui.ticketId){A.closeTicket();}}
   if(e.key==='Enter'&&e.target.matches('tr[data-act]'))A.open(e.target);
+  if(e.key==='Enter'&&e.target.closest?.('.grid td')&&e.target.type!=='checkbox'){
+    e.preventDefault();const td=e.target.closest('td'),tr=td.parentElement,i=[...tr.children].indexOf(td);
+    const nx=(e.shiftKey?tr.previousElementSibling:tr.nextElementSibling)?.children[i]?.querySelector('input,select');
+    if(nx){nx.focus();nx.select?.();}else e.target.blur();
+  }
+});
+// Zeilen aus Excel oder einer anderen Tabelle einfügen: ab der Zelle nach rechts und unten, fehlende Türen werden angelegt
+document.addEventListener('paste',e=>{
+  const t=e.target;if(!t.closest?.('.grid td')||t.type==='checkbox')return;
+  const txt=(e.clipboardData?.getData('text/plain')||'').replace(/\r/g,'').replace(/\n+$/,'');
+  if(!/[\t\n]/.test(txt))return;
+  e.preventDefault();
+  const cols=[...GRID_F.map(k=>({k})),...gridCats().map(c=>({cat:c}))];
+  const td=t.closest('td'),tr=td.closest('tr'),ci=[...tr.children].indexOf(td)-1,ds=gridDoors();
+  let ri=ds.findIndex(d=>d.id===tr.dataset.door),made=0,rows=0,newItems=0;if(ri<0)ri=ds.length;
+  txt.split('\n').forEach((line,r)=>{
+    const cells=line.split('\t');if(!cells.some(c=>c.trim()))return;
+    let d=ds[ri+r],fresh=false;
+    if(!d){d=newDoorObj({nr:suggestNr(null)});d.history.push({ts:new Date().toISOString(),user:me().name,kind:'create',text:'Tür angelegt aus eingefügter Tabelle'});S.doors.push(d);made++;fresh=true;}
+    cells.forEach((v,j)=>{const c=cols[ci+j];if(!c)return;if(c.k){if(c.k==='nr'&&!v.trim())return;setDoorField(d,c.k,v,fresh);}else newItems+=setDoorItems(d,c.cat,v).created.length;});
+    rows++;
+  });
+  save();render();toast(`${rows} ${rows===1?'Zeile':'Zeilen'} übernommen${made?`, ${made} ${made===1?'Tür':'Türen'} neu`:''}${newItems?`, ${newItems} Anbauteile neu`:''}`,3600);
 });
 document.addEventListener('input',e=>{
   const id=e.target.id;
   if(id==='q'){ui.q=e.target.value;refreshList();}
   if(id==='tq'){ui.t.q=e.target.value;refreshTable();}
+  if(id==='dq'){ui.dq=e.target.value;refreshDocs();}
+  const pq=e.target.dataset?.pickq;
+  if(pq){const q=e.target.value.trim().toLowerCase();document.querySelectorAll(`#${pq} .pick`).forEach(r=>{r.hidden=!!q&&!r.dataset.q.includes(q);});}
 });
 document.addEventListener('change',e=>{
   const id=e.target.id;
   if(id==='tStatus'){ui.t.status=e.target.value;refreshTable();}
   if(id==='tFloor'){ui.t.floor=e.target.value;refreshTable();}
   if(id==='tFire'){ui.t.fire=e.target.value;refreshTable();}
+  if(id==='nd2_file'){const f=e.target.files[0],n=$('#nd2_name');if(f&&n&&!n.value)n.value=f.name.replace(/\.[^.]+$/,'').replace(/[_]+/g,' ');}
+  if(id==='addCol'&&e.target.value){const p=proj();p.gridCols=[...new Set([...(p.gridCols||[]),e.target.value])];save();render();return;}
+  if(id==='gridAll'){gridDoors().forEach(d=>e.target.checked?ui.sel.add(d.id):ui.sel.delete(d.id));render();return;}
+  const t=e.target;
+  if(t.dataset?.sel){t.checked?ui.sel.add(t.dataset.sel):ui.sel.delete(t.dataset.sel);t.closest('tr').classList.toggle('sel',t.checked);$('#bulkbar').innerHTML=bulkHtml();return;}
+  if(t.closest?.('.grid')&&t.dataset.door){
+    const d=door(t.dataset.door);if(!d)return;
+    if(t.dataset.f){if(setDoorField(d,t.dataset.f,t.value)){save();if(isWide())refreshList();toast(`${d.nr}: gespeichert`,1200);}}
+    if(t.dataset.cat){
+      const r=setDoorItems(d,t.dataset.cat,t.value);
+      t.value=itemsOfDoor(d).filter(i=>i.cat===t.dataset.cat).map(i=>i.name).join('; ');
+      if(r.changed){save();$('#gridLists').innerHTML=gridLists();const b=t.closest('tr').querySelector('.c-docs');if(b)b.innerHTML=gridDocBtn(d);
+        toast(r.created.length?`Anbauteil „${r.created.map(i=>i.name).join('“, „')}“ neu angelegt und ${d.nr} zugeordnet`:`${d.nr}: ${t.dataset.cat} zugeordnet`,r.created.length?3200:1400);}
+    }
+  }
 });
 document.addEventListener('submit',e=>{
   e.preventDefault();
@@ -1337,7 +1811,7 @@ document.addEventListener('submit',e=>{
   if(f.id==='newDoor'){
     const v=k=>(f.elements[k]?.value||'').trim();
     const pos=ui.pendingPos;const p=pos?plan(pos.planId):null;
-    const d={id:uid(),projectId:proj().id,nr:v('nr')||suggestNr(p),name:v('name'),floor:v('floor'),room:v('room'),type:v('type'),fire:v('fire'),task:v('task'),prio:v('prio')||'Normal',due:v('due'),status:v('status')||'geplant',maker:'',width:'',height:'',year:'',hardware:'',interval:12,lastService:'',planId:p?p.id:null,x:pos?pos.x:null,y:pos?pos.y:null,history:[]};
+    const d=newDoorObj({nr:v('nr')||suggestNr(p),name:v('name'),floor:v('floor'),room:v('room'),type:v('type'),fire:v('fire'),task:v('task'),prio:v('prio')||'Normal',due:v('due'),status:v('status')||'geplant',planId:p?p.id:null,x:pos?pos.x:null,y:pos?pos.y:null});
     d.history.push({ts:new Date().toISOString(),user:me().name,kind:'create',text:p?`Tür angelegt über Plan „${p.name}“`:'Tür angelegt aus Türliste'});
     S.doors.push(d);ui.pendingPos=null;save();closeSheet();
     if(p){ui.ticketId=d.id;render();}else{openDoor(d.id);}
@@ -1347,6 +1821,27 @@ document.addEventListener('submit',e=>{
     const name=$('#np_name').value.trim();if(!name)return;
     const p={id:uid(),name,place:$('#np_place').value.trim(),phase:$('#np_phase').value||'planung'};
     S.projects.push(p);S.currentProjectId=p.id;resetView();firstView();save();closeSheet();render();toast(`Projekt „${name}“ angelegt`);
+  }
+  if(f.id==='newDocForm')submitNewDoc();
+  if(f.id==='newItemForm'){
+    const cat=$('#ni_cat').value,name=$('#ni_name').value.trim();if(!name)return;
+    const ids=(f.dataset.ids||'').split(',').filter(Boolean);
+    let i=itemsOf().find(x=>x.cat===cat&&x.name.toLowerCase()===name.toLowerCase());
+    if(!i){i={id:uid(),projectId:proj().id,cat,name,note:'',doorIds:[]};S.items.push(i);}
+    ids.forEach(id=>{const d=door(id);if(d)linkItemDoor(i,d,true);});
+    save();render();sheetState={dirty:true};
+    if(ids.length)pickerSheet('items',ids);else itemSheet(i);
+    toast(`Anbauteil „${name}“ ${ids.length?'angelegt und zugeordnet':'angelegt'}`);
+  }
+  if(f.id==='docForm'){
+    const x=docById(f.dataset.id);if(!x)return;
+    x.cat=$('#dc_cat').value;x.name=$('#dc_name').value.trim()||x.name;x.nr=$('#dc_nr').value.trim();x.valid=$('#dc_valid').value;
+    save();render();sheetState={};docSheet(x);toast('Angaben gespeichert');
+  }
+  if(f.id==='itemForm'){
+    const i=itemById(f.dataset.id);if(!i)return;
+    i.cat=$('#it_cat').value;i.name=$('#it_name').value.trim()||i.name;i.note=$('#it_note').value.trim();
+    save();render();sheetState={};itemSheet(i);toast('Angaben gespeichert');
   }
   if(f.id==='renamePlan'){
     const p=currentPlan();const n=$('#rp_name').value.trim();if(!p||!n)return;
@@ -1416,6 +1911,37 @@ $('#docFile').addEventListener('change',async e=>{
   }
   if(n){save();render();toast(n===1?'Unterlage hinzugefügt':`${n} Unterlagen hinzugefügt`);}
 });
+/* Dokument-Upload: Originaldatei bleibt erhalten, dazu eine kleine Vorschau der ersten Seite */
+const isPdfFile=f=>f.type==='application/pdf'||/\.pdf$/i.test(f.name);
+function readDataUrl(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
+async function makeThumb(file,src){
+  const cv=document.createElement('canvas'),W=420;let pages=1;
+  if(isPdfFile(file)){
+    const lib=await loadPdfJs(),pdf=await lib.getDocument({data:await file.arrayBuffer()}).promise;pages=pdf.numPages;
+    const page=await pdf.getPage(1),v1=page.getViewport({scale:1}),vp=page.getViewport({scale:W/v1.width});
+    cv.width=Math.round(vp.width);cv.height=Math.round(vp.height);const ctx=cv.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);
+    await page.render({canvasContext:ctx,viewport:vp}).promise;
+  }else{
+    const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src;});
+    const sc=W/(img.naturalWidth||W);cv.width=W;cv.height=Math.max(1,Math.round((img.naturalHeight||W*1.4)*sc));
+    const ctx=cv.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);ctx.drawImage(img,0,0,cv.width,cv.height);
+  }
+  return {thumb:cv.toDataURL('image/jpeg',.8),pages};
+}
+async function submitNewDoc(){
+  const file=$('#nd2_file')?.files[0];if(!file){toast('Bitte eine Datei wählen');return;}
+  if(file.size>25e6){toast('Die Datei ist größer als 25 MB',4000);return;}
+  const pre=sheetState.newDoc||{},cat=$('#nd2_cat').value,name=$('#nd2_name').value.trim()||file.name.replace(/\.[^.]+$/,''),nr=$('#nd2_nr').value.trim(),valid=$('#nd2_valid').value;
+  toast('Dokument wird gelesen …',0);
+  try{
+    const src=await readDataUrl(file),{thumb,pages}=await makeThumb(file,src);
+    const x={id:uid(),projectId:proj().id,cat,name,nr,valid,src,thumb,mime:isPdfFile(file)?'application/pdf':(file.type||'image/*'),fileName:file.name,pages,size:file.size,created:new Date().toISOString(),user:me().name,doorIds:[],itemIds:[]};
+    S.docs.push(x);
+    (pre.doorIds||[]).forEach(id=>{const d=door(id);if(d)linkDocDoor(x,d,true);});
+    (pre.itemIds||[]).forEach(id=>{const i=itemById(id);if(i)linkDocItem(x,i,true);});
+    save();render();sheetState={};docSheet(x);toast('Dokument gespeichert. Jetzt Türen zuordnen.');
+  }catch(err){console.error(err);toast(`„${file.name}“ konnte nicht gelesen werden`,4000);}
+}
 $('#importFile').addEventListener('change',async e=>{
   const f=e.target.files[0];e.target.value='';if(!f)return;
   try{

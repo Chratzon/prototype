@@ -48,3 +48,15 @@ Die App stellt je Phase andere Inhalte nach vorn:
 | Planung | Türliste | Planungsangaben mit Vollständigkeit (Türtyp, Brandschutz, Maße, Hersteller, Beschlag), Detailzeichnungen und Unterlagen je Tür (PDF oder Bild) |
 | Bauphase | Plan | Teileliste je Tür (Offen, Bestellt, Geliefert, Montiert), Ansicht „Teile“ nach Einbauort, Teile im Plan-Pin |
 | Nutzung | Wartung | Zustand (Gut bis Mangelhaft), fällige Wartungen, Wartungsprotokoll mit Datum, Zustand und Bemerkung |
+
+## Dokumentation und Anbauteile
+
+Jedes Projekt hat einen Bereich „Dokumente“ für die Unterlagen an den Bauherrn: Zulassungen, Übereinstimmungserklärungen, Prüfbücher, Datenblätter und Sonstiges (PDF oder Bild, Original bleibt erhalten, Vorschau und Download in der App).
+
+- Ein Dokument kann beliebig vielen Türen zugeordnet werden (im Dokument per Filter, z. B. „T30“, und „Alle Treffer zuordnen“, oder in der Tür über „Dokumente zuordnen“).
+- Anbauteile (Obentürschließer, Feststellanlage, Schloss, Profilzylinder …) sind eigene Objekte je Projekt mit eigenen Unterlagen. Ein Datenblatt am Anbauteil gilt automatisch für alle Türen, an denen es verbaut ist.
+- Offene Punkte für die Übergabe: Brandschutztüren ohne Zulassung, Anbauteile ohne Datenblatt, abgelaufene und nicht zugeordnete Dokumente.
+
+### Türliste in Tabellenform (Tabelle → „Erfassen“)
+
+Editierbare Tabelle: Türen und Anbauteile direkt in Zellen anlegen, jede Änderung wird protokolliert. In Anbauteil-Spalten den Produktnamen eintragen; Unbekanntes wird als neues Anbauteil angelegt, mehrere mit „;“ trennen. Über „+ Anbauteil-Spalte“ kommen weitere Kategorien dazu. Zeilen aus Excel lassen sich einfügen (fehlende Türen werden angelegt). Mehrere Zeilen auswählen und gemeinsam Dokumente oder Anbauteile zuordnen. Der CSV-Export enthält Anbauteile und Dokumente je Tür.
