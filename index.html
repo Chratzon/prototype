@@ -135,6 +135,28 @@ main{min-height:0;position:relative;overflow:hidden}
 /* Übersicht (Dashboard) */
 .dash{padding:16px 16px 48px;max-width:1180px;margin:0 auto;display:grid;gap:16px}
 .dtitle h2{font-size:22px}
+.dshead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.dviewseg{display:none}
+@media (min-width:820px){.dviewseg{display:inline-flex}}
+.dfilter{display:grid;gap:8px}
+.dfrow{display:flex;gap:8px;flex-wrap:wrap}
+.dfrow .search{flex:1 1 220px;min-width:0}
+.dfrow select{height:42px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 10px;font-size:14px;flex:0 1 240px;min-width:0;max-width:100%;color:var(--ink)}
+button.kpi{text-align:left;width:100%}
+.kpi[aria-pressed="true"]{border-color:var(--petrol);box-shadow:inset 0 0 0 1px var(--petrol);background:var(--surface-2)}
+.dactive{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:-4px 0}
+.dactive .btn{height:30px;padding:0 8px;font-size:13px}
+#dashBody{display:grid;gap:16px}
+.dprojs{display:grid;gap:16px;align-items:start}
+@media (min-width:900px){.dprojs{grid-template-columns:1fr 1fr}}
+.dphead{display:flex;align-items:center;gap:10px;padding:14px 14px 8px}
+.dphead .dpt{flex:1;min-width:0;display:grid;font-size:15px}
+.dphead .r2,.dpmeta .r2{font-size:13px;color:var(--muted)}
+.dpmeta{display:grid;gap:6px;padding:0 14px 12px}
+.dproj h4{margin:0;line-height:1.3;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--petrol-text);padding:10px 14px 8px;border-top:1px solid var(--line);display:flex;justify-content:space-between}
+.dproj h4 .cnt{color:var(--muted);letter-spacing:0;text-transform:none;font-weight:500}
+.more.dpopen{width:100%;text-align:left;color:var(--petrol-text);font-weight:600}
+.more.dpopen:hover{background:var(--surface-2)}
 .dtitle .sub{color:var(--muted);font-size:13.5px;margin-top:2px}
 .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 @media (min-width:640px){.kpis{grid-template-columns:repeat(4,1fr)}}
@@ -534,6 +556,7 @@ const ICON={
   dots:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>',
   parts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 4 7v10l8 4 8-4V7z"/><path d="m4 7 8 4 8-4M12 11v10"/></svg>',
   maint:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M14.5 6.5a4 4 0 0 0 5 5L11 20a2.1 2.1 0 0 1-3-3l8.5-8.5"/><path d="M14.5 6.5 17 4l3 3-2.5 2.5"/></svg>',
+  byproj:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="4" y="4" width="16" height="5" rx="1.5"/><rect x="4" y="11" width="16" height="4" rx="1.2"/><rect x="4" y="17" width="16" height="3" rx="1"/></svg>',
   home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg>',
   docs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>',
   upload:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 20h16"/></svg>',
@@ -786,6 +809,7 @@ const ui={
   pane:lsGet('dk.pane')||'detail', // detail | plan | table (Tablet, rechts)
   doorId:null, phoneDetail:false, editing:false,
   dphase:lsGet('dk.dphase')||'alle', partState:'alle', fileDoor:null,
+  dview:lsGet('dk.dview')==='total'?'total':'proj', dproj:'alle', dsq:'', dkpi:null, // Übersicht: Variante und Filter
   q:'', status:'alle', sort:lsGet('dk.sort')||'prio',
   planId:null, zoom:1, ticketId:null, placing:null, pendingPos:null,
   t:{q:'',status:'',floor:'',fire:'',sort:'prio',dir:1},
@@ -915,75 +939,114 @@ function renderBottom(){
   let h='';
   if(installHint())h+=installHint();
   if(!isWide()){
-    const items=[['home','Übersicht'],...(ui.tab==='home'?[['list','Türliste'],['plan','Plan'],['table','Tabelle']]:PHASE_VIEWS[phase()].map(k=>[k,VIEWS[k]]))];
+    // Auf der Übersicht keine Sprünge in ein Projekt: die Leiste wechselt nur zwischen den beiden Varianten der Übersicht
+    if(ui.tab==='home'){
+      h+=`<nav class="bottomnav" aria-label="Übersicht" style="grid-template-columns:repeat(2,1fr)">${[['proj','Nach Projekten','byproj'],['total','Gesamt','home']].map(([k,l,i])=>`<button class="navbtn" data-act="dashView" data-k="${k}" ${ui.dview===k?'aria-current="page"':''}><span class="ni">${ICON[i]}</span>${l}</button>`).join('')}</nav>`;
+      $('#bottom').innerHTML=h;return;
+    }
+    const items=[['home','Übersicht'],...PHASE_VIEWS[phase()].map(k=>[k,VIEWS[k]])];
     h+=`<nav class="bottomnav" aria-label="Hauptnavigation" style="grid-template-columns:repeat(${items.length},1fr)">${items.map(([k,l])=>`<button class="navbtn" data-act="tab" data-k="${k}" ${ui.tab===k&&!ui.phoneDetail?'aria-current="page"':''}><span class="ni">${ICON[k]}</span>${l}</button>`).join('')}</nav>`;
   }
   $('#bottom').innerHTML=h;
 }
 
-/* Übersicht: projektübergreifend die wichtigsten Punkte */
+/* Übersicht: projektübergreifend, in zwei Varianten (nach Projekten geordnet oder gesamt) und filterbar */
+const DASH_KPIS={
+  overdue:{l:'Überfällig',cls:'alert',f:(d,u)=>u.near!=null&&u.near<0},
+  urgent:{l:'Dringend',cls:'alert',f:d=>isOpen(d)&&d.prio==='Dringend'},
+  soon:{l:'Bald fällig',cls:'warn',f:(d,u)=>!(u.near<0)&&((u.sd!=null&&u.sd<=30)||(u.fd!=null&&u.fd<=14))},
+  defects:{l:'Offene Mängel',cls:'warn',f:d=>d.status==='offen'},
+};
+function dashData(){
+  const projects=S.projects.filter(p=>(ui.dphase==='alle'||p.phase===ui.dphase)&&(ui.dproj==='alle'||p.id===ui.dproj)),pids=new Set(projects.map(p=>p.id));
+  const q=ui.dsq.trim().toLowerCase();
+  const base=S.doors.filter(d=>pids.has(d.projectId)&&(!q||[d.nr,d.name,d.room,d.floor,d.type,d.fire,d.maker,d.task].join(' ').toLowerCase().includes(q)));
+  const U=new Map(base.map(d=>[d.id,urgency(d)]));
+  const all=ui.dkpi?base.filter(d=>DASH_KPIS[ui.dkpi].f(d,U.get(d.id))):base;
+  return {projects,base,all,U,doorFilter:!!(q||ui.dkpi)};
+}
 function dashView(){
-  const projects=S.projects.filter(p=>ui.dphase==='alle'||p.phase===ui.dphase),pids=new Set(projects.map(p=>p.id));
-  const all=S.doors.filter(d=>pids.has(d.projectId)),pname=id=>S.projects.find(p=>p.id===id)?.name||'';
   const phaseChips=['alle',...PHASE_ORDER].map(k=>{const n=k==='alle'?S.projects.length:S.projects.filter(p=>p.phase===k).length;return `<button class="chip" data-act="dashPhase" data-k="${k}" aria-pressed="${ui.dphase===k}">${k==='alle'?'Alle Phasen':PHASES[k]} <span class="cnt num">${n}</span></button>`;}).join('');
-  const U=new Map(all.map(d=>[d.id,urgency(d)]));
-  const sub=d=>esc([pname(d.projectId),d.floor,d.room].filter(Boolean).join(' · '));
+  const projOpts=S.projects.filter(p=>ui.dphase==='alle'||p.phase===ui.dphase).map(p=>`<option value="${p.id}" ${ui.dproj===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
+  const today=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  return `<div class="dash">
+    <div class="dshead"><div class="dtitle"><h2>Übersicht</h2><div class="sub" id="dashSub">${esc(today)}</div></div>
+      <div class="seg dviewseg" role="group" aria-label="Variante der Übersicht">${[['proj','Nach Projekten'],['total','Gesamt']].map(([k,l])=>`<button data-act="dashView" data-k="${k}" aria-pressed="${ui.dview===k}">${l}</button>`).join('')}</div></div>
+    <div class="dfilter">
+      <div class="dfrow"><label class="search">${ICON.search}<input id="dsq" type="search" placeholder="Tür-Nr., Raum, Aufgabe, Brandschutz …" value="${esc(ui.dsq)}" autocomplete="off" aria-label="Übersicht filtern"></label>
+      <select id="dProj" aria-label="Projekt"><option value="alle">Alle Projekte</option>${projOpts}</select></div>
+      <div class="chips">${phaseChips}</div>
+    </div>
+    <div id="dashBody">${dashBody()}</div></div>`;
+}
+function dashBody(){
+  const {projects,base,all,U,doorFilter}=dashData(),pname=id=>S.projects.find(p=>p.id===id)?.name||'';
   const sideFor=(n,date)=>`<span class="side ${n<0?'late':n<=14?'near':''}">${n<0?'überfällig':esc(relDays(n))}<span class="d num">${fmtDate(date)}</span></span>`;
-  const item=(d,side,extra)=>`<button class="ditem" data-act="openAny" data-id="${d.id}"><span class="t1"><span class="nr">${esc(d.nr)}</span>${esc(d.name||'Ohne Bezeichnung')}</span>${side}<span class="t2">${extra?esc(extra)+' · ':''}${sub(d)}</span></button>`;
+  const loc=(d,withProj)=>esc([withProj?pname(d.projectId):'',d.floor,d.room].filter(Boolean).join(' · '));
+  const item=(d,side,extra)=>`<button class="ditem" data-act="openAny" data-id="${d.id}"><span class="t1"><span class="nr">${esc(d.nr)}</span>${esc(d.name||'Ohne Bezeichnung')}</span>${side}<span class="t2">${extra?esc(extra)+' · ':''}${loc(d,true)}</span></button>`;
+  const focusItem=(d,withProj)=>{
+    const u=U.get(d.id),bs=urgentBadges(d);
+    if(u.sd!=null&&u.sd<0)bs.push('<span class="badge due">Wartung fällig</span>');else if(u.sd!=null&&u.sd<=30)bs.push('<span class="badge soon">Wartung bald fällig</span>');else if(u.sd!=null&&u.sd<=60)bs.push(`<span class="badge">Wartung ${fmtDate(nextService(d).toISOString())}</span>`);
+    return `<button class="ditem" data-act="openAny" data-id="${d.id}"><span class="t1"><span class="nr">${esc(d.nr)}</span>${esc(d.name||'Ohne Bezeichnung')}</span><span class="side"><span class="tag s-${d.status}">${STATUS[d.status]}</span></span><span class="t2">${d.task&&isOpen(d)?esc(d.task)+' · ':''}${loc(d,withProj)}</span>${bs.length?`<span class="badges">${bs.join('')}</span>`:''}</button>`;
+  };
   const panel=(title,rows,max,emptyText,cls='')=>`<section class="panel ${cls}"><h3>${title}<span class="cnt num">${rows.length||''}</span></h3>${rows.length?rows.slice(0,max).join('')+(rows.length>max?`<span class="more">+ ${rows.length-max} weitere</span>`:''):`<div class="pempty">${emptyText}</div>`}</section>`;
 
-  // Kennzahlen
-  const overdue=all.filter(d=>U.get(d.id).near!=null&&U.get(d.id).near<0).length;
-  const soon=all.filter(d=>{const u=U.get(d.id);return !(u.near<0)&&((u.sd!=null&&u.sd<=30)||(u.fd!=null&&u.fd<=14));}).length;
-  const defects=all.filter(d=>d.status==='offen').length;
-  const urgent=all.filter(d=>isOpen(d)&&d.prio==='Dringend').length;
-  const kpi=(v,l,cls)=>`<div class="kpi ${v?cls:'ok'}"><div class="v">${v}</div><div class="l">${l}</div></div>`;
+  // Kennzahlen: zählen ohne den Kennzahl-Filter, antippen filtert danach
+  const kpis=Object.entries(DASH_KPIS).map(([k,x])=>{const v=base.filter(d=>x.f(d,U.get(d.id))).length;
+    return `<button class="kpi ${v?x.cls:'ok'}" data-act="dashKpi" data-k="${k}" aria-pressed="${ui.dkpi===k}" title="Nur „${x.l}“ zeigen"><div class="v">${v}</div><div class="l">${x.l}</div></button>`;}).join('');
+  const active=[ui.dproj!=='alle'?esc(pname(ui.dproj)):'',ui.dphase!=='alle'?PHASES[ui.dphase]:'',ui.dkpi?DASH_KPIS[ui.dkpi].l:'',ui.dsq.trim()?`„${esc(ui.dsq.trim())}“`:''].filter(Boolean);
+  const sub=`${projects.length} ${projects.length===1?'Projekt':'Projekte'} · ${all.length} ${all.length===1?'Tür':'Türen'}`;
+  const fbar=`<div class="dactive"><span class="num">${sub}</span>${active.length?`<span>Filter: ${active.join(' · ')}</span><button class="btn ghost" data-act="dashReset">Filter zurücksetzen</button>`:''}</div>`;
+  let h=`<div class="kpis">${kpis}</div>${fbar}`;
 
-  // Jetzt angehen: alles bis „offener Mangel“, in automatischer Reihenfolge
-  const focus=all.filter(d=>U.get(d.id).tier<=4).sort(byUrgency).map(d=>{
-    const u=U.get(d.id),bs=urgentBadges(d);
-    if(u.sd!=null&&u.sd<0)bs.push('<span class="badge due">Wartung fällig</span>');else if(u.sd!=null&&u.sd<=30)bs.push('<span class="badge soon">Wartung bald fällig</span>');
-    return `<button class="ditem" data-act="openAny" data-id="${d.id}"><span class="t1"><span class="nr">${esc(d.nr)}</span>${esc(d.name||'Ohne Bezeichnung')}</span><span class="side"><span class="tag s-${d.status}">${STATUS[d.status]}</span></span><span class="t2">${d.task&&isOpen(d)?esc(d.task)+' · ':''}${sub(d)}</span>${bs.length?`<span class="badges">${bs.join('')}</span>`:''}</button>`;
-  });
-
-  // Wartungen: überfällig und in den nächsten 60 Tagen
-  const maint=all.filter(d=>{const u=U.get(d.id);return u.sd!=null&&u.sd<=60;}).sort((a,b)=>U.get(a.id).sd-U.get(b.id).sd||byNr(a,b))
-    .map(d=>item(d,sideFor(U.get(d.id).sd,nextService(d).toISOString()),d.fire&&d.fire!=='ohne'?d.fire:''));
-
-  // Fristen offener Aufgaben
-  const dues=all.filter(d=>U.get(d.id).fd!=null).sort((a,b)=>U.get(a.id).fd-U.get(b.id).fd||byUrgency(a,b))
-    .map(d=>item(d,sideFor(U.get(d.id).fd,d.due),d.task||(d.prio!=='Normal'?'Priorität '+d.prio:'')));
-
-  // Projekte
-  const projs=projects.map(p=>{
-    const ds=all.filter(d=>d.projectId===p.id),done=ds.filter(d=>d.status==='erledigt').length;
+  // Projektkarte: Stand je Phase
+  const projMeta=p=>{
+    const ds=base.filter(d=>d.projectId===p.id);
     const late=ds.filter(d=>U.get(d.id).near!=null&&U.get(d.id).near<0).length,off=ds.filter(d=>d.status==='offen').length,urg=ds.filter(d=>isOpen(d)&&d.prio==='Dringend').length;
     let metric,ratio;
     if(p.phase==='planung'){const c=ds.filter(d=>completeness(d).n===PLAN_KEYS.length).length;metric=`${c} von ${ds.length} Türen vollständig beschrieben`;ratio=ds.length?c/ds.length:0;}
     else if(p.phase==='bau'){const ps=ds.flatMap(d=>d.parts||[]),m=ps.filter(x=>x.state==='montiert').length;metric=ps.length?`${m} von ${ps.length} Teilen montiert`:'Noch keine Teilelisten';ratio=ps.length?m/ps.length:0;}
     else{const okc=ds.filter(d=>serviceState(d)!=='due'&&d.condition!=='Mangelhaft').length,care=ds.filter(d=>d.condition==='Pflegebedürftig'||d.condition==='Mangelhaft').length;metric=`${okc} von ${ds.length} Türen in Ordnung${care?` · ${care} pflegebedürftig`:''}`;ratio=ds.length?okc/ds.length:0;}
     const flags=[late?`<span class="badge due">${late} überfällig</span>`:'',urg?`<span class="badge urgent">${urg} dringend</span>`:'',off?`<span class="badge">${off} ${off===1?'Mangel':'Mängel'}</span>`:''].join('');
-    return `<button class="pcard" data-act="goProject" data-id="${p.id}"><span class="r1"><span class="projicon">${esc(initials(p.name))}</span><span style="flex:1;min-width:0">${esc(p.name)}<br><span class="r2">${esc(p.place||'')}</span></span><span class="tag ph-${p.phase}">${PHASES[p.phase]}</span></span>
-      <span class="r2 num">${ds.length} ${ds.length===1?'Tür':'Türen'} · ${esc(metric)}</span><span class="bar"><i style="width:${Math.round(ratio*100)}%"></i></span>${flags?`<span class="badges" style="margin-top:0">${flags}</span>`:''}</button>`;
-  }).join('');
+    return {ds,metric,ratio,flags};
+  };
+  const pcard=p=>{const m=projMeta(p);return `<button class="pcard" data-act="goProject" data-id="${p.id}"><span class="r1"><span class="projicon">${esc(initials(p.name))}</span><span style="flex:1;min-width:0">${esc(p.name)}<br><span class="r2">${esc(p.place||'')}</span></span><span class="tag ph-${p.phase}">${PHASES[p.phase]}</span></span>
+      <span class="r2 num">${m.ds.length} ${m.ds.length===1?'Tür':'Türen'} · ${esc(m.metric)}</span><span class="bar"><i style="width:${Math.round(m.ratio*100)}%"></i></span>${m.flags?`<span class="badges" style="margin-top:0">${m.flags}</span>`:''}</button>`;};
+  const shown=doorFilter?projects.filter(p=>all.some(d=>d.projectId===p.id)):projects;
+  const none=`<div class="panel"><div class="pempty" style="padding-top:16px">${!S.projects.length?'Noch keine Projekte.':doorFilter?'Keine Tür passt zu diesem Filter.':'Kein Projekt passt zu diesem Filter.'}</div></div>`;
 
-  // Letzte Aktivität
+  if(ui.dview==='proj'){
+    // Nach Projekten: je Projekt Stand und die Türen, um die man sich kümmern muss
+    if(!shown.length)return h+none;
+    return h+`<div class="dprojs">${shown.map(p=>{
+      const m=projMeta(p),ds=all.filter(d=>d.projectId===p.id);
+      const rel=(doorFilter?ds:ds.filter(d=>{const u=U.get(d.id);return u.tier<=4||(u.sd!=null&&u.sd<=60)||(u.fd!=null&&u.fd<=30);})).sort(byUrgency);
+      const max=6;
+      return `<section class="panel dproj"><div class="dphead"><span class="projicon">${esc(initials(p.name))}</span><div class="dpt"><b>${esc(p.name)}</b><span class="r2">${esc([p.place,`${m.ds.length} ${m.ds.length===1?'Tür':'Türen'}`].filter(Boolean).join(' · '))}</span></div><span class="tag ph-${p.phase}">${PHASES[p.phase]}</span></div>
+        <div class="dpmeta"><span class="r2 num">${esc(m.metric)}</span><span class="bar"><i style="width:${Math.round(m.ratio*100)}%"></i></span>${m.flags?`<span class="badges" style="margin-top:0">${m.flags}</span>`:''}</div>
+        <h4>${doorFilter?'Treffer':'Jetzt angehen'}<span class="cnt num">${rel.length||''}</span></h4>
+        ${rel.length?rel.slice(0,max).map(d=>focusItem(d,false)).join(''):`<div class="pempty">Nichts Dringendes. Fristen und Wartungen sind im grünen Bereich.</div>`}
+        <button class="more dpopen" data-act="goProject" data-id="${p.id}">${rel.length>max?`+ ${rel.length-max} weitere · `:''}Projekt öffnen</button></section>`;
+    }).join('')}</div>`;
+  }
+
+  // Gesamt: alle gefilterten Projekte zusammen
+  const focus=all.filter(d=>doorFilter||U.get(d.id).tier<=4).sort(byUrgency).map(d=>focusItem(d,true));
+  const maint=all.filter(d=>{const u=U.get(d.id);return u.sd!=null&&u.sd<=60;}).sort((a,b)=>U.get(a.id).sd-U.get(b.id).sd||byNr(a,b))
+    .map(d=>item(d,sideFor(U.get(d.id).sd,nextService(d).toISOString()),d.fire&&d.fire!=='ohne'?d.fire:''));
+  const dues=all.filter(d=>U.get(d.id).fd!=null).sort((a,b)=>U.get(a.id).fd-U.get(b.id).fd||byUrgency(a,b))
+    .map(d=>item(d,sideFor(U.get(d.id).fd,d.due),d.task||(d.prio!=='Normal'?'Priorität '+d.prio:'')));
   const acts=all.flatMap(d=>d.history.slice(0,3).map(h=>({d,h}))).sort((a,b)=>a.h.ts<b.h.ts?1:-1)
     .map(({d,h})=>`<button class="ditem" data-act="openAny" data-id="${d.id}"><span class="t1"><span class="nr">${esc(d.nr)}</span>${esc(h.text)}</span><span class="t2">${esc(fmtDateTime(h.ts))} · ${esc(h.user)} · ${esc(pname(d.projectId))}</span></button>`);
-
-  const today=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  return `<div class="dash">
-    <div class="dtitle"><h2>Übersicht</h2><div class="sub">${esc(today)} · ${projects.length} ${projects.length===1?'Projekt':'Projekte'} · ${all.length} ${all.length===1?'Tür':'Türen'}</div></div>
-    <div class="chips">${phaseChips}</div>
-    <div class="kpis">${kpi(overdue,'Überfällig','alert')}${kpi(urgent,'Dringend','alert')}${kpi(soon,'Bald fällig','warn')}${kpi(defects,'Offene Mängel','warn')}</div>
-    <div class="dgrid">
-      ${panel('Jetzt angehen',focus,8,'Nichts Dringendes. Alle Fristen und Wartungen sind im grünen Bereich.','full')}
+  return h+`<div class="dgrid">
+      ${panel(doorFilter?'Treffer':'Jetzt angehen',focus,doorFilter?12:8,doorFilter?'Keine Tür passt zu diesem Filter.':'Nichts Dringendes. Alle Fristen und Wartungen sind im grünen Bereich.','full')}
       ${panel('Anstehende Wartungen',maint,6,projects.some(p=>p.phase==='nutzung')?'Keine Wartung in den nächsten 60 Tagen.':'Wartungen werden erst in der Phase „Nutzung“ überwacht.')}
       ${panel('Fristen',dues,6,'Keine offenen Aufgaben mit Frist.')}
-      <section class="panel full"><h3>Projekte</h3>${projs?`<div class="projcards">${projs}</div>`:`<div class="pempty">${S.projects.length?'Kein Projekt in dieser Phase.':'Noch keine Projekte.'}</div>`}</section>
+      <section class="panel full"><h3>Projekte</h3>${shown.length?`<div class="projcards">${shown.map(pcard).join('')}</div>`:`<div class="pempty">${S.projects.length?'Kein Projekt passt zu diesem Filter.':'Noch keine Projekte.'}</div>`}</section>
       ${panel('Letzte Aktivität',acts.slice(0,6),6,'Noch keine Einträge.','full')}
-    </div></div>`;
+    </div>`;
 }
+const refreshDash=()=>{const b=$('#dashBody');if(b)b.innerHTML=dashBody();};
 
 /* Türliste */
 function filteredDoors(){
@@ -1548,7 +1611,10 @@ const A={
   home(){ui.tab='home';ui.phoneDetail=false;ui.editing=false;ui.placing=null;ui.pendingPos=null;ui.ticketId=null;closeSheet();render();},
   openAny(el){const d=door(el.dataset.id);if(!d)return;if(d.projectId!==S.currentProjectId){S.currentProjectId=d.projectId;resetView();save();}firstView();openDoor(d.id);},
   goProject(el){S.currentProjectId=el.dataset.id;resetView();firstView();if(isWide())ui.doorId=doorsOf().sort(byUrgency)[0]?.id||null;save();render();},
-  dashPhase(el){ui.dphase=el.dataset.k;lsSet('dk.dphase',ui.dphase);render();},
+  dashPhase(el){ui.dphase=el.dataset.k;lsSet('dk.dphase',ui.dphase);if(ui.dproj!=='alle'&&ui.dphase!=='alle'&&S.projects.find(p=>p.id===ui.dproj)?.phase!==ui.dphase)ui.dproj='alle';render();},
+  dashView(el){ui.dview=el.dataset.k;lsSet('dk.dview',ui.dview);render();const sc=$('#dashScroll');if(sc)sc.scrollTop=0;},
+  dashKpi(el){ui.dkpi=ui.dkpi===el.dataset.k?null:el.dataset.k;refreshDash();},
+  dashReset(){ui.dproj='alle';ui.dsq='';ui.dkpi=null;ui.dphase='alle';lsSet('dk.dphase','alle');render();},
   setPhase(el){const p=proj(),k=el.dataset.k;if(p.phase===k)return;p.phase=k;if(ui.tab!=='home')firstView();save();projectsSheet();render();toast(`${p.name}: Phase „${PHASES[k]}“`);},
   listSort(el){ui.sort=el.dataset.k;lsSet('dk.sort',ui.sort);render();},
   tab(el){ui.tab=el.dataset.k;ui.phoneDetail=false;ui.editing=false;ui.placing=null;ui.pendingPos=null;lsSet('dk.tab',ui.tab);render();},
@@ -1750,11 +1816,13 @@ document.addEventListener('input',e=>{
   if(id==='q'){ui.q=e.target.value;refreshList();}
   if(id==='tq'){ui.t.q=e.target.value;refreshTable();}
   if(id==='dq'){ui.dq=e.target.value;refreshDocs();}
+  if(id==='dsq'){ui.dsq=e.target.value;refreshDash();}
   const pq=e.target.dataset?.pickq;
   if(pq){const q=e.target.value.trim().toLowerCase();document.querySelectorAll(`#${pq} .pick`).forEach(r=>{r.hidden=!!q&&!r.dataset.q.includes(q);});}
 });
 document.addEventListener('change',e=>{
   const id=e.target.id;
+  if(id==='dProj'){ui.dproj=e.target.value;refreshDash();return;}
   if(id==='tStatus'){ui.t.status=e.target.value;refreshTable();}
   if(id==='tFloor'){ui.t.floor=e.target.value;refreshTable();}
   if(id==='tFire'){ui.t.fire=e.target.value;refreshTable();}

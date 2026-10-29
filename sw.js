@@ -1,5 +1,5 @@
 /* doorku Service Worker: App-Shell offline verfügbar machen. Version erhöhen, wenn sich Dateien ändern. */
-const VERSION = 'doorku-v5';
+const VERSION = 'doorku-v6';
 const SHELL = [
   './',
   './index.html',

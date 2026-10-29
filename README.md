@@ -33,7 +33,12 @@ Projekte → „Sicherung exportieren“ speichert alles (inkl. Pläne) als JSON
 
 ## Übersicht und Reihenfolge
 
-Die App startet immer mit der Übersicht über alle Projekte: Kennzahlen, „Jetzt angehen“, anstehende Wartungen (60 Tage), Fristen, Projektstand und letzte Aktivität.
+Die App startet immer mit der Übersicht über alle Projekte. Auf der Übersicht gibt es keine Sprünge in einzelne Projekte über die untere Leiste; dort wählt man nur zwischen den beiden Varianten (am Tablet oben rechts):
+
+- **Nach Projekten:** je Projekt eine Karte mit Phase, Stand, Warnhinweisen und den Türen, die jetzt angegangen werden müssen; „Projekt öffnen“ wechselt ins Projekt.
+- **Gesamt:** alle Projekte zusammen: „Jetzt angehen“, anstehende Wartungen (60 Tage), Fristen, Projektstand und letzte Aktivität.
+
+Beide Varianten sind filterbar: Suche (Tür-Nr., Raum, Aufgabe, Brandschutz …), Projekt, Phase und die Kennzahlen (Überfällig, Dringend, Bald fällig, Offene Mängel lassen sich antippen). „Filter zurücksetzen“ hebt alles auf. Die gewählte Variante merkt sich die App.
 
 Jede Tür kann eine offene Aufgabe mit Priorität (Dringend, Hoch, Normal, Niedrig) und Frist haben. Türliste und Tabelle ordnen sich automatisch so: überfällige Frist oder Wartung, dann Dringend, dann Frist in 14 Tagen oder Wartung in 30 Tagen, dann Hoch, dann offene Mängel, dann Türen mit Termin vor Türen ohne Termin, erledigte Türen zuletzt. Innerhalb einer Stufe entscheidet Priorität, dann der nächste Termin.
 
